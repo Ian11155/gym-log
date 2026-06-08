@@ -190,7 +190,7 @@ export default function ProfileTab({
           </div>
         </div>
 
-        <div className="bg-[#141414] p-3 rounded-xl border-2 border-black flex items-center gap-2.5 shadow-[4px_4px_0px_0px_#000000]">
+        <div className="bg-[#201d18] p-3 rounded-xl border-2 border-black flex items-center gap-2.5 shadow-[4px_4px_0px_0px_#000000]">
           <div className="w-12 h-12 flex-shrink-0 flex items-center justify-center">
             <TransparentImage 
               src={armsUp ? machokeArmsUp : machokeArmsDown} 
@@ -209,32 +209,34 @@ export default function ProfileTab({
       </div>
 
       {/* Segmented Control Switcher for Completed Workouts vs Exercise Library */}
-      <div className="bg-[#121011] p-1.5 rounded-xl border border-[#2d2729] grid grid-cols-2 gap-1 font-sans">
-        <button
-          type="button"
-          onClick={() => setActiveSubTab("workouts")}
-          className={`py-2 px-3 rounded-lg text-[10px] font-black uppercase tracking-widest text-center flex items-center justify-center gap-2 transition duration-200 cursor-pointer ${
-            activeSubTab === "workouts"
-              ? "bg-[#6f6d6c] text-[#f7f5f4] shadow-3d-sm"
-              : "text-stone-450 hover:text-stone-200"
-          }`}
-        >
-          <Clock className="w-3.5 h-3.5" />
-          <span>My Workouts ({totalWorkouts})</span>
-        </button>
+      <div className="sticky top-0 z-30 -mx-5 bg-[#181818] px-5 py-2">
+        <div className="bg-[#121011] p-1.5 rounded-xl border border-[#2d2729] grid grid-cols-2 gap-1 font-sans shadow-[0_8px_18px_rgba(0,0,0,0.28)]">
+          <button
+            type="button"
+            onClick={() => setActiveSubTab("workouts")}
+            className={`py-2 px-3 rounded-lg text-[10px] font-black uppercase tracking-widest text-center flex items-center justify-center gap-2 transition duration-200 cursor-pointer ${
+              activeSubTab === "workouts"
+                ? "bg-[#6f6d6c] text-[#f7f5f4] shadow-3d-sm"
+                : "text-stone-450 hover:text-stone-200"
+            }`}
+          >
+            <Clock className="w-3.5 h-3.5" />
+            <span>My Workouts ({totalWorkouts})</span>
+          </button>
 
-        <button
-          type="button"
-          onClick={() => setActiveSubTab("exercises")}
-          className={`py-2 px-3 rounded-lg text-[10px] font-black uppercase tracking-widest text-center flex items-center justify-center gap-2 transition duration-200 cursor-pointer ${
-            activeSubTab === "exercises"
-              ? "bg-[#6f6d6c] text-[#f7f5f4] shadow-3d-sm"
-              : "text-stone-450 hover:text-stone-200"
-          }`}
-        >
-          <BookOpen className="w-3.5 h-3.5" />
-          <span>Exercise Library ({exerciseLibrary.length})</span>
-        </button>
+          <button
+            type="button"
+            onClick={() => setActiveSubTab("exercises")}
+            className={`py-2 px-3 rounded-lg text-[10px] font-black uppercase tracking-widest text-center flex items-center justify-center gap-2 transition duration-200 cursor-pointer ${
+              activeSubTab === "exercises"
+                ? "bg-[#6f6d6c] text-[#f7f5f4] shadow-3d-sm"
+                : "text-stone-450 hover:text-stone-200"
+            }`}
+          >
+            <BookOpen className="w-3.5 h-3.5" />
+            <span>Exercise Library ({exerciseLibrary.length})</span>
+          </button>
+        </div>
       </div>
 
       {/* Dynamic Content Views */}
