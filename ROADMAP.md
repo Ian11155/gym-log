@@ -8,8 +8,8 @@ SquadLift is a private Hevy-style workout tracker for a squad of 4 friends. It s
 
 ## Current State
 
-- React + Vite + TypeScript prototype exported from AI Studio.
-- Tailwind CSS dark "Cosmic Slate" UI is already heavily implemented.
+- React + Vite + TypeScript PWA prototype, cleaned up from the original AI Studio export.
+- Tailwind CSS dark gym UI is already heavily implemented.
 - Core prototype screens exist:
   - Home/squad feed
   - Workout/routine launcher
@@ -22,20 +22,27 @@ SquadLift is a private Hevy-style workout tracker for a squad of 4 friends. It s
 - Seed data exists for 4 squad members, routines, workouts, comments, reactions, and exercises.
 - Data is currently persisted with `localStorage`.
 - Supabase schema text exists in `src/types.ts`, but there is no live Supabase client or real backend integration yet.
-- The app now uses a mobile-first shell with developer tools moved into a separate drawer.
+- The app uses a mobile-first shell with developer tools moved into a separate drawer.
+- PWA install support is implemented with Vite PWA, app manifest, service worker, and generated icons.
+- iOS/PWA shell polish has been applied:
+  - opaque black top and bottom chrome
+  - safe-area/status-bar handling
+  - hidden scrollbars
+  - fixed bottom navigation
+  - Hevy-like bottom nav shelf height
+- Machoke profile badge assets are optimized and kept lightweight, with the current RGBA background/alpha preserved.
 
 ## Known Gaps
 
-- Dependencies are installed and `package-lock.json` is generated.
-- `package.json`, `README.md`, and `index.html` have been renamed/rewritten for SquadLift.
-- UI copy has been relabeled so Supabase is presented as a future backend reference, not active sync.
 - Real authentication/user identity is not implemented.
 - Cross-device/shared data is not implemented.
-- PWA install support is not implemented.
-- Gemini/Express-related dependencies have been removed from the baseline.
+- The app still stores all real user changes on the current device only.
+- The app does not yet have a storage adapter between UI state and persistence.
+- Local data is not hardened against corrupted or stale `localStorage`.
 - `DashboardTab.tsx` and `FeedTab.tsx` appear to be legacy/unused components.
 - The Machoke badge assets may need to be replaced if the app should avoid copyrighted or joke-brand visuals.
 - Some image/avatar URLs are remote and may be unreliable offline.
+- Installed PWAs may need close/reopen or reinstall after shell/meta/service-worker updates because browsers cache PWA assets aggressively.
 
 ## Recommended Build Order
 
@@ -44,32 +51,39 @@ SquadLift is a private Hevy-style workout tracker for a squad of 4 friends. It s
    - `npm run lint`
    - `npm run build`
    - `npm run dev`
+   - Status: completed
 
 2. Clean project scaffold:
    - Rename package metadata to SquadLift.
    - Update `index.html` title and metadata.
    - Replace the AI Studio README with real local setup instructions.
    - Remove unused dependencies after confirming they are not needed.
+   - Status: completed
 
 3. Make the prototype honest:
    - Replace "Supabase synced" labels with "Local Demo Mode" until real sync exists.
    - Keep the Supabase schema viewer only as a dev/admin reference or remove it from the main product surface.
+   - Status: completed
 
 4. Convert the experience to mobile-first:
    - Completed: the fake phone frame was removed.
    - Completed: the main app now renders as a centered mobile-first viewport.
    - Completed: simulator and schema tools live in a separate developer drawer.
+   - Completed: iOS top safe-area and bottom navigation issues have been patched.
+   - Current status: continue real-device QA and small layout fixes as found.
 
 5. Add PWA support:
-   - Add app manifest.
-   - Add icons.
-   - Add service worker or Vite PWA support.
-   - Verify installability on iOS Safari and Android Chrome.
+   - Completed: add app manifest.
+   - Completed: add icons.
+   - Completed: add service worker / Vite PWA support.
+   - Completed: verify local installability and standalone PWA behavior.
+   - Current status: continue testing updates on installed iPhone/Android PWAs.
 
 6. Introduce a storage adapter:
    - Create a local data adapter around the existing localStorage behavior.
    - Keep UI components independent from the storage backend.
    - Later swap or extend the adapter with Supabase.
+   - Status: next recommended code task.
 
 7. Implement Supabase:
    - Add Supabase client setup.
@@ -94,7 +108,8 @@ SquadLift is a private Hevy-style workout tracker for a squad of 4 friends. It s
     - Verify no text overlap or clipped controls.
     - Run `npm run lint` and `npm run build`.
     - Use the in-app browser for visual QA after UI changes.
+    - Repeat installed-PWA testing after any meta, manifest, service-worker, or shell layout change.
 
 ## Immediate Next Task
 
-Next recommended task: add PWA install support so the mobile-first web app can be saved to iOS and Android home screens.
+Next recommended task: introduce a storage adapter around the current `localStorage` behavior. Keep the app local-first for now, but stop wiring persistence directly through `App.tsx` so Supabase can be added later without rewriting the UI.
