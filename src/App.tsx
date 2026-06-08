@@ -499,7 +499,7 @@ export default function App() {
             </div>
           )}
 
-          <div className="relative z-10 h-full overflow-y-auto overscroll-contain pb-20 text-left scrollbar-none">
+          <div className="relative z-10 h-full overflow-y-auto overscroll-contain pb-14 text-left scrollbar-none">
             {currentTab === 1 && (
               <HomeCombinedTab
                 activeUserId={activeUserId}
@@ -570,14 +570,14 @@ export default function App() {
             />
           )}
 
-          <nav className="fixed bottom-0 left-1/2 z-[60] flex h-16 w-full max-w-[480px] -translate-x-1/2 items-end justify-around border-t border-[#6f6d6c]/15 bg-black px-2 pb-1 shadow-[0_-6px_18px_rgba(0,0,0,0.45)]">
+          <nav className="fixed bottom-0 left-1/2 z-[60] flex h-12 w-full max-w-[480px] -translate-x-1/2 items-center justify-around border-t border-[#6f6d6c]/15 bg-black px-2 shadow-[0_-6px_18px_rgba(0,0,0,0.45)]">
             <button
               type="button"
               onClick={() => {
                 setCurrentTab(1);
                 setIsActiveMaximized(false);
               }}
-              className={`flex h-12 w-16 flex-col items-center justify-center text-center transition-all duration-300 cursor-pointer ${
+              className={`flex h-10 w-16 flex-col items-center justify-center text-center transition-all duration-300 cursor-pointer ${
                 currentTab === 1 && !isActiveMaximized
                   ? "text-stone-150 scale-105 font-bold"
                   : "text-stone-500 hover:text-stone-350"
@@ -593,7 +593,7 @@ export default function App() {
                 setCurrentTab(2);
                 setIsActiveMaximized(false);
               }}
-              className={`flex h-12 w-16 flex-col items-center justify-center text-center transition-all duration-300 cursor-pointer ${
+              className={`flex h-10 w-16 flex-col items-center justify-center text-center transition-all duration-300 cursor-pointer ${
                 currentTab === 2 && !isActiveMaximized
                   ? "text-stone-150 scale-105 font-bold"
                   : "text-stone-500 hover:text-stone-350"
@@ -610,7 +610,7 @@ export default function App() {
                 setViewedProfileUserId(activeUserId);
                 setIsActiveMaximized(false);
               }}
-              className={`flex h-12 w-16 flex-col items-center justify-center text-center transition-all duration-300 cursor-pointer ${
+              className={`flex h-10 w-16 flex-col items-center justify-center text-center transition-all duration-300 cursor-pointer ${
                 currentTab === 3 && !isActiveMaximized
                   ? "text-stone-150 scale-105 font-bold"
                   : "text-stone-500 hover:text-stone-350"
