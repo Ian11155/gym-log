@@ -190,7 +190,7 @@ export default function ProfileTab({
           </div>
         </div>
 
-        <div className="bg-[#201d18] p-3 rounded-xl border-2 border-black flex items-center gap-2.5 shadow-[4px_4px_0px_0px_#000000]">
+        <div className="bg-[#141414] p-3 rounded-xl border-2 border-black flex items-center gap-2.5 shadow-[4px_4px_0px_0px_#000000]">
           <div className="w-12 h-12 flex-shrink-0 flex items-center justify-center">
             <TransparentImage 
               src={armsUp ? machokeArmsUp : machokeArmsDown} 
