@@ -570,7 +570,7 @@ export default function App() {
             />
           )}
 
-          <nav className="fixed bottom-0 left-1/2 z-[60] flex h-16 w-full max-w-[480px] -translate-x-1/2 items-center justify-around border-t border-[#6f6d6c]/15 bg-black px-2 shadow-[0_-6px_18px_rgba(0,0,0,0.45)]">
+          <nav className="fixed bottom-0 left-1/2 z-[60] flex h-16 w-full max-w-[480px] -translate-x-1/2 items-end justify-around border-t border-[#6f6d6c]/15 bg-black px-2 pb-1 shadow-[0_-6px_18px_rgba(0,0,0,0.45)]">
             <button
               type="button"
               onClick={() => {
