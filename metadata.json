@@ -1,0 +1,6 @@
+{
+  "name": "SquadLift",
+  "description": "A high-fidelity, iOS-inspired private workout tracker and feed for checking sets, tracking volume, and cheering on your squad of 4 friends.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

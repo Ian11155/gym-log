@@ -1,0 +1,102 @@
+========================================================================
+SQUADLIFT - PRODUCT REQUIREMENTS DOCUMENT (PRD)
+========================================================================
+Project: SquadLift (iOS Private Hevyapp Clone)
+Status: Version 1.12 (Refined with Dark Mode UI Overhauls)
+Author: AI Studio Build Agent & Killzone1099
+Date: June 8, 2026
+========================================================================
+
+1. PRODUCT OVERVIEW
+------------------------------------------------------------------------
+SquadLift is a high-performance, private fitness and workout tracking 
+web application inspired by Hevy. It is designed for a dedicated 
+"squad" of close friends to log, track, and share workouts in real-time, 
+fostering cooperative accountability, technical logging precision, 
+and progressive athletic growth. 
+
+The application utilizes a dark "Cosmic Slate" design system tailored 
+for low-light gym usage, providing responsive modal interfaces, 
+comprehensive set/rep/weight logging, and a collaborative, searchable 
+shared exercise pool.
+
+It should be able to use on ios and andriod for me and my 3 other friends for the price of $0.
+
+2. TARGET AUDIENCE & USER PERSONAS (THE SQUAD)
+------------------------------------------------------------------------
+SquadLift is optimized for a selective circle of 4 gym partners:
+*  Alex "Apex" Chen (Streak Champion, Progressive Overload Nerd)
+*  Marcus "Beast" Vance (Heavy Lifter, Powerlifting-focused)
+*  Leo "Aesthetic" Rossi (Classic Hypertrophy/Bodybuilding fanatic)
+*  Sarah "Zenith" Cross (Functional athlete, High-intensity trainer)
+
+3. SYSTEM ARCHITECTURE & TECHNICAL STACK
+------------------------------------------------------------------------
+*  Frontend Framework: React 18+ powered by Vite.
+*  Styling: Tailwind CSS compiled globally, utilizing a cohesive dark 
+   slate palette. Micro-interactions and smooth transitions driven by 
+   motion (motion/react).
+*  Data Flow: Local-first persistence. Clean UI state with unified seed 
+   data simulated for the 4 squad members.
+*  Iconography: Full standard set imported exclusively from Lucide React.
+*  Responsive Constraints: Desktop-first pixel precision paired with 
+   full mobile fluid adaptation. Touch targets must be minimum 44px for 
+   physical gym logging safety.
+
+4. CORE FUNCTIONAL MODULES
+------------------------------------------------------------------------
+A. DASHBOARD FEED & SQUAD ACTIVITY
+*  Visual feed displaying recent workouts completed by the squad.
+*  Real-time social elements: "Fist bumps" (reactions) and comment 
+   threads under shared logs.
+*  User streak indicators to maintain gym consistency and friendly 
+   competitions.
+
+B. ROUTINES TEMPLATES SYSTEM
+*  Dedicated view containing pinned templates (e.g., "Apex Push Day A").
+*  Enables users to launch pre-defined routine schemas directly into 
+   the Active Tracker, pre-populating target weights and reps.
+*  A highly interactive "New Routine Draft" interactive designer to create 
+   new routine templates.
+
+C. ACTIVE WORKOUT TRACKER OVERLAY
+*  A persistent, immersive modal tracking active performance under a 
+   live-updating duration counter.
+*  Granular control over set types: Normal, Warmup, Drop, and Failure.
+*  Checkbox validators for logs, dynamic total volume computations, 
+   and dynamic notes recording.
+*  Smart "Discard Current Session" safety warning flow to prevent 
+   accidental data losses.
+
+D. COLLABORATIVE SHARED EXERCISE LIBRARY
+*  Universal pool of baseline exercises (Bench Press, Leg Press, etc.).
+*  Support for creating custom, squad-wide movements.
+*  Multifunctional filter and search bar allowing real-time searching 
+   by both movement name *and* muscle group targets (Chest, Legs, Back, 
+   Shoulders, Arms, Core) across all picker modals.
+
+5. DESIGN SYSTEM & POLISHED ACCENTS
+------------------------------------------------------------------------
+The visual craft of SquadLift avoids generic dark interfaces, 
+leveraging specific, high-contrast, premium aesthetic choices:
+
+*  Background Theme: Charcoal deep backgrounds paired with off-whites.
+*  New Routine Draft Background: Evaluates to deep `#171717` to maximize 
+   element contrast.
+*  Input and Component Backdrops inside Routine Draft: Utilizes full 
+   `#6f6d6c` Slate colorway (applied to Routine Title, Routine Focus 
+   Memo, Add Movement to Template, and Cancel actions) with white text, 
+   providing distinct visual separation from the dark surrounding model space.
+*  Active Pickers: Selection frames (such as "Select Movement to Append" 
+   box inside the routine builder) render with true black (`bg-black`) 
+   nested highlights.
+*  Discard Conformation Modals: Framed inside an elevated `#222222` modal, 
+   offset by high-intensity red outline warnings (`border-red-500/20`), and 
+   red warning symbols (`#ef4444`) to make hazard warnings instantly clear.
+
+6. COMPILATION AND STABILITY RUNTIME
+------------------------------------------------------------------------
+All custom routes, elements, and styles must safely compile under strict 
+TypeScript rules (`tsc --noEmit`). CSS transitions, layout animations, 
+and modal view triggers are strictly optimized to avoid visual janks.
+========================================================================

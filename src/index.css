@@ -1,0 +1,39 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  --font-serif: "Playfair Display", Georgia, serif;
+  
+  --color-white: #e0dfd5;
+  
+  --shadow-3d-sm: 0 2px 4px rgba(0,0,0,0.45), inset 0 1.5px 0.5px rgba(255,255,255,0.05);
+  --shadow-3d-md: 0 14px 34px rgba(0,0,0,0.65), inset 0 1.5px 1px rgba(255,255,255,0.08);
+  --shadow-3d-lg: 0 28px 56px rgba(0,0,0,0.75), inset 0 1.5px 1.5px rgba(255,255,255,0.1);
+  --shadow-3d-emerald: 0 12px 28px rgba(111,109,108,0.3), inset 0 1.5px 1px rgba(255,255,255,0.15);
+  --shadow-3d-indigo: 0 12px 28px rgba(142,144,148,0.3), inset 0 1.5px 1px rgba(255,255,255,0.15);
+}
+
+body {
+  background-color: #181818;
+  color: #e0dfd5;
+  font-family: var(--font-sans);
+  overflow-x: hidden;
+}
+
+/* For satisfying custom scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #181818;
+}
+::-webkit-scrollbar-thumb {
+  background: #6f6d6c;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #8e8b8a;
+}
