@@ -15,8 +15,15 @@
   --shadow-3d-indigo: 0 12px 28px rgba(142,144,148,0.3), inset 0 1.5px 1px rgba(255,255,255,0.15);
 }
 
+html,
+body,
+#root {
+  min-height: 100%;
+  background-color: #000000;
+}
+
 body {
-  background-color: #181818;
+  background-color: #000000;
   color: #e0dfd5;
   font-family: var(--font-sans);
   overflow-x: hidden;

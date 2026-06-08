@@ -460,9 +460,9 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#090909] text-[#e0dfd5] font-sans select-none antialiased">
-      <div className="mx-auto flex min-h-screen w-full max-w-[480px] flex-col bg-[#181818] shadow-[0_0_24px_rgba(0,0,0,0.5)] md:border-x md:border-[#2d2729]">
-        <header className="sticky top-0 z-40 border-b border-[#2d2729] bg-[#121212] px-5 py-4">
+    <div className="min-h-dvh bg-black text-[#e0dfd5] font-sans select-none antialiased">
+      <div className="mx-auto flex min-h-dvh w-full max-w-[480px] flex-col bg-[#181818] shadow-[0_0_24px_rgba(0,0,0,0.5)] md:border-x md:border-[#2d2729]">
+        <header className="sticky top-0 z-50 border-b border-[#2d2729] bg-black px-5 pb-4 pt-[calc(1rem+env(safe-area-inset-top))]">
           <div className="flex items-center justify-between gap-4">
             <div className="min-w-0">
               <div className="flex items-center gap-2">
@@ -569,7 +569,7 @@ export default function App() {
             />
           )}
 
-          <nav className="absolute bottom-0 inset-x-0 z-35 flex h-16 items-center justify-around border-t border-[#6f6d6c]/15 bg-[#121212] px-2 shadow-[0_-6px_18px_rgba(0,0,0,0.45)]">
+          <nav className="absolute bottom-0 inset-x-0 z-35 flex h-[calc(4rem+env(safe-area-inset-bottom))] items-start justify-around border-t border-[#6f6d6c]/15 bg-black px-2 pt-2 shadow-[0_-6px_18px_rgba(0,0,0,0.45)]">
             <button
               type="button"
               onClick={() => {
