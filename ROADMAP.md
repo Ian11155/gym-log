@@ -25,8 +25,8 @@ SquadLift is a private Hevy-style workout tracker for a squad of 4 friends. It s
 - The app uses a mobile-first shell with developer tools moved into a separate drawer.
 - PWA install support is implemented with Vite PWA, app manifest, service worker, and generated icons.
 - iOS/PWA shell polish has been applied:
-  - edge-to-edge iOS standalone chrome with `black-translucent` status-bar mode
-  - custom black top safe-area cover to prevent scroll bleed
+  - opaque iOS standalone status bar with `black` status-bar mode
+  - small custom black top safe-area cover to prevent scroll bleed
   - hidden scrollbars
   - fixed bottom navigation
   - compact 51px bottom nav height
@@ -43,7 +43,7 @@ SquadLift is a private Hevy-style workout tracker for a squad of 4 friends. It s
 - The Machoke badge assets may need to be replaced if the app should avoid copyrighted or joke-brand visuals.
 - Some image/avatar URLs are remote and may be unreliable offline.
 - Installed PWAs may need close/reopen or reinstall after shell/meta/service-worker updates because browsers cache PWA assets aggressively.
-- iOS may require removing and re-adding the home-screen PWA after status-bar meta changes.
+- iOS may require removing and re-adding the home-screen PWA after status-bar or manifest changes.
 
 ## Recommended Build Order
 
