@@ -461,12 +461,12 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-[#090909] text-[#e0dfd5] font-sans select-none antialiased">
-      <div className="mx-auto flex min-h-screen w-full max-w-[480px] flex-col bg-[#181818] shadow-[0_0_45px_rgba(0,0,0,0.6)] md:border-x md:border-[#2d2729]">
-        <header className="sticky top-0 z-40 border-b border-[#2d2729] bg-[#121212]/95 px-5 py-4 backdrop-blur-md">
+      <div className="mx-auto flex min-h-screen w-full max-w-[480px] flex-col bg-[#181818] shadow-[0_0_24px_rgba(0,0,0,0.5)] md:border-x md:border-[#2d2729]">
+        <header className="sticky top-0 z-40 border-b border-[#2d2729] bg-[#121212] px-5 py-4">
           <div className="flex items-center justify-between gap-4">
             <div className="min-w-0">
               <div className="flex items-center gap-2">
-                <span className="h-2 w-2 rounded-full bg-[#6f6d6c] animate-pulse" />
+                <span className="h-2 w-2 rounded-full bg-[#6f6d6c]" />
                 <span className="text-[9px] font-black uppercase tracking-widest text-stone-400">
                   Local Demo Mode
                 </span>
@@ -492,8 +492,8 @@ export default function App() {
           <div className="absolute left-8 top-16 h-96 w-[1px] bg-gradient-to-b from-[#6f6d6c]/15 via-transparent to-transparent pointer-events-none" />
 
           {toastNotification && (
-            <div className="absolute left-4 right-4 top-4 z-45 flex items-center justify-center gap-2 rounded-2xl border border-[#6f6d6c]/20 bg-[#1c181a] p-3 text-center text-[11px] font-bold text-white shadow-3d-lg animate-fade-in">
-              <span className="h-1.5 w-1.5 rounded-full bg-[#6f6d6c] animate-ping" />
+            <div className="absolute left-4 right-4 top-4 z-45 flex items-center justify-center gap-2 rounded-2xl border border-[#6f6d6c]/20 bg-[#1c181a] p-3 text-center text-[11px] font-bold text-white shadow-3d-sm animate-fade-in">
+              <span className="h-1.5 w-1.5 rounded-full bg-[#6f6d6c]" />
               <span className="tracking-wide text-stone-250">{toastNotification}</span>
             </div>
           )}
@@ -569,7 +569,7 @@ export default function App() {
             />
           )}
 
-          <nav className="absolute bottom-0 inset-x-0 z-35 flex h-16 items-center justify-around border-t border-[#6f6d6c]/15 bg-[#121212]/95 px-2 shadow-[0_-10px_30px_rgba(0,0,0,0.5)] backdrop-blur-md">
+          <nav className="absolute bottom-0 inset-x-0 z-35 flex h-16 items-center justify-around border-t border-[#6f6d6c]/15 bg-[#121212] px-2 shadow-[0_-6px_18px_rgba(0,0,0,0.45)]">
             <button
               type="button"
               onClick={() => {
@@ -623,8 +623,8 @@ export default function App() {
       </div>
 
       {isDevPanelOpen && (
-        <div className="fixed inset-0 z-80 bg-black/80 backdrop-blur-sm animate-fade-in">
-          <aside className="ml-auto flex h-full w-full max-w-2xl flex-col overflow-y-auto border-l border-[#2d2729] bg-[#0f0f0f] p-5 shadow-3d-lg">
+        <div className="fixed inset-0 z-80 bg-black/80 animate-fade-in">
+          <aside className="ml-auto flex h-full w-full max-w-2xl flex-col overflow-y-auto border-l border-[#2d2729] bg-[#0f0f0f] p-5 shadow-3d-md">
             <div className="flex items-start justify-between gap-4 border-b border-[#2d2729] pb-4">
               <div>
                 <h2 className="flex items-center gap-2 text-lg font-serif text-[#f7f5f4]">

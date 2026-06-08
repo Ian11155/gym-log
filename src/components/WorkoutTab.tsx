@@ -317,8 +317,8 @@ export default function WorkoutTab({
 
        {/* FULLSCREEN CUSTOM ROUTINE CREATION DIALOG (Highly interactive Studio Builder) */}
       {isCreatorOpen && (
-        <div className="fixed inset-0 z-55 bg-black/90 backdrop-blur-md overflow-y-auto flex items-center justify-center p-4 animate-fade-in font-sans">
-          <div className="w-full max-w-sm bg-[#171717] border border-[#6f6d6c]/30 rounded-3xl shadow-3d-lg p-6 space-y-4.5 text-stone-100 text-left animate-slide-up scrollbar-thin max-h-[92vh] overflow-y-auto">
+        <div className="fixed inset-0 z-55 bg-black/90 overflow-y-auto flex items-center justify-center p-4 animate-fade-in font-sans">
+          <div className="w-full max-w-sm bg-[#171717] border border-[#6f6d6c]/30 rounded-3xl shadow-3d-md p-6 space-y-4.5 text-stone-100 text-left animate-slide-up scrollbar-thin max-h-[92vh] overflow-y-auto">
             
             {/* Header */}
             <div className="flex items-center justify-between border-b border-[#2d2729] pb-3">

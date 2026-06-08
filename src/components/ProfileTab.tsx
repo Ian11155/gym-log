@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { SQUAD_USERS, WorkoutLog, Exercise, Comment, Reaction } from "../types";
 import ExerciseImage from "./ExerciseImage";
 import ExercisesTab from "./ExercisesTab";
@@ -42,18 +42,49 @@ export default function ProfileTab({
   // Machoke arms-up / arms-down animation state
   const [armsUp, setArmsUp] = useState(true);
   useEffect(() => {
+    const upImage = new Image();
+    upImage.src = machokeArmsUp;
+    const downImage = new Image();
+    downImage.src = machokeArmsDown;
+
     const interval = setInterval(() => {
       setArmsUp((prev) => !prev);
-    }, 800);
+    }, 1000);
     return () => clearInterval(interval);
   }, []);
 
   const [activeSubTab, setActiveSubTab] = useState<"workouts" | "exercises" >("workouts");
 
   // User logs for personal stats
-  const currentUserLogs = allWorkoutLogs
-    .filter((log) => log.user_id === profileUserId)
-    .sort((a, b) => new Date(b.end_time).getTime() - new Date(a.end_time).getTime());
+  const currentUserLogs = useMemo(
+    () =>
+      allWorkoutLogs
+        .filter((log) => log.user_id === profileUserId)
+        .sort((a, b) => new Date(b.end_time).getTime() - new Date(a.end_time).getTime()),
+    [allWorkoutLogs, profileUserId]
+  );
+  const exerciseById = useMemo(
+    () => new Map(exerciseLibrary.map((exercise) => [exercise.id, exercise])),
+    [exerciseLibrary]
+  );
+  const reactionsByWorkoutId = useMemo(() => {
+    const grouped = new Map<string, Reaction[]>();
+    for (const reaction of reactions) {
+      const existing = grouped.get(reaction.workout_log_id) || [];
+      existing.push(reaction);
+      grouped.set(reaction.workout_log_id, existing);
+    }
+    return grouped;
+  }, [reactions]);
+  const commentsByWorkoutId = useMemo(() => {
+    const grouped = new Map<string, Comment[]>();
+    for (const comment of comments) {
+      const existing = grouped.get(comment.workout_log_id) || [];
+      existing.push(comment);
+      grouped.set(comment.workout_log_id, existing);
+    }
+    return grouped;
+  }, [comments]);
 
   const totalWorkouts = currentUserLogs.length;
   const totalVolume = currentUserLogs.reduce((sum, log) => sum + Number(log.total_volume), 0);
@@ -212,12 +243,10 @@ export default function ProfileTab({
           <div className="space-y-4">
             {currentUserLogs.map((log) => {
               const author = getUserInfo(log.user_id);
-              const userReaction = reactions.filter(
-                (r) => r.workout_log_id === log.id && r.user_id === activeUserId
-              );
+              const postReactions = reactionsByWorkoutId.get(log.id) || [];
+              const userReaction = postReactions.filter((r) => r.user_id === activeUserId);
               const hasReacted = userReaction.length > 0;
-              const postReactions = reactions.filter((r) => r.workout_log_id === log.id);
-              const postComments = comments.filter((c) => c.workout_log_id === log.id);
+              const postComments = commentsByWorkoutId.get(log.id) || [];
 
               // Exercises list
               const exercisesToShow = expandedLogs[log.id]
@@ -229,7 +258,7 @@ export default function ProfileTab({
                 <div
                   key={log.id}
                   onClick={() => onViewWorkoutDetail?.(log)}
-                  className="bg-[#121011] border border-[#2d2729] rounded-2xl p-4.5 space-y-4.5 text-left shadow-3d-sm hover:border-[#6f6d6c]/25 hover:bg-[#181516] transition-all duration-300 font-sans cursor-pointer"
+                  className="content-card bg-[#121011] border border-[#2d2729] rounded-2xl p-4.5 space-y-4.5 text-left shadow-3d-sm hover:border-[#6f6d6c]/25 hover:bg-[#181516] transition-all duration-300 font-sans cursor-pointer"
                 >
                   <div className="flex items-center justify-between font-sans">
                      <div className="font-sans">
@@ -274,7 +303,7 @@ export default function ProfileTab({
                   {/* Complete List of Exercises */}
                   <div className="space-y-3">
                     {exercisesToShow.map((le) => {
-                      const ex = exerciseLibrary.find((e) => e.id === le.exercise_id);
+                      const ex = exerciseById.get(le.exercise_id);
                       const completedSets = le.sets.filter((s) => s.is_completed);
                       const displaySetsCount = completedSets.length > 0 ? completedSets.length : le.sets.length;
 

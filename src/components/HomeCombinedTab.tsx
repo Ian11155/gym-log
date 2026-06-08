@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { SQUAD_USERS, WorkoutLog, Exercise, Comment, Reaction } from "../types";
 import ExerciseImage from "./ExerciseImage";
 import { Flame, Dumbbell, Award, Clock, Heart, MessageSquare, Share2, Sparkles, Zap, Search, Bell } from "lucide-react";
@@ -31,9 +31,32 @@ export default function HomeCombinedTab({
   showSimulatorControls = true,
 }: HomeCombinedTabProps) {
   // Sorted list of all completed workouts (entire squad timeline)
-  const sortedLogs = [...allWorkoutLogs].sort(
-    (a, b) => new Date(b.end_time).getTime() - new Date(a.end_time).getTime()
+  const sortedLogs = useMemo(
+    () => [...allWorkoutLogs].sort((a, b) => new Date(b.end_time).getTime() - new Date(a.end_time).getTime()),
+    [allWorkoutLogs]
   );
+  const exerciseById = useMemo(
+    () => new Map(exerciseLibrary.map((exercise) => [exercise.id, exercise])),
+    [exerciseLibrary]
+  );
+  const commentsByWorkoutId = useMemo(() => {
+    const grouped = new Map<string, Comment[]>();
+    for (const comment of comments) {
+      const existing = grouped.get(comment.workout_log_id) || [];
+      existing.push(comment);
+      grouped.set(comment.workout_log_id, existing);
+    }
+    return grouped;
+  }, [comments]);
+  const reactionsByWorkoutId = useMemo(() => {
+    const grouped = new Map<string, Reaction[]>();
+    for (const reaction of reactions) {
+      const existing = grouped.get(reaction.workout_log_id) || [];
+      existing.push(reaction);
+      grouped.set(reaction.workout_log_id, existing);
+    }
+    return grouped;
+  }, [reactions]);
 
   // Expanded exercises in posts state so users can "See more exercises"
   const [expandedLogs, setExpandedLogs] = useState<{ [key: string]: boolean }>({});
@@ -50,7 +73,7 @@ export default function HomeCombinedTab({
   };
 
   const getExerciseName = (exId: string) => {
-    return exerciseLibrary.find((e) => e.id === exId)?.name || "Exercise";
+    return exerciseById.get(exId)?.name || "Exercise";
   };
 
   // Human-friendly short timing
@@ -137,12 +160,10 @@ export default function HomeCombinedTab({
         {sortedLogs.map((log) => {
           const author = getUserInfo(log.user_id);
           const isCurrentUser = log.user_id === activeUserId;
-          const userReaction = reactions.filter(
-            (r) => r.workout_log_id === log.id && r.user_id === activeUserId
-          );
+          const postReactions = reactionsByWorkoutId.get(log.id) || [];
+          const userReaction = postReactions.filter((r) => r.user_id === activeUserId);
           const hasReacted = userReaction.length > 0;
-          const postReactions = reactions.filter((r) => r.workout_log_id === log.id);
-          const postComments = comments.filter((c) => c.workout_log_id === log.id);
+          const postComments = commentsByWorkoutId.get(log.id) || [];
 
           // Exercises lists
           const exercisesToShow = expandedLogs[log.id]
@@ -154,7 +175,7 @@ export default function HomeCombinedTab({
             <div
               key={log.id}
               onClick={() => onViewWorkoutDetail?.(log)}
-              className="bg-[#121011] border border-[#2d2729] rounded-2xl p-4.5 space-y-4.5 text-left shadow-3d-sm hover:border-[#6f6d6c]/25 hover:bg-[#181516] transition-all duration-300 cursor-pointer"
+              className="content-card bg-[#121011] border border-[#2d2729] rounded-2xl p-4.5 space-y-4.5 text-left shadow-3d-sm hover:border-[#6f6d6c]/25 hover:bg-[#181516] transition-all duration-300 cursor-pointer"
             >
               {/* User Avatar, Name & Days Ago / Top Metadata */}
               <div className="flex items-center justify-between">
@@ -221,7 +242,7 @@ export default function HomeCombinedTab({
               {/* List of exercises mimicking Hevy layout (Thumb, reps description) */}
               <div className="space-y-3 pt-1">
                 {exercisesToShow.map((le, exIdx) => {
-                  const ex = exerciseLibrary.find((e) => e.id === le.exercise_id);
+                  const ex = exerciseById.get(le.exercise_id);
                   const completedSets = le.sets.filter((s) => s.is_completed);
                   const displaySetsCount = completedSets.length > 0 ? completedSets.length : le.sets.length;
 

@@ -248,7 +248,7 @@ export default function ActiveWorkoutOverlay({
 
         {/* Cancel Discard Confirmation Modal */}
         {showConfirmCancel && (
-          <div className="absolute inset-0 z-55 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm animate-fade-in text-left font-sans">
+          <div className="absolute inset-0 z-55 flex items-center justify-center p-4 bg-black/85 animate-fade-in text-left font-sans">
             <div className="w-full max-w-sm bg-[#222222] border border-red-500/20 rounded-3xl p-6.5 shadow-[0_20px_50px_rgba(0,0,0,0.8)] space-y-4.5">
               <div className="w-11 h-11 bg-rose-500/15 rounded-full flex items-center justify-center mx-auto text-[#ef4444]">
                 <AlertTriangle className="w-5 h-5 opacity-75" />
@@ -291,7 +291,7 @@ export default function ActiveWorkoutOverlay({
       <div className="w-full bg-[#181818] pb-24 flex flex-col relative text-stone-100">
         
         {/* Absolute Top header bar */}
-        <div className="sticky top-0 bg-black/95 backdrop-blur-md px-4 py-4.5 border-b border-[#6f6d6c]/15 flex items-center justify-between z-10">
+        <div className="sticky top-0 bg-black/95 px-4 py-4.5 border-b border-[#6f6d6c]/15 flex items-center justify-between z-10">
           <button
             onClick={() => onSetMaximize(false)}
             className="flex items-center gap-1 text-[10px] font-black uppercase tracking-widest text-stone-400 hover:text-white transition cursor-pointer"
@@ -609,7 +609,7 @@ export default function ActiveWorkoutOverlay({
 
         {/* Cancel Discard Confirmation Modal */}
         {showConfirmCancel && (
-          <div className="fixed inset-0 z-55 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm animate-fade-in text-left font-sans">
+          <div className="fixed inset-0 z-55 flex items-center justify-center p-4 bg-black/85 animate-fade-in text-left font-sans">
             <div className="w-full max-w-sm bg-[#222222] border border-red-500/20 rounded-3xl p-6.5 shadow-[0_20px_50px_rgba(0,0,0,0.8)] space-y-4.5">
               <div className="w-11 h-11 bg-rose-500/15 rounded-full flex items-center justify-center mx-auto text-rose-500">
                 <AlertTriangle className="w-5 h-5 opacity-75" />

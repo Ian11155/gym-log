@@ -22,6 +22,22 @@ body {
   overflow-x: hidden;
 }
 
+.content-card {
+  content-visibility: auto;
+  contain-intrinsic-size: 0 220px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
 /* For satisfying custom scrollbar styling */
 ::-webkit-scrollbar {
   width: 6px;

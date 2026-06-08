@@ -29,8 +29,8 @@ export default function RestTimerDialog({
   };
 
   return (
-    <div id="rest-timer-dialog" className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm animate-fade-in font-sans">
-      <div className="relative w-full max-w-sm overflow-hidden bg-[#1c181a] border border-[#6f6d6c]/20 rounded-3xl shadow-3d-lg p-7 text-center text-stone-100 animate-slide-up text-left">
+    <div id="rest-timer-dialog" className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 animate-fade-in font-sans">
+      <div className="relative w-full max-w-sm overflow-hidden bg-[#1c181a] border border-[#6f6d6c]/20 rounded-3xl shadow-3d-md p-7 text-center text-stone-100 animate-slide-up text-left">
         
         {/* Close Button */}
         <button
@@ -114,7 +114,7 @@ export default function RestTimerDialog({
               </>
             ) : (
               <>
-                <Volume2 className="w-4 h-4 text-[#6f6d6c] animate-bounce" />
+                <Volume2 className="w-4 h-4 text-[#6f6d6c]" />
                 <span>Audio cues</span>
               </>
             )}

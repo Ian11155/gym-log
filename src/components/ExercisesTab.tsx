@@ -140,7 +140,7 @@ export default function ExercisesTab({
       
       {/* Toast Notification */}
       {toastMessage && (
-        <div className="fixed top-12 left-1/2 transform -translate-x-1/2 z-50 bg-[#1c181a] text-white border border-[#6f6d6c]/25 px-4 py-3 rounded-2xl font-black text-xs shadow-3d-lg flex items-center gap-2.5 animate-bounce font-sans">
+        <div className="fixed top-12 left-1/2 transform -translate-x-1/2 z-50 bg-[#1c181a] text-white border border-[#6f6d6c]/25 px-4 py-3 rounded-2xl font-black text-xs shadow-3d-sm flex items-center gap-2.5 font-sans">
           <Sparkles className="w-4 h-4 text-stone-400 fill-current" />
           <span>{toastMessage}</span>
         </div>
@@ -299,11 +299,11 @@ export default function ExercisesTab({
         };
 
         return (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fade-in text-left font-sans">
-            <div className="w-full max-w-sm bg-black border border-[#2d2729] rounded-3xl shadow-3d-lg p-6 space-y-4 text-stone-100 animate-slide-up relative overflow-hidden">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 animate-fade-in text-left font-sans">
+            <div className="w-full max-w-sm bg-black border border-[#2d2729] rounded-3xl shadow-3d-md p-6 space-y-4 text-stone-100 animate-slide-up relative overflow-hidden">
               
               {/* Highlight background glow */}
-              <div className="absolute top-0 right-0 w-32 h-32 bg-[#6f6d6c]/10 rounded-full blur-3xl pointer-events-none" />
+              <div className="absolute top-0 right-0 w-32 h-32 bg-[#6f6d6c]/5 rounded-full pointer-events-none" />
 
               {/* Close Icon Header trigger */}
               <button
@@ -508,8 +508,8 @@ export default function ExercisesTab({
 
       {/* Add Custom Exercise Dialog/Modal (Luxury 3D layer Overlay) */}
       {isAddModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in text-left font-sans">
-          <div className="w-full max-w-sm bg-black border border-[#2d2729] rounded-3xl shadow-3d-lg p-6 space-y-4 text-stone-100 animate-slide-up">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 animate-fade-in text-left font-sans">
+          <div className="w-full max-w-sm bg-black border border-[#2d2729] rounded-3xl shadow-3d-md p-6 space-y-4 text-stone-100 animate-slide-up">
             <h3 className="text-base font-bold text-[#f7f5f4] flex items-center gap-2">
               <Dumbbell className="w-4.5 h-4.5 text-[#6f6d6c]" />
               <span>Create Team Movement</span>
