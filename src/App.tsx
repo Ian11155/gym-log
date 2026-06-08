@@ -461,6 +461,7 @@ export default function App() {
 
   return (
     <div className="min-h-dvh bg-black text-[#e0dfd5] font-sans select-none antialiased">
+      <div className="pointer-events-none fixed inset-x-0 top-0 z-[70] h-[calc(env(safe-area-inset-top)+1px)] bg-black" />
       <div className="mx-auto flex min-h-dvh w-full max-w-[480px] flex-col bg-[#181818] shadow-[0_0_24px_rgba(0,0,0,0.5)] md:border-x md:border-[#2d2729]">
         <header className="sticky top-0 z-50 border-b border-[#2d2729] bg-black px-5 pb-4 pt-[calc(1rem+env(safe-area-inset-top))]">
           <div className="flex items-center justify-between gap-4">
@@ -498,7 +499,7 @@ export default function App() {
             </div>
           )}
 
-          <div className="relative z-10 h-full overflow-y-auto pb-24 text-left scrollbar-none">
+          <div className="relative z-10 h-full overflow-y-auto overscroll-contain pb-24 text-left scrollbar-none">
             {currentTab === 1 && (
               <HomeCombinedTab
                 activeUserId={activeUserId}
