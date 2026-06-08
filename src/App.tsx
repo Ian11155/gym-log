@@ -460,9 +460,9 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-dvh bg-black text-[#e0dfd5] font-sans select-none antialiased">
+    <div className="h-dvh overflow-hidden bg-black text-[#e0dfd5] font-sans select-none antialiased">
       <div className="pointer-events-none fixed inset-x-0 top-0 z-[70] h-[calc(env(safe-area-inset-top)+1px)] bg-black" />
-      <div className="mx-auto flex min-h-dvh w-full max-w-[480px] flex-col bg-[#181818] shadow-[0_0_24px_rgba(0,0,0,0.5)] md:border-x md:border-[#2d2729]">
+      <div className="mx-auto flex h-dvh w-full max-w-[480px] flex-col overflow-hidden bg-[#181818] shadow-[0_0_24px_rgba(0,0,0,0.5)] md:border-x md:border-[#2d2729]">
         <header className="sticky top-0 z-50 border-b border-[#2d2729] bg-black px-5 pb-4 pt-[calc(1rem+env(safe-area-inset-top))]">
           <div className="flex items-center justify-between gap-4">
             <div className="min-w-0">
@@ -488,7 +488,7 @@ export default function App() {
           </div>
         </header>
 
-        <main className="relative flex-1 overflow-hidden selection:bg-[#6f6d6c] selection:text-white">
+        <main className="relative min-h-0 flex-1 overflow-hidden selection:bg-[#6f6d6c] selection:text-white">
           <div className="absolute inset-x-0 top-0 h-72 bg-radial-[circle_at_20%_20%] from-[#6f6d6c]/10 via-transparent to-transparent pointer-events-none" />
           <div className="absolute left-8 top-16 h-96 w-[1px] bg-gradient-to-b from-[#6f6d6c]/15 via-transparent to-transparent pointer-events-none" />
 
@@ -499,7 +499,7 @@ export default function App() {
             </div>
           )}
 
-          <div className="relative z-10 h-full overflow-y-auto overscroll-contain pb-24 text-left scrollbar-none">
+          <div className="relative z-10 h-full overflow-y-auto overscroll-contain pb-[calc(5.5rem+env(safe-area-inset-bottom))] text-left scrollbar-none">
             {currentTab === 1 && (
               <HomeCombinedTab
                 activeUserId={activeUserId}
@@ -570,7 +570,7 @@ export default function App() {
             />
           )}
 
-          <nav className="absolute bottom-0 inset-x-0 z-35 flex h-[calc(4rem+env(safe-area-inset-bottom))] items-start justify-around border-t border-[#6f6d6c]/15 bg-black px-2 pt-2 shadow-[0_-6px_18px_rgba(0,0,0,0.45)]">
+          <nav className="fixed bottom-0 left-1/2 z-[60] flex h-[calc(4rem+env(safe-area-inset-bottom))] w-full max-w-[480px] -translate-x-1/2 items-start justify-around border-t border-[#6f6d6c]/15 bg-black px-2 pt-2 shadow-[0_-6px_18px_rgba(0,0,0,0.45)]">
             <button
               type="button"
               onClick={() => {
