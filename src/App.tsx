@@ -16,6 +16,12 @@ import ActiveWorkoutOverlay from "./components/ActiveWorkoutOverlay";
 import RestTimerDialog from "./components/RestTimerDialog";
 import SupabaseCodeViewer from "./components/SupabaseCodeViewer";
 import WorkoutDetailModal from "./components/WorkoutDetailModal";
+import {
+  getCompletedWorkoutSets,
+  getInvalidCompletedSetCount,
+  hasExerciseName,
+  isCompletedSetValid,
+} from "./utils/workoutValidation";
 
 import {
   Dumbbell,
@@ -250,12 +256,15 @@ export default function App() {
     if (!activeWorkout) return;
 
     // Must check if user registered at least one completed set
-    const allCompletedSets = activeWorkout.exercises.flatMap((ex) =>
-      ex.sets.filter((s) => s.is_completed)
-    );
+    const allCompletedSets = getCompletedWorkoutSets(activeWorkout);
 
     if (allCompletedSets.length === 0) {
-      triggerToast("⚠️ Mark at least 1 completed set before finishing!");
+      triggerToast("Mark at least 1 valid completed set before finishing.");
+      return;
+    }
+
+    if (getInvalidCompletedSetCount(activeWorkout) > 0) {
+      triggerToast("Completed sets need reps above 0 and weight at least 0.");
       return;
     }
 
@@ -287,7 +296,7 @@ export default function App() {
       exercises: activeWorkout.exercises.map((ex) => ({
         ...ex,
         // keep only completed sets to matching logs specs
-        sets: ex.sets.filter((s) => s.is_completed)
+        sets: ex.sets.filter(isCompletedSetValid)
       })).filter((ex) => ex.sets.length > 0) // only include exercises that have subsets completed
     };
 
@@ -307,7 +316,7 @@ export default function App() {
 
     // Swap views to home automatically to preview the entry!
     setCurrentTab(1);
-    triggerToast(`🎉 Workout logged! Streamed instantly in Group Feed.`);
+    triggerToast("Workout logged.");
   };
 
   const handleSaveRoutine = (newRoutine: Routine) => {
@@ -316,6 +325,10 @@ export default function App() {
   };
 
   const handleDeleteRoutine = (routineId: string) => {
+    const routine = routines.find((item) => item.id === routineId);
+    const routineName = routine?.title || "this routine";
+    if (!window.confirm(`Delete "${routineName}"? This only removes the routine template.`)) return;
+
     setRoutines((prev) => prev.filter((r) => r.id !== routineId));
     triggerToast("Routine template deleted.");
   };
@@ -329,14 +342,18 @@ export default function App() {
   };
 
   // Check Set: calculates volume and fires the post-set Rest timer
-  const handleSetChecked = (exerciseId: string, setIndex: number, isChecked: boolean) => {
+  const handleSetChecked = (loggedExerciseId: string, setIndex: number, isChecked: boolean) => {
     if (!activeWorkout) return;
 
     // Deep update isChecked state
     const updatedExs = activeWorkout.exercises.map((ex) => {
-      if (ex.exercise_id === exerciseId) {
+      if (ex.id === loggedExerciseId) {
         const updatedSets = ex.sets.map((set, idx) => {
           if (idx === setIndex) {
+            if (isChecked && !isCompletedSetValid({ ...set, is_completed: true })) {
+              triggerToast("Enter reps above 0 and weight at least 0 before ticking the set.");
+              return set;
+            }
             return { ...set, is_completed: isChecked };
           }
           return set;
@@ -403,9 +420,14 @@ export default function App() {
   // COLLABORATIVE SHARED LIBRARY
   // ----------------------------------------------------
   const handleAddCustomExercise = (name: string, bodyPart: string, category: string, imageUrl?: string) => {
+    if (hasExerciseName(exerciseLibrary, name)) {
+      triggerToast(`"${name.trim()}" already exists in the exercise library.`);
+      return false;
+    }
+
     const newEx: Exercise = {
       id: `ex-${Date.now()}`,
-      name,
+      name: name.trim(),
       body_part: bodyPart,
       category,
       created_by: activeUserId, // Flag active user as creator
@@ -413,6 +435,8 @@ export default function App() {
       image_url: imageUrl,
     };
     setExerciseLibrary((prev) => [...prev, newEx]);
+    triggerToast(`Created "${name.trim()}" in the exercise library.`);
+    return true;
   };
 
   // ----------------------------------------------------

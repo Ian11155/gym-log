@@ -8,7 +8,7 @@ interface ExercisesTabProps {
   profileUserId: string;
   allWorkoutLogs: WorkoutLog[];
   exerciseLibrary: Exercise[];
-  onAddCustomExercise: (name: string, bodyPart: string, category: string, imageUrl?: string) => void;
+  onAddCustomExercise: (name: string, bodyPart: string, category: string, imageUrl?: string) => boolean;
 }
 
 export default function ExercisesTab({
@@ -111,7 +111,8 @@ export default function ExercisesTab({
 
   const handleCreateExercise = () => {
     if (!newName.trim()) return;
-    onAddCustomExercise(newName.trim(), newBodyPart, newCategory, newImageUrl.trim());
+    const didCreate = onAddCustomExercise(newName.trim(), newBodyPart, newCategory, newImageUrl.trim());
+    if (!didCreate) return;
     
     // Simulate real-time success alert
     setToastMessage(`Created "${newName.trim()}" successfully!`);

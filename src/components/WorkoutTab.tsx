@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Routine, Exercise, SQUAD_USERS } from "../types";
 import ExerciseImage from "./ExerciseImage";
+import { sanitizeReps, sanitizeWeight } from "../utils/workoutValidation";
 import { Play, Clipboard, Compass, Plus, X, Command, Trash2, Edit2, BadgeAlert, Sparkles, Sliders } from "lucide-react";
 
 interface WorkoutTabProps {
@@ -55,6 +56,8 @@ export default function WorkoutTab({
 
   // Helper inside creator: Add exercise
   const handleAddExToTemplate = (exId: string) => {
+    if (newRoutineExs.some((routineExercise) => routineExercise.exercise_id === exId)) return;
+
     setNewRoutineExs(prev => [
       ...prev,
       {
@@ -103,9 +106,9 @@ export default function WorkoutTab({
     if (field === "set_type") {
       targetSet.set_type = value as string;
     } else if (field === "target_reps") {
-      targetSet.target_reps = Number(value);
+      targetSet.target_reps = sanitizeReps(value);
     } else if (field === "target_weight") {
-      targetSet.target_weight = Number(value);
+      targetSet.target_weight = sanitizeWeight(value);
     }
     setNewRoutineExs(updated);
   };
@@ -118,6 +121,21 @@ export default function WorkoutTab({
 
   const handleSaveRoutineClick = () => {
     if (!newTitle.trim()) return;
+    const cleanedExercises = newRoutineExs
+      .map((exercise) => ({
+        ...exercise,
+        sets: exercise.sets
+          .map((set, index) => ({
+            ...set,
+            set_number: index + 1,
+            target_reps: sanitizeReps(set.target_reps),
+            target_weight: sanitizeWeight(set.target_weight),
+          }))
+          .filter((set) => set.target_reps > 0 && set.target_weight >= 0),
+      }))
+      .filter((exercise) => exercise.sets.length > 0);
+
+    if (cleanedExercises.length === 0) return;
     
     const createdObj: Routine = {
       id: `rt-user-created-${Date.now()}`,
@@ -125,7 +143,7 @@ export default function WorkoutTab({
       title: newTitle.trim(),
       notes: newNotes.trim() || "Custom Workout Routine",
       created_at: new Date().toISOString(),
-      exercises: newRoutineExs,
+      exercises: cleanedExercises,
     };
 
     onSaveRoutine(createdObj);
@@ -506,20 +524,27 @@ export default function WorkoutTab({
                   </div>
 
                   <div className="max-h-40 overflow-y-auto space-y-1.5 pr-1 scrollbar-thin">
-                    {filteredExercises.map(ex => (
+                    {filteredExercises.map(ex => {
+                      const isAlreadyAdded = newRoutineExs.some((routineExercise) => routineExercise.exercise_id === ex.id);
+
+                      return (
                       <button
                         key={ex.id}
                         type="button"
+                        disabled={isAlreadyAdded}
                         onClick={() => handleAddExToTemplate(ex.id)}
-                        className="w-full text-left bg-[#1c181a] hover:bg-[#2d2729] px-2.5 py-2 rounded-lg text-[10px] border border-white/5 flex items-center justify-between gap-2.5 cursor-pointer"
+                        className="w-full text-left bg-[#1c181a] hover:bg-[#2d2729] px-2.5 py-2 rounded-lg text-[10px] border border-white/5 flex items-center justify-between gap-2.5 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
                       >
                         <div className="flex items-center gap-2 min-w-0">
                           <ExerciseImage exercise={ex} className="w-6 h-6 flex-shrink-0" />
                           <span className="font-extrabold text-stone-250 leading-tight truncate">{ex.name}</span>
                         </div>
-                        <span className="text-[7.5px] bg-stone-900/60 p-0.5 px-1 rounded font-mono text-stone-500 uppercase">{ex.body_part}</span>
+                        <span className="text-[7.5px] bg-stone-900/60 p-0.5 px-1 rounded font-mono text-stone-500 uppercase">
+                          {isAlreadyAdded ? "Added" : ex.body_part}
+                        </span>
                       </button>
-                    ))}
+                      );
+                    })}
                     {filteredExercises.length === 0 && (
                       <div className="p-4 text-center text-stone-500 text-[10px]">
                         No exercises found

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { ActiveWorkout, Exercise, LoggedExercise, LoggedSet } from "../types";
 import ExerciseImage from "./ExerciseImage";
+import { sanitizeReps, sanitizeWeight } from "../utils/workoutValidation";
 import {
   Clock,
   Minimize2,
@@ -18,7 +19,7 @@ interface ActiveWorkoutOverlayProps {
   exerciseLibrary: Exercise[];
   onCancelWorkout: () => void;
   onFinishWorkout: () => void;
-  onSetChecked: (exerciseId: string, setIndex: number, isChecked: boolean) => void;
+  onSetChecked: (loggedExerciseId: string, setIndex: number, isChecked: boolean) => void;
   onUpdateWorkout: (workout: ActiveWorkout) => void;
   isActiveMaximized: boolean;
   onSetMaximize: (maximize: boolean) => void;
@@ -82,6 +83,9 @@ export default function ActiveWorkoutOverlay({
 
   // Append new exercise movement inline to keep App.tsx clean
   const handleAddNewExercise = (ex: Exercise) => {
+    const alreadyAdded = activeWorkout.exercises.some((loggedExercise) => loggedExercise.exercise_id === ex.id);
+    if (alreadyAdded) return;
+
     const newEx: LoggedExercise = {
       id: `le-live-${Date.now()}-${Math.random()}`,
       exercise_id: ex.id,
@@ -103,12 +107,19 @@ export default function ActiveWorkoutOverlay({
       exercises: [...activeWorkout.exercises, newEx],
     });
     setIsAddingExercise(false);
+    setExSearch("");
+    setSelectedBodyPart("All");
   };
 
   const handleRemoveExercise = (idx: number) => {
+    if (!window.confirm("Remove this exercise and its sets from the active workout?")) return;
+
     const updated = [...activeWorkout.exercises];
     updated.splice(idx, 1);
-    onUpdateWorkout({ ...activeWorkout, exercises: updated });
+    onUpdateWorkout({
+      ...activeWorkout,
+      exercises: updated.map((exercise, orderIndex) => ({ ...exercise, order_index: orderIndex })),
+    });
   };
 
   const handleAddSetRow = (exIdx: number) => {
@@ -163,9 +174,9 @@ export default function ActiveWorkoutOverlay({
     if (field === "set_type") {
       targetSet.set_type = value as string;
     } else if (field === "actual_weight") {
-      targetSet.actual_weight = value;
+      targetSet.actual_weight = sanitizeWeight(value);
     } else if (field === "actual_reps") {
-      targetSet.actual_reps = value;
+      targetSet.actual_reps = sanitizeReps(value);
     }
 
     targetSets[sIdx] = targetSet;
@@ -473,7 +484,7 @@ export default function ActiveWorkoutOverlay({
                               <div className="flex items-center justify-center gap-1.5">
                                 <button
                                   type="button"
-                                  onClick={() => onSetChecked(le.exercise_id, sIdx, !set.is_completed)}
+                                  onClick={() => onSetChecked(le.id, sIdx, !set.is_completed)}
                                   className={`w-5.5 h-5.5 rounded-lg flex items-center justify-center transition-all border cursor-pointer ${
                                     set.is_completed
                                       ? "bg-[#6f6d6c] border-[#868382] text-white font-black hover:scale-105"
@@ -566,22 +577,26 @@ export default function ActiveWorkoutOverlay({
                 </div>
 
                 <div className="max-h-52 overflow-y-auto space-y-1.5 pr-1 scrollbar-thin">
-                  {filteredExercises.map((ex) => (
+                  {filteredExercises.map((ex) => {
+                    const isAlreadyAdded = activeWorkout.exercises.some((loggedExercise) => loggedExercise.exercise_id === ex.id);
+
+                    return (
                     <button
                       key={ex.id}
+                      type="button"
+                      disabled={isAlreadyAdded}
                       onClick={() => {
                         handleAddNewExercise(ex);
-                        setExSearch("");
-                        setSelectedBodyPart("All");
                       }}
-                      className="w-full text-left bg-black px-3.5 py-3 rounded-xl text-xs text-stone-200 hover:bg-stone-900 hover:border-[#6f6d6c]/30 hover:text-stone-100 transition border border-white/5 flex items-center justify-between cursor-pointer"
+                      className="w-full text-left bg-black px-3.5 py-3 rounded-xl text-xs text-stone-200 hover:bg-stone-900 hover:border-[#6f6d6c]/30 hover:text-stone-100 transition border border-white/5 flex items-center justify-between cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
                     >
                       <span className="font-bold text-[11px]">{ex.name}</span>
                       <span className="text-[8px] bg-black text-stone-400 px-2 py-0.5 rounded font-mono font-black uppercase">
-                        {ex.body_part}
+                        {isAlreadyAdded ? "Added" : ex.body_part}
                       </span>
                     </button>
-                  ))}
+                    );
+                  })}
                   {filteredExercises.length === 0 && (
                     <div className="p-4 text-center text-stone-500 text-[10px]">
                       No exercises found

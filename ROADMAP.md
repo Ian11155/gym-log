@@ -9,7 +9,8 @@ SquadLift is a private Hevy-style workout tracker for a small friend squad. The 
 ## Current State
 
 - React + Vite + TypeScript PWA restored as the active product direction.
-- Vercel hosting is the deployment target.
+- Vercel hosting is live at `https://squadlift-beta.vercel.app`.
+- GitHub `main` is connected to Vercel project `squadlift`.
 - Tailwind CSS dark gym UI is already heavily implemented.
 - Core prototype screens exist:
   - Home/history
@@ -35,6 +36,13 @@ SquadLift is a private Hevy-style workout tracker for a small friend squad. The 
 - Core squad avatars are local generated SVG assets instead of remote image URLs.
 - Machoke profile badge assets are optimized and kept lightweight, with the current RGBA background/alpha preserved.
 - Expo/native mobile work has been discarded for now. The active path is React/Vite PWA only.
+- Workout-flow hardening is implemented:
+  - numeric set/routine inputs are sanitized
+  - duplicate custom exercise names are blocked
+  - duplicate routine/active workout movements are blocked
+  - routine and active-exercise deletes have confirmations
+  - completed workout saves ignore invalid/incomplete sets
+  - set completion targets the exact logged exercise row
 
 ## Known Gaps
 
@@ -90,7 +98,8 @@ SquadLift is a private Hevy-style workout tracker for a small friend squad. The 
    - Use Vite's default `dist` output directory.
    - Verify the Vercel URL on desktop and iPhone Safari.
    - Add the Vercel app to the iPhone Home Screen.
-   - Current status: blocked locally until Vercel login/token is refreshed.
+   - Status: completed
+   - Production URL: `https://squadlift-beta.vercel.app`
 
 7. Introduce a storage adapter:
    - Completed: create a local data adapter around the existing localStorage behavior.
@@ -103,6 +112,7 @@ SquadLift is a private Hevy-style workout tracker for a small friend squad. The 
    - Improve empty and not-found states.
    - Add safer delete confirmations for routines/exercises.
    - Ensure finishing/cancelling workout works reliably on mobile Safari.
+   - Status: completed
 
 9. Improve history and stats:
    - Make saved workouts easy to reopen from history.
@@ -126,4 +136,4 @@ SquadLift is a private Hevy-style workout tracker for a small friend squad. The 
 
 ## Immediate Next Task
 
-Next recommended task: refresh Vercel login/deployment, then verify the production PWA on iPhone Safari and Add to Home Screen.
+Next recommended task: verify the deployed hardening changes on iPhone Safari, then continue with workout history/detail and simple profile aggregates.

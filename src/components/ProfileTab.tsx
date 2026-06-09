@@ -18,7 +18,7 @@ interface ProfileTabProps {
   reactions: Reaction[];
   onToggleReaction: (workoutLogId: string) => void;
   onAddComment: (workoutLogId: string, text: string) => void;
-  onAddCustomExercise: (name: string, bodyPart: string, category: string, imageUrl?: string) => void;
+  onAddCustomExercise: (name: string, bodyPart: string, category: string, imageUrl?: string) => boolean;
   onBackToOwnProfile?: () => void;
   onViewWorkoutDetail?: (log: WorkoutLog) => void;
 }
