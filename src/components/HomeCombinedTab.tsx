@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { SQUAD_USERS, WorkoutLog, Exercise, Comment, Reaction } from "../types";
 import ExerciseImage from "./ExerciseImage";
 import { Flame, Dumbbell, Award, Clock, Heart, MessageSquare, Share2, Sparkles, Zap, Search, Bell } from "lucide-react";
+import { getCompletedSetCount } from "../utils/workoutStats";
 
 interface HomeCombinedTabProps {
   activeUserId: string;
@@ -231,9 +232,9 @@ export default function HomeCombinedTab({
                     </span>
                   </div>
                   <div>
-                    <span className="text-[8px] uppercase font-black tracking-widest text-stone-550 block">Records</span>
+                    <span className="text-[8px] uppercase font-black tracking-widest text-stone-550 block">Sets</span>
                     <span className="font-mono text-xs font-black text-stone-105 mt-0.5 flex items-center gap-1">
-                      👑 {log.exercises.length + 1}
+                      {getCompletedSetCount(log)}
                     </span>
                   </div>
                 </div>

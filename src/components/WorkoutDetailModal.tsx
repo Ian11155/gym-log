@@ -1,6 +1,7 @@
 import { WorkoutLog, Exercise, SQUAD_USERS } from "../types";
 import { X, Clock, Dumbbell, Calendar, Weight, Info } from "lucide-react";
 import ExerciseImage from "./ExerciseImage";
+import { formatDuration, getCompletedSetCount, getExerciseVolume } from "../utils/workoutStats";
 
 interface WorkoutDetailModalProps {
   workoutLog: WorkoutLog;
@@ -23,15 +24,6 @@ export default function WorkoutDetailModal({
       hour: "2-digit",
       minute: "2-digit",
     });
-  };
-
-  const formatDuration = (secs: number) => {
-    const hrs = Math.floor(secs / 3600);
-    const mins = Math.floor((secs % 3600) / 60);
-    if (hrs > 0) {
-      return `${hrs}h ${mins}m`;
-    }
-    return `${mins}m`;
   };
 
   const getAvatarBg = (username: string) => {
@@ -91,7 +83,7 @@ export default function WorkoutDetailModal({
           </div>
 
           {/* Quick Metrics Statistics Row */}
-          <div className="grid grid-cols-3 gap-2 bg-[#1c181a] p-3 rounded-xl border border-[#2d2729] text-left">
+          <div className="grid grid-cols-2 gap-2 bg-[#1c181a] p-3 rounded-xl border border-[#2d2729] text-left">
             <div>
               <span className="text-[8px] uppercase font-black tracking-widest text-stone-500 block">Duration</span>
               <span className="font-mono text-xs font-black text-stone-105 inline-block mt-0.5">
@@ -105,9 +97,15 @@ export default function WorkoutDetailModal({
               </span>
             </div>
             <div>
+              <span className="text-[8px] uppercase font-black tracking-widest text-stone-500 block">Completed Sets</span>
+              <span className="font-mono text-xs font-black text-stone-105 inline-block mt-0.5">
+                {getCompletedSetCount(workoutLog)} Sets
+              </span>
+            </div>
+            <div>
               <span className="text-[8px] uppercase font-black tracking-widest text-stone-500 block">Movements</span>
               <span className="font-mono text-xs font-black text-stone-105 inline-block mt-0.5">
-                {workoutLog.exercises.length} Exercises
+                {workoutLog.exercises.length}
               </span>
             </div>
           </div>
@@ -130,6 +128,7 @@ export default function WorkoutDetailModal({
 
             {workoutLog.exercises.map((le, idx) => {
               const ex = exerciseLibrary.find((e) => e.id === le.exercise_id);
+              const exerciseVolume = getExerciseVolume(le);
               
               return (
                 <div key={le.id || idx} className="bg-[#121011] rounded-2xl border border-[#2d2729] p-4.5 space-y-4">
@@ -147,6 +146,9 @@ export default function WorkoutDetailModal({
                         </span>
                         <span className="text-[8px] bg-[#1c181a] text-stone-450 px-1.5 py-0.5 rounded font-black tracking-wider border border-[#2d2729]">
                           {ex?.category}
+                        </span>
+                        <span className="text-[8px] bg-[#1c181a] text-stone-450 px-1.5 py-0.5 rounded font-black tracking-wider border border-[#2d2729]">
+                          {exerciseVolume.toLocaleString()} kg
                         </span>
                       </div>
                     </div>

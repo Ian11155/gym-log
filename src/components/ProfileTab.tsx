@@ -4,6 +4,7 @@ import ExerciseImage from "./ExerciseImage";
 import ExercisesTab from "./ExercisesTab";
 import { Flame, Dumbbell, Award, Clock, Heart, MessageSquare, Share2, Sparkles, BookOpen, ChevronRight } from "lucide-react";
 import TransparentImage from "./TransparentImage";
+import { formatDuration, formatShortDate, getCompletedSetCount, getWorkoutStats } from "../utils/workoutStats";
 // @ts-ignore
 import machokeArmsUp from "../machoke_arms_up.png";
 // @ts-ignore
@@ -86,8 +87,9 @@ export default function ProfileTab({
     return grouped;
   }, [comments]);
 
-  const totalWorkouts = currentUserLogs.length;
-  const totalVolume = currentUserLogs.reduce((sum, log) => sum + Number(log.total_volume), 0);
+  const profileStats = useMemo(() => getWorkoutStats(currentUserLogs), [currentUserLogs]);
+  const totalWorkouts = profileStats.totalWorkouts;
+  const totalVolume = profileStats.totalVolume;
 
   // Comments & text states for inline comment box
   const [expandedLogs, setExpandedLogs] = useState<{ [key: string]: boolean }>({});
@@ -107,15 +109,6 @@ export default function ProfileTab({
     const diffDays = Math.floor(diffHrs / 24);
     if (diffDays === 1) return "Yesterday";
     return `${diffDays} days ago`;
-  };
-
-  const formatDuration = (secs: number) => {
-    const hrs = Math.floor(secs / 3600);
-    const mins = Math.floor((secs % 3600) / 60);
-    if (hrs > 0) {
-      return `${hrs}h ${mins}min`;
-    }
-    return `${mins}min`;
   };
 
   const getAvatarBg = (username: string) => {
@@ -208,6 +201,25 @@ export default function ProfileTab({
         </div>
       </div>
 
+      <div className="grid grid-cols-2 gap-3 animate-fade-in">
+        <div className="bg-[#141414] p-3 rounded-xl border-2 border-black shadow-[4px_4px_0px_0px_#000000]">
+          <div className="text-[8px] text-stone-400 font-bold uppercase tracking-wider font-sans">Completed Sets</div>
+          <div className="font-mono text-base font-black text-white mt-1">{profileStats.totalCompletedSets}</div>
+        </div>
+        <div className="bg-[#141414] p-3 rounded-xl border-2 border-black shadow-[4px_4px_0px_0px_#000000]">
+          <div className="text-[8px] text-stone-400 font-bold uppercase tracking-wider font-sans">Training Time</div>
+          <div className="font-mono text-base font-black text-white mt-1">{formatDuration(profileStats.totalDurationSeconds)}</div>
+        </div>
+        <div className="bg-[#141414] p-3 rounded-xl border-2 border-black shadow-[4px_4px_0px_0px_#000000]">
+          <div className="text-[8px] text-stone-400 font-bold uppercase tracking-wider font-sans">Avg Workout</div>
+          <div className="font-mono text-base font-black text-white mt-1">{formatDuration(profileStats.averageDurationSeconds)}</div>
+        </div>
+        <div className="bg-[#141414] p-3 rounded-xl border-2 border-black shadow-[4px_4px_0px_0px_#000000]">
+          <div className="text-[8px] text-stone-400 font-bold uppercase tracking-wider font-sans">Latest</div>
+          <div className="font-mono text-base font-black text-white mt-1">{formatShortDate(profileStats.mostRecentWorkoutDate)}</div>
+        </div>
+      </div>
+
       {/* Segmented Control Switcher for Completed Workouts vs Exercise Library */}
       <div className="sticky top-0 z-30 -mx-5 bg-[#181818] px-5 py-2">
         <div className="bg-[#121011] p-1.5 rounded-xl border border-[#2d2729] grid grid-cols-2 gap-1 font-sans shadow-[0_8px_18px_rgba(0,0,0,0.28)]">
@@ -289,9 +301,9 @@ export default function ProfileTab({
                       </span>
                     </div>
                     <div>
-                      <span className="text-[8px] uppercase font-black tracking-widest text-stone-550 block">Gold PRs</span>
+                      <span className="text-[8px] uppercase font-black tracking-widest text-stone-550 block">Sets</span>
                       <span className="font-mono text-xs font-black text-stone-105 flex items-center gap-1">
-                        🏆 {log.exercises.length}
+                        {getCompletedSetCount(log)}
                       </span>
                     </div>
                   </div>

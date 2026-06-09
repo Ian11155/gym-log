@@ -43,6 +43,10 @@ SquadLift is a private Hevy-style workout tracker for a small friend squad. The 
   - routine and active-exercise deletes have confirmations
   - completed workout saves ignore invalid/incomplete sets
   - set completion targets the exact logged exercise row
+- Workout history/detail and profile stats have been upgraded:
+  - history cards show completed set counts
+  - workout detail shows completed sets and per-exercise volume
+  - profile shows total workouts, total volume, completed sets, training time, average duration, and latest workout date
 
 ## Known Gaps
 
@@ -119,6 +123,7 @@ SquadLift is a private Hevy-style workout tracker for a small friend squad. The 
    - Show useful workout detail data.
    - Add simple profile aggregates from local data.
    - Keep completed workout history read-only until the core flow is stable.
+   - Status: completed
 
 10. Implement Supabase sync later:
     - Add Supabase client setup.
@@ -136,4 +141,4 @@ SquadLift is a private Hevy-style workout tracker for a small friend squad. The 
 
 ## Immediate Next Task
 
-Next recommended task: verify the deployed hardening changes on iPhone Safari, then continue with workout history/detail and simple profile aggregates.
+Next recommended task: verify the deployed history/stats changes on iPhone Safari, then decide whether to polish iPhone layout or start Supabase sync planning.
