@@ -1,12 +1,12 @@
 # SquadLift
 
-SquadLift is a private workout tracking prototype for a squad of 4 friends. It is inspired by Hevy and focuses on fast gym logging, reusable routines, a shared squad feed, comments, fist bumps, streaks, and a collaborative exercise library.
+SquadLift is a private workout tracking prototype for a squad of friends. It is inspired by Hevy and focuses on fast gym logging, reusable routines, workout history, profile stats, and a collaborative exercise library.
 
 ## Current Status
 
-This repo is currently a local-first React/Vite PWA prototype. App data is saved through a versioned local storage adapter, so workouts, routines, exercises, comments, reactions, active user, and local streaks persist on the current device only.
+This repo is currently a local-first React/Vite PWA prototype. App data is saved through a versioned local storage adapter, so workouts, routines, exercises, active user, and local streaks persist on the current device only.
 
-Supabase schema code is included as a future backend reference, but the app does not currently connect to Supabase, authenticate users, or sync data across devices.
+Supabase schema code is included as a future backend reference, but the app does not currently connect to Supabase, authenticate users, or sync data across devices. The active Supabase implementation plan lives in `docs/SUPABASE_PLAN.md`.
 
 The current production path is PWA-first for iOS and Android. A native Expo/React Native app should be treated as a later separate track after storage, auth, and sync are stable.
 

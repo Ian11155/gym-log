@@ -125,11 +125,13 @@ SquadLift is a private Hevy-style workout tracker for a small friend squad. The 
    - Keep completed workout history read-only until the core flow is stable.
    - Status: completed
 
-10. Implement Supabase sync later:
-    - Add Supabase client setup.
-    - Create real tables using a reviewed migration.
-    - Add CRUD for workouts, routines, exercises, and user profiles.
-    - Add cross-device sync after local-first behavior is stable.
+10. Implement Supabase sync:
+    - Completed: create the first reviewed migration before connecting the app.
+    - Use membership-based RLS instead of broad public policies.
+    - Start with auth, squad membership, exercises, routines, workout logs, logged exercises, and logged sets.
+    - Keep comments, reactions, fist-bumps, and feed behavior out of scope.
+    - Add cross-device sync after local-first behavior remains stable.
+    - Current status: test `supabase/migrations/0001_initial_schema.sql` in a fresh Supabase project before app integration.
 
 11. Polish and test:
     - Test on desktop and mobile viewport sizes.
@@ -141,4 +143,4 @@ SquadLift is a private Hevy-style workout tracker for a small friend squad. The 
 
 ## Immediate Next Task
 
-Next recommended task: verify the deployed history/stats changes on iPhone Safari, then decide whether to polish iPhone layout or start Supabase sync planning.
+Next recommended task: apply `supabase/migrations/0001_initial_schema.sql` to a fresh Supabase project and manually test RLS with two users.
