@@ -23,7 +23,19 @@ SquadLift is a private Hevy-style workout tracker for a small friend squad. The 
   - Workout detail modal
 - Seed data exists for 4 squad members, routines, workouts, and exercises.
 - Data is persisted through a versioned local storage adapter backed by browser `localStorage`.
-- Supabase schema text exists in `src/types.ts`, but there is no live Supabase client or real backend integration yet.
+- Supabase backend foundation is now live in a real Supabase project:
+  - reviewed migration exists in `supabase/migrations/0001_initial_schema.sql`
+  - membership-based RLS is enabled
+  - anonymous workout access is blocked
+  - two authenticated squad users can read shared workout data
+  - local RLS smoke test exists at `npm run test:supabase`
+- Supabase app integration has started, but remains manual and developer-tool gated:
+  - Supabase client is configured with persistent sessions
+  - email/password sign-in and sign-out work
+  - cloud connection/RLS check works
+  - manual local-to-cloud upload works
+  - read-only cloud preview works
+  - automatic push/pull sync is not enabled yet
 - The app uses a mobile-first shell with developer tools moved into a separate drawer.
 - PWA install support is implemented with Vite PWA, app manifest, service worker, and generated icons.
 - iOS/PWA shell polish has been applied:
@@ -32,7 +44,7 @@ SquadLift is a private Hevy-style workout tracker for a small friend squad. The 
   - hidden scrollbars
   - fixed bottom navigation
   - compact 51px bottom nav height
-- Developer tools include visible build/source info plus local JSON export, import, and reset controls.
+- Developer tools include visible build/source info, local JSON export/import/reset controls, and manual Supabase cloud checks.
 - Core squad avatars are local generated SVG assets instead of remote image URLs.
 - Machoke profile badge assets are optimized and kept lightweight, with the current RGBA background/alpha preserved.
 - Expo/native mobile work has been discarded for now. The active path is React/Vite PWA only.
@@ -50,10 +62,11 @@ SquadLift is a private Hevy-style workout tracker for a small friend squad. The 
 
 ## Known Gaps
 
-- Real authentication/user identity is not implemented.
-- Cross-device/shared data is not implemented.
-- The app still stores all real user changes on the current device only.
-- The app does not yet have a Supabase-backed data adapter.
+- Email/password authentication is implemented only inside developer tools; it is not yet part of the normal app entry flow.
+- Cross-device/shared data is partially implemented through manual Supabase upload and read-only preview.
+- The app still loads and writes local storage first; automatic cloud sync is not enabled yet.
+- Supabase-backed restore/pull into local app state is not implemented yet.
+- There is no retry queue for failed background sync yet.
 - Local data has basic versioning, corrupted-data fallback, legacy migration, and a lightweight `npm run test:storage` verification script.
 - A shared domain layer exists only as a thin local service; more workout validation/business logic still lives in UI state handlers.
 - The Machoke badge assets may need to be replaced if the app should avoid copyrighted or joke-brand visuals.
