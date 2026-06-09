@@ -93,12 +93,17 @@ export interface ActiveWorkout {
 // SEED DATA FOR SIMULATING THE SQUAD of 4 FRIENDS
 // ----------------------------------------------------
 
+const createAvatarDataUri = (initials: string, bg: string, fg = "#f7f5f4") =>
+  `data:image/svg+xml;utf8,${encodeURIComponent(
+    `<svg xmlns="http://www.w3.org/2000/svg" width="160" height="160" viewBox="0 0 160 160"><rect width="160" height="160" rx="80" fill="${bg}"/><text x="50%" y="54%" dominant-baseline="middle" text-anchor="middle" fill="${fg}" font-family="Inter, Arial, sans-serif" font-size="56" font-weight="800">${initials}</text></svg>`
+  )}`;
+
 export const SQUAD_USERS: User[] = [
   {
     id: "user-1",
     username: "Alex 'Apex' Chen",
     email: "killzone1099@gmail.com",
-    avatar_url: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&h=150&fit=crop&q=80",
+    avatar_url: createAvatarDataUri("AC", "#3f3a34"),
     created_at: "2026-01-15T08:00:00Z",
     streak: 4
   },
@@ -106,7 +111,7 @@ export const SQUAD_USERS: User[] = [
     id: "user-2",
     username: "Marcus 'Beast' Vance",
     email: "marcus.vance@beastlift.io",
-    avatar_url: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=150&h=150&fit=crop&q=80",
+    avatar_url: createAvatarDataUri("MV", "#2f3535"),
     created_at: "2026-01-16T12:00:00Z",
     streak: 6
   },
@@ -114,7 +119,7 @@ export const SQUAD_USERS: User[] = [
     id: "user-3",
     username: "Leo 'Aesthetic' Rossi",
     email: "leo.rossi@classicbody.com",
-    avatar_url: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&q=80",
+    avatar_url: createAvatarDataUri("LR", "#3b3442"),
     created_at: "2026-02-01T10:30:00Z",
     streak: 5
   },
@@ -122,7 +127,7 @@ export const SQUAD_USERS: User[] = [
     id: "user-4",
     username: "Sarah 'Zenith' Cross",
     email: "sarah.cross@zenithfit.org",
-    avatar_url: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&h=150&fit=crop&q=80",
+    avatar_url: createAvatarDataUri("SC", "#46342f"),
     created_at: "2026-02-14T09:15:00Z",
     streak: 3
   }

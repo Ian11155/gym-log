@@ -20,7 +20,7 @@ SquadLift is a private Hevy-style workout tracker for a squad of 4 friends. It s
   - Exercise library with custom exercise creation
   - Workout detail modal
 - Seed data exists for 4 squad members, routines, workouts, comments, reactions, and exercises.
-- Data is currently persisted with `localStorage`.
+- Data is persisted through a versioned local storage adapter backed by browser `localStorage`.
 - Supabase schema text exists in `src/types.ts`, but there is no live Supabase client or real backend integration yet.
 - The app uses a mobile-first shell with developer tools moved into a separate drawer.
 - PWA install support is implemented with Vite PWA, app manifest, service worker, and generated icons.
@@ -30,18 +30,21 @@ SquadLift is a private Hevy-style workout tracker for a squad of 4 friends. It s
   - hidden scrollbars
   - fixed bottom navigation
   - compact 51px bottom nav height
+- Developer tools include visible build/source info plus local JSON export, import, and reset controls.
+- Core squad avatars are local generated SVG assets instead of remote image URLs.
 - Machoke profile badge assets are optimized and kept lightweight, with the current RGBA background/alpha preserved.
+- Native iOS/Android is deferred; the preferred path is PWA first, then a separate Expo development-build track later if needed.
 
 ## Known Gaps
 
 - Real authentication/user identity is not implemented.
 - Cross-device/shared data is not implemented.
 - The app still stores all real user changes on the current device only.
-- The app does not yet have a storage adapter between UI state and persistence.
-- Local data is not hardened against corrupted or stale `localStorage`.
-- `DashboardTab.tsx` and `FeedTab.tsx` appear to be legacy/unused components.
+- The app does not yet have a Supabase-backed data adapter.
+- Local data has basic versioning, corrupted-data fallback, legacy migration, and a lightweight `npm run test:storage` verification script.
+- A shared domain layer exists only as a thin local service; more workout validation/business logic still lives in UI state handlers.
 - The Machoke badge assets may need to be replaced if the app should avoid copyrighted or joke-brand visuals.
-- Some image/avatar URLs are remote and may be unreliable offline.
+- Custom exercise image URLs can still be remote and may be unreliable offline.
 - Installed PWAs may need close/reopen or reinstall after shell/meta/service-worker updates because browsers cache PWA assets aggressively.
 - iOS may require removing and re-adding the home-screen PWA after status-bar or manifest changes.
 
@@ -81,10 +84,9 @@ SquadLift is a private Hevy-style workout tracker for a squad of 4 friends. It s
    - Current status: continue testing updates on installed iPhone/Android PWAs.
 
 6. Introduce a storage adapter:
-   - Create a local data adapter around the existing localStorage behavior.
-   - Keep UI components independent from the storage backend.
-   - Later swap or extend the adapter with Supabase.
-   - Status: next recommended code task.
+   - Completed: create a local data adapter around the existing localStorage behavior.
+   - Completed: add versioned local snapshot loading, legacy-key migration, corrupted-data fallback, and JSON backup import/export/reset tools.
+   - Current status: expand the service layer with more domain validation before Supabase.
 
 7. Implement Supabase:
    - Add Supabase client setup.
@@ -111,6 +113,12 @@ SquadLift is a private Hevy-style workout tracker for a squad of 4 friends. It s
     - Use the in-app browser for visual QA after UI changes.
     - Repeat installed-PWA testing after any meta, manifest, service-worker, or shell layout change.
 
+11. Optional native app track:
+    - Defer until storage, auth, and sync are stable.
+    - Create a separate Expo React Native app rather than converting the current Vite app in place.
+    - Use Expo development builds / EAS for real-device native testing, not Expo Go as the production target.
+    - Rebuild screens with React Native primitives and share TypeScript types/domain logic where practical.
+
 ## Immediate Next Task
 
-Next recommended task: introduce a storage adapter around the current `localStorage` behavior. Keep the app local-first for now, but stop wiring persistence directly through `App.tsx` so Supabase can be added later without rewriting the UI.
+Next recommended task: harden the local service/domain layer with numeric workout validation and duplicate custom-exercise prevention.

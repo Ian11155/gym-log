@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import {
-  User,
   Exercise,
   Routine,
   WorkoutLog,
@@ -8,12 +7,8 @@ import {
   Reaction,
   ActiveWorkout,
   SQUAD_USERS,
-  INITIAL_EXERCISES,
-  INITIAL_ROUTINES,
-  INITIAL_WORKOUT_LOGS,
-  INITIAL_COMMENTS,
-  INITIAL_REACTIONS,
 } from "./types";
+import { APP_BUILD_LABEL, squadDataService } from "./services/squadDataService";
 import HomeCombinedTab from "./components/HomeCombinedTab";
 import WorkoutTab from "./components/WorkoutTab";
 import ProfileTab from "./components/ProfileTab";
@@ -31,48 +26,32 @@ import {
   ShieldCheck,
   Sparkles,
   Home,
-  User as ProfileIcon
+  User as ProfileIcon,
+  Download,
+  Upload,
+  RotateCcw
 } from "lucide-react";
 
 export default function App() {
   // ----------------------------------------------------
-  // PERSISTED LOCAL STATES (Simulating database tables)
+  // PERSISTED LOCAL STATES (Local-first data service)
   // ----------------------------------------------------
-  const [workoutLogs, setWorkoutLogs] = useState<WorkoutLog[]>(() => {
-    const saved = localStorage.getItem("squad_workout_logs");
-    return saved ? JSON.parse(saved) : INITIAL_WORKOUT_LOGS;
-  });
+  const [initialDataLoad] = useState(() => squadDataService.load());
 
-  const [comments, setComments] = useState<Comment[]>(() => {
-    const saved = localStorage.getItem("squad_comments");
-    return saved ? JSON.parse(saved) : INITIAL_COMMENTS;
-  });
+  const [workoutLogs, setWorkoutLogs] = useState<WorkoutLog[]>(() => initialDataLoad.data.workoutLogs);
 
-  const [reactions, setReactions] = useState<Reaction[]>(() => {
-    const saved = localStorage.getItem("squad_reactions");
-    return saved ? JSON.parse(saved) : INITIAL_REACTIONS;
-  });
+  const [comments, setComments] = useState<Comment[]>(() => initialDataLoad.data.comments);
 
-  const [exerciseLibrary, setExerciseLibrary] = useState<Exercise[]>(() => {
-    const saved = localStorage.getItem("squad_exercises");
-    return saved ? JSON.parse(saved) : INITIAL_EXERCISES;
-  });
+  const [reactions, setReactions] = useState<Reaction[]>(() => initialDataLoad.data.reactions);
 
-  const [routines, setRoutines] = useState<Routine[]>(() => {
-    const saved = localStorage.getItem("squad_routines");
-    return saved ? JSON.parse(saved) : INITIAL_ROUTINES;
-  });
+  const [exerciseLibrary, setExerciseLibrary] = useState<Exercise[]>(() => initialDataLoad.data.exerciseLibrary);
 
-  // Streaks count simulator state
-  const [userStreaks, setUserStreaks] = useState<{ [key: string]: number }>({
-    "user-1": 4, // Alex
-    "user-2": 6, // Marcus
-    "user-3": 5, // Leo
-    "user-4": 3, // Sarah
-  });
+  const [routines, setRoutines] = useState<Routine[]>(() => initialDataLoad.data.routines);
+
+  const [userStreaks, setUserStreaks] = useState<{ [key: string]: number }>(() => initialDataLoad.data.userStreaks);
 
   // Current active logged in friend
-  const [activeUserId, setActiveUserId] = useState<string>("user-1"); // Alex initially
+  const [activeUserId, setActiveUserId] = useState<string>(() => initialDataLoad.data.activeUserId);
 
   // Specific user profile currently being viewed in the Profile Tab
   const [viewedProfileUserId, setViewedProfileUserId] = useState<string>("user-1");
@@ -97,26 +76,17 @@ export default function App() {
   const [toastNotification, setToastNotification] = useState<string>("");
   const [isDevPanelOpen, setIsDevPanelOpen] = useState<boolean>(false);
 
-  // Sync state to LocalStorage
   useEffect(() => {
-    localStorage.setItem("squad_workout_logs", JSON.stringify(workoutLogs));
-  }, [workoutLogs]);
-
-  useEffect(() => {
-    localStorage.setItem("squad_comments", JSON.stringify(comments));
-  }, [comments]);
-
-  useEffect(() => {
-    localStorage.setItem("squad_reactions", JSON.stringify(reactions));
-  }, [reactions]);
-
-  useEffect(() => {
-    localStorage.setItem("squad_exercises", JSON.stringify(exerciseLibrary));
-  }, [exerciseLibrary]);
-
-  useEffect(() => {
-    localStorage.setItem("squad_routines", JSON.stringify(routines));
-  }, [routines]);
+    squadDataService.save({
+      workoutLogs,
+      comments,
+      reactions,
+      exerciseLibrary,
+      routines,
+      activeUserId,
+      userStreaks,
+    });
+  }, [activeUserId, comments, exerciseLibrary, reactions, routines, userStreaks, workoutLogs]);
 
   // Rest timer tick effect
   useEffect(() => {
@@ -142,8 +112,67 @@ export default function App() {
     }, 3500);
   };
 
+  useEffect(() => {
+    if (initialDataLoad.warning) {
+      triggerToast(initialDataLoad.warning);
+    }
+  }, [initialDataLoad.warning]);
+
   const getActiveUserObj = () => {
     return SQUAD_USERS.find((u) => u.id === activeUserId) || SQUAD_USERS[0];
+  };
+
+  const getCurrentLocalData = () => ({
+    workoutLogs,
+    comments,
+    reactions,
+    exerciseLibrary,
+    routines,
+    activeUserId,
+    userStreaks,
+  });
+
+  const applyLocalData = (data: ReturnType<typeof getCurrentLocalData>) => {
+    setWorkoutLogs(data.workoutLogs);
+    setComments(data.comments);
+    setReactions(data.reactions);
+    setExerciseLibrary(data.exerciseLibrary);
+    setRoutines(data.routines);
+    setUserStreaks(data.userStreaks);
+    setActiveUserId(data.activeUserId);
+    setViewedProfileUserId(data.activeUserId);
+  };
+
+  const handleExportLocalData = () => {
+    const blob = new Blob([squadDataService.exportBackup(getCurrentLocalData())], {
+      type: "application/json",
+    });
+    const url = URL.createObjectURL(blob);
+    const anchor = document.createElement("a");
+    anchor.href = url;
+    anchor.download = `squadlift-backup-${new Date().toISOString().slice(0, 10)}.json`;
+    anchor.click();
+    URL.revokeObjectURL(url);
+    triggerToast("Local backup exported.");
+  };
+
+  const handleImportLocalData = async (file?: File) => {
+    if (!file) return;
+
+    try {
+      const importedData = squadDataService.importBackup(await file.text());
+      applyLocalData(importedData);
+      triggerToast("Local backup imported.");
+    } catch {
+      triggerToast("Backup import failed. Check that the JSON came from SquadLift.");
+    }
+  };
+
+  const handleResetLocalData = () => {
+    const defaultData = squadDataService.createDefaultData();
+    squadDataService.resetLocalData();
+    applyLocalData(defaultData);
+    triggerToast("Local demo data reset.");
   };
 
   // ----------------------------------------------------
@@ -635,6 +664,9 @@ export default function App() {
                 <p className="mt-1 text-xs leading-relaxed text-stone-400">
                   Local-only controls for switching squad roles, simulating friend activity, and reviewing the planned Supabase schema.
                 </p>
+                <p className="mt-2 font-mono text-[10px] uppercase tracking-widest text-stone-500">
+                  {APP_BUILD_LABEL} | Data: {initialDataLoad.source}
+                </p>
               </div>
               <button
                 type="button"
@@ -726,6 +758,56 @@ export default function App() {
                       {friend.label}
                     </button>
                   ))}
+                </div>
+              </section>
+
+              <section className="rounded-2xl border border-[#2d2729] bg-[#121011] p-4 shadow-3d-sm">
+                <div className="flex items-center justify-between gap-3">
+                  <h3 className="flex items-center gap-2 text-sm font-bold text-[#f7f5f4]">
+                    <Database className="h-4 w-4 text-stone-400" />
+                    <span>Local Data Backup</span>
+                  </h3>
+                  <span className="rounded-full border border-[#6f6d6c]/10 bg-[#6f6d6c]/10 px-3 py-1 text-[9px] font-black tracking-widest text-stone-350">
+                    DEVICE ONLY
+                  </span>
+                </div>
+
+                <p className="mt-2 text-xs leading-relaxed text-stone-400">
+                  Export, import, or reset the local demo data stored on this device.
+                </p>
+
+                <div className="mt-4 grid grid-cols-3 gap-2">
+                  <button
+                    type="button"
+                    onClick={handleExportLocalData}
+                    className="flex items-center justify-center gap-1.5 rounded-xl border border-[#6f6d6c]/15 bg-black px-3 py-3 text-[10px] font-black uppercase tracking-widest text-stone-300 transition hover:border-[#6f6d6c]/40 hover:text-white"
+                  >
+                    <Download className="h-3.5 w-3.5" />
+                    Export
+                  </button>
+
+                  <label className="flex cursor-pointer items-center justify-center gap-1.5 rounded-xl border border-[#6f6d6c]/15 bg-black px-3 py-3 text-[10px] font-black uppercase tracking-widest text-stone-300 transition hover:border-[#6f6d6c]/40 hover:text-white">
+                    <Upload className="h-3.5 w-3.5" />
+                    Import
+                    <input
+                      type="file"
+                      accept="application/json"
+                      className="hidden"
+                      onChange={(event) => {
+                        void handleImportLocalData(event.currentTarget.files?.[0]);
+                        event.currentTarget.value = "";
+                      }}
+                    />
+                  </label>
+
+                  <button
+                    type="button"
+                    onClick={handleResetLocalData}
+                    className="flex items-center justify-center gap-1.5 rounded-xl border border-red-500/20 bg-black px-3 py-3 text-[10px] font-black uppercase tracking-widest text-red-200 transition hover:border-red-400/40 hover:text-white"
+                  >
+                    <RotateCcw className="h-3.5 w-3.5" />
+                    Reset
+                  </button>
                 </div>
               </section>
 
