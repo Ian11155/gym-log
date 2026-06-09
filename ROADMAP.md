@@ -131,11 +131,12 @@ SquadLift is a private Hevy-style workout tracker for a small friend squad. The 
     - Completed: verify anonymous RLS blocking and two-user shared workout reads.
     - Completed: add persistent email/password sign-in in developer tools.
     - Completed: add manual local-to-cloud upload in developer tools.
+    - Completed: add read-only cloud pull preview in developer tools.
     - Use membership-based RLS instead of broad public policies.
     - Start with auth, squad membership, exercises, routines, workout logs, logged exercises, and logged sets.
     - Keep comments, reactions, fist-bumps, and feed behavior out of scope.
     - Add cross-device sync after local-first behavior remains stable.
-    - Current status: add a read-only cloud pull preview before replacing any local data.
+    - Current status: add an explicit restore-from-cloud action with confirmation.
 
 11. Polish and test:
     - Test on desktop and mobile viewport sizes.
@@ -147,4 +148,4 @@ SquadLift is a private Hevy-style workout tracker for a small friend squad. The 
 
 ## Immediate Next Task
 
-Next recommended task: add a read-only developer-tool preview of cloud data before replacing any local data.
+Next recommended task: add an explicit developer-tool restore-from-cloud action with confirmation.

@@ -16,7 +16,7 @@ import {
   signOutOfSupabase,
   verifySupabaseConnection,
 } from "./services/supabaseClient";
-import { uploadLocalDataToSupabase } from "./services/supabaseSquadDataService";
+import { CloudPreview, previewSupabaseData, uploadLocalDataToSupabase } from "./services/supabaseSquadDataService";
 import HomeCombinedTab from "./components/HomeCombinedTab";
 import WorkoutTab from "./components/WorkoutTab";
 import ProfileTab from "./components/ProfileTab";
@@ -102,6 +102,9 @@ export default function App() {
   const [isCloudAuthBusy, setIsCloudAuthBusy] = useState<boolean>(false);
   const [cloudUploadStatus, setCloudUploadStatus] = useState<string>("Not uploaded");
   const [isCloudUploading, setIsCloudUploading] = useState<boolean>(false);
+  const [cloudPreview, setCloudPreview] = useState<CloudPreview | null>(null);
+  const [cloudPreviewStatus, setCloudPreviewStatus] = useState<string>("Not previewed");
+  const [isCloudPreviewing, setIsCloudPreviewing] = useState<boolean>(false);
 
   useEffect(() => {
     squadDataService.save({
@@ -299,6 +302,32 @@ export default function App() {
       triggerToast(message);
     } finally {
       setIsCloudUploading(false);
+    }
+  };
+
+  const handlePreviewCloudData = async () => {
+    if (!cloudSignedInEmail) {
+      triggerToast("Sign in before previewing cloud data.");
+      return;
+    }
+
+    setIsCloudPreviewing(true);
+    setCloudPreviewStatus("Previewing...");
+
+    try {
+      const preview = await previewSupabaseData();
+      setCloudPreview(preview);
+      setCloudPreviewStatus(
+        `${preview.squadName}: ${preview.exerciseCount} exercises, ${preview.routineCount} routines, ${preview.workoutCount} workouts.`
+      );
+      triggerToast("Cloud preview loaded.");
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Cloud preview failed.";
+      setCloudPreview(null);
+      setCloudPreviewStatus(message);
+      triggerToast(message);
+    } finally {
+      setIsCloudPreviewing(false);
     }
   };
 
@@ -1003,6 +1032,30 @@ export default function App() {
                     className="flex min-h-11 items-center justify-center rounded-xl border border-emerald-500/20 bg-black px-4 py-3 text-[10px] font-black uppercase tracking-widest text-emerald-200 transition hover:border-emerald-400/40 hover:text-white disabled:cursor-not-allowed disabled:opacity-60"
                   >
                     {isCloudUploading ? "Uploading" : "Upload Local"}
+                  </button>
+
+                  <div className="min-w-0 rounded-xl border border-white/5 bg-black px-3 py-3">
+                    <p className="text-[9px] font-black uppercase tracking-widest text-stone-500">
+                      Preview
+                    </p>
+                    <p className="mt-1 break-words text-xs font-bold text-stone-250">
+                      {cloudPreviewStatus}
+                    </p>
+                    {cloudPreview && (
+                      <div className="mt-3 grid gap-1.5 text-[10px] font-bold text-stone-400">
+                        <span>Latest routine: {cloudPreview.latestRoutineTitle}</span>
+                        <span>Latest workout: {cloudPreview.latestWorkoutTitle}</span>
+                      </div>
+                    )}
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => void handlePreviewCloudData()}
+                    disabled={isCloudPreviewing || !cloudSignedInEmail}
+                    className="flex min-h-11 items-center justify-center rounded-xl border border-emerald-500/20 bg-black px-4 py-3 text-[10px] font-black uppercase tracking-widest text-emerald-200 transition hover:border-emerald-400/40 hover:text-white disabled:cursor-not-allowed disabled:opacity-60"
+                  >
+                    {isCloudPreviewing ? "Previewing" : "Preview Cloud"}
                   </button>
                 </div>
               </section>

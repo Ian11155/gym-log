@@ -9,6 +9,15 @@ interface UploadResult {
   setCount: number;
 }
 
+export interface CloudPreview {
+  squadName: string;
+  exerciseCount: number;
+  routineCount: number;
+  workoutCount: number;
+  latestRoutineTitle: string;
+  latestWorkoutTitle: string;
+}
+
 interface ExerciseCloudMap {
   [localExerciseId: string]: string;
 }
@@ -43,6 +52,37 @@ export async function uploadLocalDataToSupabase(data: SquadLocalData): Promise<U
   };
 }
 
+export async function previewSupabaseData(): Promise<CloudPreview> {
+  const session = await getSupabaseSession();
+  if (!session) {
+    throw new Error("Sign in before previewing cloud data.");
+  }
+
+  const membership = await getPrimarySquadMembership(session.user.id);
+  if (!membership?.squad_id) {
+    throw new Error("No Supabase squad membership found for this account.");
+  }
+
+  const squadId = membership.squad_id;
+  const squad = await getSquadSummary(squadId);
+  const [exerciseCount, routineCount, workoutCount, latestRoutineTitle, latestWorkoutTitle] = await Promise.all([
+    getTableCount("exercises", "squad_id", squadId),
+    getTableCount("routines", "squad_id", squadId),
+    getTableCount("workout_logs", "squad_id", squadId),
+    getLatestTitle("routines", "squad_id", squadId, "created_at"),
+    getLatestTitle("workout_logs", "squad_id", squadId, "end_time"),
+  ]);
+
+  return {
+    squadName: squad?.name || "Unknown squad",
+    exerciseCount,
+    routineCount,
+    workoutCount,
+    latestRoutineTitle,
+    latestWorkoutTitle,
+  };
+}
+
 async function getPrimarySquadMembership(userId: string) {
   const supabase = await requireSupabaseClient();
   const { data, error } = await supabase
@@ -54,6 +94,48 @@ async function getPrimarySquadMembership(userId: string) {
 
   if (error) throw error;
   return data;
+}
+
+async function getSquadSummary(squadId: string) {
+  const supabase = await requireSupabaseClient();
+  const { data, error } = await supabase
+    .from("squads")
+    .select("name")
+    .eq("id", squadId)
+    .maybeSingle();
+
+  if (error) throw error;
+  return data;
+}
+
+async function getTableCount(table: "exercises" | "routines" | "workout_logs", column: "squad_id", value: string) {
+  const supabase = await requireSupabaseClient();
+  const { data, error } = await supabase
+    .from(table)
+    .select("id")
+    .eq(column, value);
+
+  if (error) throw error;
+  return data?.length || 0;
+}
+
+async function getLatestTitle(
+  table: "routines" | "workout_logs",
+  column: "squad_id",
+  value: string,
+  orderColumn: "created_at" | "end_time"
+) {
+  const supabase = await requireSupabaseClient();
+  const { data, error } = await supabase
+    .from(table)
+    .select("title")
+    .eq(column, value)
+    .order(orderColumn, { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  if (error) throw error;
+  return data?.title || "None";
 }
 
 async function ensureCurrentProfile(userId: string, email: string) {
