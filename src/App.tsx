@@ -16,6 +16,7 @@ import {
   signOutOfSupabase,
   verifySupabaseConnection,
 } from "./services/supabaseClient";
+import { uploadLocalDataToSupabase } from "./services/supabaseSquadDataService";
 import HomeCombinedTab from "./components/HomeCombinedTab";
 import WorkoutTab from "./components/WorkoutTab";
 import ProfileTab from "./components/ProfileTab";
@@ -99,6 +100,8 @@ export default function App() {
     isSupabaseConfigured() ? "Checking session..." : "Not configured"
   );
   const [isCloudAuthBusy, setIsCloudAuthBusy] = useState<boolean>(false);
+  const [cloudUploadStatus, setCloudUploadStatus] = useState<string>("Not uploaded");
+  const [isCloudUploading, setIsCloudUploading] = useState<boolean>(false);
 
   useEffect(() => {
     squadDataService.save({
@@ -273,6 +276,29 @@ export default function App() {
       triggerToast(message);
     } finally {
       setIsCloudAuthBusy(false);
+    }
+  };
+
+  const handleUploadLocalDataToCloud = async () => {
+    if (!cloudSignedInEmail) {
+      triggerToast("Sign in before uploading local data.");
+      return;
+    }
+
+    setIsCloudUploading(true);
+    setCloudUploadStatus("Uploading...");
+
+    try {
+      const result = await uploadLocalDataToSupabase(getCurrentLocalData());
+      const message = `Uploaded ${result.exerciseCount} exercises, ${result.routineCount} routines, ${result.workoutCount} workouts, ${result.setCount} sets.`;
+      setCloudUploadStatus(message);
+      triggerToast("Local data uploaded to cloud.");
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Cloud upload failed.";
+      setCloudUploadStatus(message);
+      triggerToast(message);
+    } finally {
+      setIsCloudUploading(false);
     }
   };
 
@@ -959,6 +985,24 @@ export default function App() {
                     className="flex min-h-11 items-center justify-center rounded-xl border border-emerald-500/20 bg-black px-4 py-3 text-[10px] font-black uppercase tracking-widest text-emerald-200 transition hover:border-emerald-400/40 hover:text-white disabled:cursor-not-allowed disabled:opacity-60"
                   >
                     {isCheckingCloud ? "Checking" : "Test Cloud"}
+                  </button>
+
+                  <div className="min-w-0 rounded-xl border border-white/5 bg-black px-3 py-3">
+                    <p className="text-[9px] font-black uppercase tracking-widest text-stone-500">
+                      Upload
+                    </p>
+                    <p className="mt-1 break-words text-xs font-bold text-stone-250">
+                      {cloudUploadStatus}
+                    </p>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => void handleUploadLocalDataToCloud()}
+                    disabled={isCloudUploading || !cloudSignedInEmail}
+                    className="flex min-h-11 items-center justify-center rounded-xl border border-emerald-500/20 bg-black px-4 py-3 text-[10px] font-black uppercase tracking-widest text-emerald-200 transition hover:border-emerald-400/40 hover:text-white disabled:cursor-not-allowed disabled:opacity-60"
+                  >
+                    {isCloudUploading ? "Uploading" : "Upload Local"}
                   </button>
                 </div>
               </section>

@@ -130,11 +130,12 @@ SquadLift is a private Hevy-style workout tracker for a small friend squad. The 
     - Completed: add Supabase client setup behind a manual developer-tool connection check.
     - Completed: verify anonymous RLS blocking and two-user shared workout reads.
     - Completed: add persistent email/password sign-in in developer tools.
+    - Completed: add manual local-to-cloud upload in developer tools.
     - Use membership-based RLS instead of broad public policies.
     - Start with auth, squad membership, exercises, routines, workout logs, logged exercises, and logged sets.
     - Keep comments, reactions, fist-bumps, and feed behavior out of scope.
     - Add cross-device sync after local-first behavior remains stable.
-    - Current status: add a manual local-to-cloud upload action.
+    - Current status: add a read-only cloud pull preview before replacing any local data.
 
 11. Polish and test:
     - Test on desktop and mobile viewport sizes.
@@ -146,4 +147,4 @@ SquadLift is a private Hevy-style workout tracker for a small friend squad. The 
 
 ## Immediate Next Task
 
-Next recommended task: add a manual developer-tool upload of local data to Supabase.
+Next recommended task: add a read-only developer-tool preview of cloud data before replacing any local data.
