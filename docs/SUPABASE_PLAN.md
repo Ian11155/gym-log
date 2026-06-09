@@ -93,13 +93,13 @@ Indexes to include:
 
 Small implementation order:
 
-1. Install `@supabase/supabase-js`.
-2. Add `src/services/supabaseClient.ts`.
-3. Add environment validation with a clear local-only fallback.
+1. Completed: install `@supabase/supabase-js`.
+2. Completed: add `src/services/supabaseClient.ts`.
+3. Completed: add environment validation with a clear local-only fallback.
 4. Add auth screen/state for email sign-in.
 5. Add `src/services/supabaseSquadDataService.ts`.
 6. Keep `squadDataService` as the app-facing adapter boundary.
-7. Add a manual "Sync now" button in developer tools before automatic sync.
+7. Completed: add a manual developer-tool cloud connection/RLS check before automatic sync.
 8. After manual sync is reliable, add background pull-on-load and push-on-save.
 
 ## Phase 5: Migration From Local Data
@@ -127,12 +127,14 @@ First migration path should be manual and reversible:
 
 ## First Implementation Task
 
-Create the reviewed migration file only. Do not connect the app yet.
+Completed: create the reviewed migration file and a manual app-side cloud connection check.
 
-The first PR should add:
+The first Supabase foundation commit added:
 
 - `supabase/migrations/0001_initial_schema.sql`
 - `supabase/README.md`
+- `src/services/supabaseClient.ts`
+- `scripts/verify-supabase-rls.ts`
 - Updated roadmap status
 
-Then run the SQL in a fresh Supabase project and test RLS with two users before any app code depends on it.
+Next implementation task: add email sign-in and a manual "upload local data to cloud" action. Keep local storage as the first load/write path.

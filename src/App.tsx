@@ -9,6 +9,7 @@ import {
   SQUAD_USERS,
 } from "./types";
 import { APP_BUILD_LABEL, squadDataService } from "./services/squadDataService";
+import { isSupabaseConfigured, verifySupabaseConnection } from "./services/supabaseClient";
 import HomeCombinedTab from "./components/HomeCombinedTab";
 import WorkoutTab from "./components/WorkoutTab";
 import ProfileTab from "./components/ProfileTab";
@@ -81,6 +82,10 @@ export default function App() {
   // General Notification feedback
   const [toastNotification, setToastNotification] = useState<string>("");
   const [isDevPanelOpen, setIsDevPanelOpen] = useState<boolean>(false);
+  const [cloudCheckStatus, setCloudCheckStatus] = useState<string>(
+    isSupabaseConfigured() ? "Configured, not checked" : "Not configured"
+  );
+  const [isCheckingCloud, setIsCheckingCloud] = useState<boolean>(false);
 
   useEffect(() => {
     squadDataService.save({
@@ -179,6 +184,16 @@ export default function App() {
     squadDataService.resetLocalData();
     applyLocalData(defaultData);
     triggerToast("Local demo data reset.");
+  };
+
+  const handleVerifyCloudConnection = async () => {
+    setIsCheckingCloud(true);
+    setCloudCheckStatus("Checking...");
+
+    const result = await verifySupabaseConnection();
+    setCloudCheckStatus(result.message);
+    setIsCheckingCloud(false);
+    triggerToast(result.message);
   };
 
   // ----------------------------------------------------
@@ -686,7 +701,7 @@ export default function App() {
                   <span>Developer Tools</span>
                 </h2>
                 <p className="mt-1 text-xs leading-relaxed text-stone-400">
-                  Local-only controls for switching squad roles, simulating friend activity, and reviewing the planned Supabase schema.
+                  Local controls for switching squad roles, backups, and checking the planned Supabase sync path.
                 </p>
                 <p className="mt-2 font-mono text-[10px] uppercase tracking-widest text-stone-500">
                   {APP_BUILD_LABEL} | Data: {initialDataLoad.source}
@@ -782,6 +797,42 @@ export default function App() {
                       {friend.label}
                     </button>
                   ))}
+                </div>
+              </section>
+
+              <section className="rounded-2xl border border-[#2d2729] bg-[#121011] p-4 shadow-3d-sm">
+                <div className="flex items-center justify-between gap-3">
+                  <h3 className="flex items-center gap-2 text-sm font-bold text-[#f7f5f4]">
+                    <Database className="h-4 w-4 text-emerald-400" />
+                    <span>Cloud Sync</span>
+                  </h3>
+                  <span className="rounded-full border border-emerald-500/10 bg-emerald-500/10 px-3 py-1 text-[9px] font-black tracking-widest text-emerald-300">
+                    MANUAL
+                  </span>
+                </div>
+
+                <p className="mt-2 text-xs leading-relaxed text-stone-400">
+                  Supabase is not writing app data yet. This check only verifies connection and RLS safety.
+                </p>
+
+                <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                  <div className="min-w-0 rounded-xl border border-white/5 bg-black px-3 py-3">
+                    <p className="text-[9px] font-black uppercase tracking-widest text-stone-500">
+                      Status
+                    </p>
+                    <p className="mt-1 break-words text-xs font-bold text-stone-250">
+                      {cloudCheckStatus}
+                    </p>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => void handleVerifyCloudConnection()}
+                    disabled={isCheckingCloud}
+                    className="flex min-h-11 items-center justify-center rounded-xl border border-emerald-500/20 bg-black px-4 py-3 text-[10px] font-black uppercase tracking-widest text-emerald-200 transition hover:border-emerald-400/40 hover:text-white disabled:cursor-not-allowed disabled:opacity-60"
+                  >
+                    {isCheckingCloud ? "Checking" : "Test Cloud"}
+                  </button>
                 </div>
               </section>
 

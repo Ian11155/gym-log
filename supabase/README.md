@@ -5,8 +5,8 @@ This folder contains the planned Supabase backend for SquadLift. The production 
 ## Current Status
 
 - Initial migration drafted: `supabase/migrations/0001_initial_schema.sql`
-- App code is not connected to Supabase yet.
-- No Supabase environment variables are required for the current PWA.
+- App code has a manual developer-tool cloud connection check.
+- Supabase environment variables are optional; without them, the PWA stays local-only.
 - Comments, reactions, fist-bumps, and social feed behavior are intentionally out of scope.
 
 ## Schema Scope
@@ -89,4 +89,4 @@ npm run test:supabase
 
 ## Next App Step
 
-After RLS is tested manually, add a Supabase client and a manual developer-tool "Sync now" action. Keep local storage as the first load path and first write path until cloud sync is boringly reliable.
+Next, add email sign-in and a manual developer-tool "Upload local data to cloud" action. Keep local storage as the first load path and first write path until cloud sync is boringly reliable.
