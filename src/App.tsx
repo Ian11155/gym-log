@@ -9,7 +9,13 @@ import {
   SQUAD_USERS,
 } from "./types";
 import { APP_BUILD_LABEL, squadDataService } from "./services/squadDataService";
-import { isSupabaseConfigured, verifySupabaseConnection } from "./services/supabaseClient";
+import {
+  getSupabaseSession,
+  isSupabaseConfigured,
+  signInToSupabase,
+  signOutOfSupabase,
+  verifySupabaseConnection,
+} from "./services/supabaseClient";
 import HomeCombinedTab from "./components/HomeCombinedTab";
 import WorkoutTab from "./components/WorkoutTab";
 import ProfileTab from "./components/ProfileTab";
@@ -86,6 +92,13 @@ export default function App() {
     isSupabaseConfigured() ? "Configured, not checked" : "Not configured"
   );
   const [isCheckingCloud, setIsCheckingCloud] = useState<boolean>(false);
+  const [cloudAuthEmail, setCloudAuthEmail] = useState<string>("");
+  const [cloudAuthPassword, setCloudAuthPassword] = useState<string>("");
+  const [cloudSignedInEmail, setCloudSignedInEmail] = useState<string>("");
+  const [cloudAuthStatus, setCloudAuthStatus] = useState<string>(
+    isSupabaseConfigured() ? "Checking session..." : "Not configured"
+  );
+  const [isCloudAuthBusy, setIsCloudAuthBusy] = useState<boolean>(false);
 
   useEffect(() => {
     squadDataService.save({
@@ -128,6 +141,28 @@ export default function App() {
       triggerToast(initialDataLoad.warning);
     }
   }, [initialDataLoad.warning]);
+
+  useEffect(() => {
+    if (!isSupabaseConfigured()) return;
+
+    let isMounted = true;
+
+    void getSupabaseSession()
+      .then((session) => {
+        if (!isMounted) return;
+        const email = session?.user.email || "";
+        setCloudSignedInEmail(email);
+        setCloudAuthStatus(email ? `Signed in as ${email}` : "Not signed in");
+      })
+      .catch((error) => {
+        if (!isMounted) return;
+        setCloudAuthStatus(error instanceof Error ? error.message : "Could not read cloud session.");
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const getActiveUserObj = () => {
     return SQUAD_USERS.find((u) => u.id === activeUserId) || SQUAD_USERS[0];
@@ -194,6 +229,51 @@ export default function App() {
     setCloudCheckStatus(result.message);
     setIsCheckingCloud(false);
     triggerToast(result.message);
+  };
+
+  const handleCloudSignIn = async () => {
+    if (!cloudAuthEmail.trim() || !cloudAuthPassword) {
+      triggerToast("Enter email and password first.");
+      return;
+    }
+
+    setIsCloudAuthBusy(true);
+    setCloudAuthStatus("Signing in...");
+
+    try {
+      const session = await signInToSupabase(cloudAuthEmail.trim(), cloudAuthPassword);
+      const email = session.user.email || cloudAuthEmail.trim();
+      setCloudSignedInEmail(email);
+      setCloudAuthPassword("");
+      setCloudAuthStatus(`Signed in as ${email}`);
+      triggerToast("Cloud sign-in active.");
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Cloud sign-in failed.";
+      setCloudAuthStatus(message);
+      triggerToast(message);
+    } finally {
+      setIsCloudAuthBusy(false);
+    }
+  };
+
+  const handleCloudSignOut = async () => {
+    setIsCloudAuthBusy(true);
+    setCloudAuthStatus("Signing out...");
+
+    try {
+      await signOutOfSupabase();
+      setCloudSignedInEmail("");
+      setCloudAuthEmail("");
+      setCloudAuthPassword("");
+      setCloudAuthStatus("Not signed in");
+      triggerToast("Cloud signed out.");
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Cloud sign-out failed.";
+      setCloudAuthStatus(message);
+      triggerToast(message);
+    } finally {
+      setIsCloudAuthBusy(false);
+    }
   };
 
   // ----------------------------------------------------
@@ -812,13 +892,60 @@ export default function App() {
                 </div>
 
                 <p className="mt-2 text-xs leading-relaxed text-stone-400">
-                  Supabase is not writing app data yet. This check only verifies connection and RLS safety.
+                  Sign-in persists on this device. Supabase is not writing app data yet.
                 </p>
 
-                <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <div className="mt-4 grid gap-3">
                   <div className="min-w-0 rounded-xl border border-white/5 bg-black px-3 py-3">
                     <p className="text-[9px] font-black uppercase tracking-widest text-stone-500">
-                      Status
+                      Auth
+                    </p>
+                    <p className="mt-1 break-words text-xs font-bold text-stone-250">
+                      {cloudAuthStatus}
+                    </p>
+                  </div>
+
+                  {cloudSignedInEmail ? (
+                    <button
+                      type="button"
+                      onClick={() => void handleCloudSignOut()}
+                      disabled={isCloudAuthBusy}
+                      className="flex min-h-11 items-center justify-center rounded-xl border border-red-500/20 bg-black px-4 py-3 text-[10px] font-black uppercase tracking-widest text-red-200 transition hover:border-red-400/40 hover:text-white disabled:cursor-not-allowed disabled:opacity-60"
+                    >
+                      {isCloudAuthBusy ? "Signing Out" : "Sign Out"}
+                    </button>
+                  ) : (
+                    <div className="grid gap-2">
+                      <input
+                        type="email"
+                        value={cloudAuthEmail}
+                        onChange={(event) => setCloudAuthEmail(event.target.value)}
+                        autoComplete="email"
+                        placeholder="Email"
+                        className="min-h-11 rounded-xl border border-white/5 bg-black px-3 text-sm font-bold text-stone-100 outline-none transition placeholder:text-stone-600 focus:border-emerald-500/40"
+                      />
+                      <input
+                        type="password"
+                        value={cloudAuthPassword}
+                        onChange={(event) => setCloudAuthPassword(event.target.value)}
+                        autoComplete="current-password"
+                        placeholder="Password"
+                        className="min-h-11 rounded-xl border border-white/5 bg-black px-3 text-sm font-bold text-stone-100 outline-none transition placeholder:text-stone-600 focus:border-emerald-500/40"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => void handleCloudSignIn()}
+                        disabled={isCloudAuthBusy || !isSupabaseConfigured()}
+                        className="flex min-h-11 items-center justify-center rounded-xl border border-emerald-500/20 bg-black px-4 py-3 text-[10px] font-black uppercase tracking-widest text-emerald-200 transition hover:border-emerald-400/40 hover:text-white disabled:cursor-not-allowed disabled:opacity-60"
+                      >
+                        {isCloudAuthBusy ? "Signing In" : "Sign In"}
+                      </button>
+                    </div>
+                  )}
+
+                  <div className="min-w-0 rounded-xl border border-white/5 bg-black px-3 py-3">
+                    <p className="text-[9px] font-black uppercase tracking-widest text-stone-500">
+                      RLS Check
                     </p>
                     <p className="mt-1 break-words text-xs font-bold text-stone-250">
                       {cloudCheckStatus}

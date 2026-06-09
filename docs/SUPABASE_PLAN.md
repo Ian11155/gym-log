@@ -96,7 +96,7 @@ Small implementation order:
 1. Completed: install `@supabase/supabase-js`.
 2. Completed: add `src/services/supabaseClient.ts`.
 3. Completed: add environment validation with a clear local-only fallback.
-4. Add auth screen/state for email sign-in.
+4. Completed: add developer-tool email/password sign-in state.
 5. Add `src/services/supabaseSquadDataService.ts`.
 6. Keep `squadDataService` as the app-facing adapter boundary.
 7. Completed: add a manual developer-tool cloud connection/RLS check before automatic sync.
@@ -137,4 +137,4 @@ The first Supabase foundation commit added:
 - `scripts/verify-supabase-rls.ts`
 - Updated roadmap status
 
-Next implementation task: add email sign-in and a manual "upload local data to cloud" action. Keep local storage as the first load/write path.
+Next implementation task: add a manual "upload local data to cloud" action. Keep local storage as the first load/write path.
