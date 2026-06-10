@@ -40,6 +40,7 @@ SquadLift is a private Hevy-style workout tracker for a small friend squad. The 
   - auto-push after supported local saves is enabled for the signed-in active user
   - failed auto-push attempts are queued locally and retry on app open/reconnect
   - automatic cloud pull runs on app open/sign-in/reconnect when there are no pending local sync retries
+  - one-iPhone cloud loop has been manually verified: sign in, auto-pull, finish workout, auto-push, and zero pending retries
 - The app uses a mobile-first shell with developer tools moved into a separate drawer.
 - PWA install support is implemented with Vite PWA, app manifest, service worker, and generated icons.
 - iOS/PWA shell polish has been applied:
@@ -49,6 +50,7 @@ SquadLift is a private Hevy-style workout tracker for a small friend squad. The 
   - fixed bottom navigation
   - compact 51px bottom nav height
 - Developer tools include visible build/source info, local JSON export/import/reset controls, and manual Supabase cloud checks.
+- Normal UI updates redeployed on the same Vercel domain should not sign users out; Supabase sessions persist in each phone's browser/PWA storage.
 - Core squad avatars are local generated SVG assets instead of remote image URLs.
 - Machoke profile badge assets are optimized and kept lightweight, with the current RGBA background/alpha preserved.
 - Expo/native mobile work has been discarded for now. The active path is React/Vite PWA only.
@@ -67,7 +69,7 @@ SquadLift is a private Hevy-style workout tracker for a small friend squad. The 
 ## Known Gaps
 
 - Email/password authentication is now part of the normal app entry flow, but account creation is still managed manually in Supabase.
-- Cross-device/shared data is partially implemented through manual Supabase upload and read-only preview.
+- Cross-device/shared data is implemented through Supabase auto-push and auto-pull, but still needs repeated multi-device QA.
 - The app still loads and writes local storage first; auto-push is best-effort after supported local saves.
 - Supabase-backed restore/pull into local app state now runs automatically when safe, with the manual restore button still available.
 - Failed auto-push attempts have a local retry queue with automatic retry on app open/reconnect.
@@ -121,7 +123,7 @@ SquadLift is a private Hevy-style workout tracker for a small friend squad. The 
    - Verify the Vercel URL on desktop and iPhone Safari.
    - Add the Vercel app to the iPhone Home Screen.
    - Status: completed
-   - Production URL: `https://squadlift-beta.vercel.app`
+   - Production URL: `https://gym-log-six-zeta.vercel.app`
 
 7. Introduce a storage adapter:
    - Completed: create a local data adapter around the existing localStorage behavior.
@@ -152,15 +154,15 @@ SquadLift is a private Hevy-style workout tracker for a small friend squad. The 
     - Completed: add read-only cloud pull preview in developer tools.
     - Completed: add explicit restore-from-cloud with confirmation.
     - Completed: add best-effort auto-push after workout/routine/exercise saves.
-   - Completed: add local retry queue for failed auto-push attempts.
-   - Completed: add automatic retry on app open/reconnect.
-   - Completed: add automatic cloud pull on app open/sign-in/reconnect when there is no pending local sync retry.
+    - Completed: add local retry queue for failed auto-push attempts.
+    - Completed: add automatic retry on app open/reconnect.
+    - Completed: add automatic cloud pull on app open/sign-in/reconnect when there is no pending local sync retry.
     - Completed: add first-run cloud sign-in screen and header cloud status.
     - Use membership-based RLS instead of broad public policies.
     - Start with auth, squad membership, exercises, routines, workout logs, logged exercises, and logged sets.
     - Keep comments, reactions, fist-bumps, and feed behavior out of scope.
     - Add cross-device sync after local-first behavior remains stable.
-    - Current status: test the full cloud loop on iPhone and laptop browser, then refine conflict behavior if needed.
+    - Current status: test the full cloud loop on iPhone plus laptop browser, then refine conflict behavior if needed.
 
 11. Polish and test:
     - Test on desktop and mobile viewport sizes.
