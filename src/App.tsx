@@ -626,6 +626,14 @@ export default function App() {
       return;
     }
 
+    const defaultExercise = exerciseLibrary.find((exercise) => exercise.name.toLowerCase() === "bench press")
+      || exerciseLibrary[0];
+
+    if (!defaultExercise) {
+      triggerToast("Add an exercise before starting a workout.");
+      return;
+    }
+
     const defaultTitle = `Workout with ${getActiveUserObj().username.split(" ")[0]}`;
     const newSession: ActiveWorkout = {
       title: defaultTitle,
@@ -634,7 +642,7 @@ export default function App() {
       exercises: [
         {
           id: `le-${Date.now()}-initial`,
-          exercise_id: "ex-1", // default Bench Press for testing
+          exercise_id: defaultExercise.id,
           order_index: 0,
           sets: [
             { id: `ls-${Date.now()}-s1`, set_number: 1, set_type: "Normal", actual_reps: 10, actual_weight: 135, is_completed: false }
