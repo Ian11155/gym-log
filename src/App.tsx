@@ -191,6 +191,43 @@ export default function App() {
     userStreaks,
   });
 
+  const getLocalDataWithOverrides = (overrides: Partial<ReturnType<typeof getCurrentLocalData>>) => ({
+    ...getCurrentLocalData(),
+    ...overrides,
+  });
+
+  const isCloudSignedInAsActiveUser = () => {
+    const activeUser = SQUAD_USERS.find((user) => user.id === activeUserId);
+    return Boolean(
+      cloudSignedInEmail &&
+      activeUser?.email &&
+      activeUser.email.toLowerCase() === cloudSignedInEmail.toLowerCase()
+    );
+  };
+
+  const autoPushLocalDataToCloud = (data: ReturnType<typeof getCurrentLocalData>, reason: string) => {
+    if (!cloudSignedInEmail) return;
+
+    if (!isCloudSignedInAsActiveUser()) {
+      setCloudUploadStatus("Auto-push skipped: signed-in cloud user does not match active local user.");
+      return;
+    }
+
+    setCloudUploadStatus(`Auto-pushing ${reason}...`);
+
+    void uploadLocalDataToSupabase(data)
+      .then((result) => {
+        setCloudUploadStatus(
+          `Auto-pushed ${result.exerciseCount} exercises, ${result.routineCount} routines, ${result.workoutCount} workouts.`
+        );
+      })
+      .catch((error) => {
+        const message = error instanceof Error ? error.message : "Cloud auto-push failed.";
+        setCloudUploadStatus(`Saved locally. Cloud auto-push failed: ${message}`);
+        triggerToast("Saved locally. Cloud sync failed.");
+      });
+  };
+
   const applyLocalData = (data: ReturnType<typeof getCurrentLocalData>) => {
     setWorkoutLogs(data.workoutLogs);
     setComments(data.comments);
@@ -487,14 +524,17 @@ export default function App() {
       })).filter((ex) => ex.sets.length > 0) // only include exercises that have subsets completed
     };
 
+    const nextWorkoutLogs = [finalLog, ...workoutLogs];
+    const nextUserStreaks = {
+      ...userStreaks,
+      [activeUserId]: (userStreaks[activeUserId] || 1) + 1,
+    };
+
     // Prepend to workout tracking logs
-    setWorkoutLogs((prev) => [finalLog, ...prev]);
+    setWorkoutLogs(nextWorkoutLogs);
 
     // Update active user's streak for simulator feeling
-    setUserStreaks((prev) => ({
-      ...prev,
-      [activeUserId]: (prev[activeUserId] || 1) + 1,
-    }));
+    setUserStreaks(nextUserStreaks);
 
     // Reset active workout machine
     setActiveWorkout(null);
@@ -504,11 +544,17 @@ export default function App() {
     // Swap views to home automatically to preview the entry!
     setCurrentTab(1);
     triggerToast("Workout logged.");
+    autoPushLocalDataToCloud(
+      getLocalDataWithOverrides({ workoutLogs: nextWorkoutLogs, userStreaks: nextUserStreaks }),
+      "workout"
+    );
   };
 
   const handleSaveRoutine = (newRoutine: Routine) => {
-    setRoutines((prev) => [newRoutine, ...prev]);
+    const nextRoutines = [newRoutine, ...routines];
+    setRoutines(nextRoutines);
     triggerToast(`✨ Routine template "${newRoutine.title}" created successfully!`);
+    autoPushLocalDataToCloud(getLocalDataWithOverrides({ routines: nextRoutines }), "routine");
   };
 
   const handleDeleteRoutine = (routineId: string) => {
@@ -621,8 +667,10 @@ export default function App() {
       is_custom: true,
       image_url: imageUrl,
     };
-    setExerciseLibrary((prev) => [...prev, newEx]);
+    const nextExerciseLibrary = [...exerciseLibrary, newEx];
+    setExerciseLibrary(nextExerciseLibrary);
     triggerToast(`Created "${name.trim()}" in the exercise library.`);
+    autoPushLocalDataToCloud(getLocalDataWithOverrides({ exerciseLibrary: nextExerciseLibrary }), "exercise");
     return true;
   };
 
@@ -984,7 +1032,7 @@ export default function App() {
                 </div>
 
                 <p className="mt-2 text-xs leading-relaxed text-stone-400">
-                  Sign-in persists on this device. Supabase is not writing app data yet.
+                  Sign-in persists on this device. Local saves stay primary; cloud upload runs after supported saves.
                 </p>
 
                 <div className="mt-4 grid gap-3">

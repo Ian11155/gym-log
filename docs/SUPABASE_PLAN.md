@@ -102,7 +102,9 @@ Small implementation order:
 7. Completed: add a manual developer-tool cloud connection/RLS check before automatic sync.
 8. Completed: add a read-only cloud pull preview before replacing local data.
 9. Completed: add explicit restore-from-cloud with confirmation.
-10. After manual sync is reliable, add background pull-on-load and push-on-save.
+10. Completed: add best-effort auto-push after supported local saves.
+11. Add a retry queue for failed auto-push attempts.
+12. After push/retry is reliable, add background pull-on-load.
 
 ## Phase 5: Migration From Local Data
 
@@ -139,4 +141,4 @@ The first Supabase foundation commit added:
 - `scripts/verify-supabase-rls.ts`
 - Updated roadmap status
 
-Next implementation task: add auto-push after local workout/routine/exercise saves. Keep local storage as the first load/write path.
+Next implementation task: add a retry queue for failed auto-push attempts. Keep local storage as the first load/write path.
