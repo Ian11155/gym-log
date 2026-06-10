@@ -35,6 +35,7 @@ SquadLift is a private Hevy-style workout tracker for a small friend squad. The 
   - cloud connection/RLS check works
   - manual local-to-cloud upload works
   - read-only cloud preview works
+  - explicit restore-from-cloud with confirmation works
   - automatic push/pull sync is not enabled yet
 - The app uses a mobile-first shell with developer tools moved into a separate drawer.
 - PWA install support is implemented with Vite PWA, app manifest, service worker, and generated icons.
@@ -65,7 +66,7 @@ SquadLift is a private Hevy-style workout tracker for a small friend squad. The 
 - Email/password authentication is implemented only inside developer tools; it is not yet part of the normal app entry flow.
 - Cross-device/shared data is partially implemented through manual Supabase upload and read-only preview.
 - The app still loads and writes local storage first; automatic cloud sync is not enabled yet.
-- Supabase-backed restore/pull into local app state is not implemented yet.
+- Supabase-backed restore/pull into local app state is implemented only as a manual developer-tool action with confirmation.
 - There is no retry queue for failed background sync yet.
 - Local data has basic versioning, corrupted-data fallback, legacy migration, and a lightweight `npm run test:storage` verification script.
 - A shared domain layer exists only as a thin local service; more workout validation/business logic still lives in UI state handlers.
@@ -145,11 +146,12 @@ SquadLift is a private Hevy-style workout tracker for a small friend squad. The 
     - Completed: add persistent email/password sign-in in developer tools.
     - Completed: add manual local-to-cloud upload in developer tools.
     - Completed: add read-only cloud pull preview in developer tools.
+    - Completed: add explicit restore-from-cloud with confirmation.
     - Use membership-based RLS instead of broad public policies.
     - Start with auth, squad membership, exercises, routines, workout logs, logged exercises, and logged sets.
     - Keep comments, reactions, fist-bumps, and feed behavior out of scope.
     - Add cross-device sync after local-first behavior remains stable.
-    - Current status: add an explicit restore-from-cloud action with confirmation.
+    - Current status: add auto-push after local workout/routine/exercise saves.
 
 11. Polish and test:
     - Test on desktop and mobile viewport sizes.
@@ -161,4 +163,4 @@ SquadLift is a private Hevy-style workout tracker for a small friend squad. The 
 
 ## Immediate Next Task
 
-Next recommended task: add an explicit developer-tool restore-from-cloud action with confirmation.
+Next recommended task: add auto-push after local workout/routine/exercise saves, while keeping local save as the source of truth.

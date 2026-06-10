@@ -1,5 +1,5 @@
-import { Exercise, Routine, WorkoutLog } from "../types";
-import { SquadLocalData } from "../storage/localSquadStorage";
+import { Exercise, Routine, SQUAD_USERS, WorkoutLog } from "../types";
+import { DEFAULT_USER_STREAKS, SquadLocalData } from "../storage/localSquadStorage";
 import { getSupabaseClient, getSupabaseSession } from "./supabaseClient";
 
 interface UploadResult {
@@ -20,6 +20,72 @@ export interface CloudPreview {
 
 interface ExerciseCloudMap {
   [localExerciseId: string]: string;
+}
+
+interface CloudExercise {
+  id: string;
+  name: string;
+  body_part: string;
+  category: string;
+  created_by: string | null;
+  is_custom: boolean | null;
+  image_url: string | null;
+}
+
+interface CloudRoutineSet {
+  set_number: number;
+  set_type: string;
+  target_reps: number;
+  target_weight: number;
+}
+
+interface CloudRoutineExercise {
+  id: string;
+  exercise_id: string;
+  order_index: number;
+  routine_sets: CloudRoutineSet[];
+}
+
+interface CloudRoutine {
+  id: string;
+  user_id: string;
+  title: string;
+  notes: string | null;
+  created_at: string;
+  routine_exercises: CloudRoutineExercise[];
+}
+
+interface CloudLoggedSet {
+  id: string;
+  set_number: number;
+  set_type: string;
+  actual_reps: number;
+  actual_weight: number;
+  is_completed: boolean;
+}
+
+interface CloudLoggedExercise {
+  id: string;
+  exercise_id: string;
+  order_index: number;
+  logged_sets: CloudLoggedSet[];
+}
+
+interface CloudWorkoutLog {
+  id: string;
+  user_id: string;
+  title: string;
+  start_time: string;
+  end_time: string;
+  total_volume: number;
+  duration_seconds: number;
+  notes: string | null;
+  logged_exercises: CloudLoggedExercise[];
+}
+
+interface CloudProfile {
+  id: string;
+  email: string | null;
 }
 
 export async function uploadLocalDataToSupabase(data: SquadLocalData): Promise<UploadResult> {
@@ -49,6 +115,40 @@ export async function uploadLocalDataToSupabase(data: SquadLocalData): Promise<U
     routineCount: routines.length,
     workoutCount: workouts.length,
     setCount,
+  };
+}
+
+export async function restoreLocalDataFromSupabase(currentData: SquadLocalData): Promise<SquadLocalData> {
+  const session = await getSupabaseSession();
+  if (!session) {
+    throw new Error("Sign in before restoring cloud data.");
+  }
+
+  const membership = await getPrimarySquadMembership(session.user.id);
+  if (!membership?.squad_id) {
+    throw new Error("No Supabase squad membership found for this account.");
+  }
+
+  const squadId = membership.squad_id;
+  const [cloudProfiles, cloudExercises, cloudRoutines, cloudWorkouts] = await Promise.all([
+    fetchCloudProfiles(squadId),
+    fetchCloudExercises(squadId),
+    fetchCloudRoutines(squadId),
+    fetchCloudWorkoutLogs(squadId),
+  ]);
+  const activeUserId = getLocalUserIdForEmail(session.user.email || currentData.activeUserId);
+  const localUserIdForCloudUser = createCloudUserMapper(cloudProfiles, activeUserId);
+
+  return {
+    ...currentData,
+    exerciseLibrary: cloudExercises.map(mapCloudExercise),
+    routines: cloudRoutines.map((routine) => mapCloudRoutine(routine, localUserIdForCloudUser)),
+    workoutLogs: cloudWorkouts.map((workout) => mapCloudWorkoutLog(workout, localUserIdForCloudUser)),
+    activeUserId,
+    userStreaks: {
+      ...DEFAULT_USER_STREAKS,
+      ...currentData.userStreaks,
+    },
   };
 }
 
@@ -136,6 +236,98 @@ async function getLatestTitle(
 
   if (error) throw error;
   return data?.title || "None";
+}
+
+async function fetchCloudExercises(squadId: string): Promise<CloudExercise[]> {
+  const supabase = await requireSupabaseClient();
+  const { data, error } = await supabase
+    .from("exercises")
+    .select("id, name, body_part, category, created_by, is_custom, image_url")
+    .eq("squad_id", squadId)
+    .order("name", { ascending: true });
+
+  if (error) throw error;
+  return (data || []) as CloudExercise[];
+}
+
+async function fetchCloudProfiles(squadId: string): Promise<CloudProfile[]> {
+  const supabase = await requireSupabaseClient();
+  const { data, error } = await supabase
+    .from("profiles")
+    .select(`
+      id,
+      email,
+      squad_members!inner (
+        squad_id
+      )
+    `)
+    .eq("squad_members.squad_id", squadId);
+
+  if (error) throw error;
+  return (data || []) as CloudProfile[];
+}
+
+async function fetchCloudRoutines(squadId: string): Promise<CloudRoutine[]> {
+  const supabase = await requireSupabaseClient();
+  const { data, error } = await supabase
+    .from("routines")
+    .select(`
+      id,
+      user_id,
+      title,
+      notes,
+      created_at,
+      routine_exercises (
+        id,
+        exercise_id,
+        order_index,
+        routine_sets (
+          set_number,
+          set_type,
+          target_reps,
+          target_weight
+        )
+      )
+    `)
+    .eq("squad_id", squadId)
+    .order("created_at", { ascending: false });
+
+  if (error) throw error;
+  return (data || []) as CloudRoutine[];
+}
+
+async function fetchCloudWorkoutLogs(squadId: string): Promise<CloudWorkoutLog[]> {
+  const supabase = await requireSupabaseClient();
+  const { data, error } = await supabase
+    .from("workout_logs")
+    .select(`
+      id,
+      user_id,
+      title,
+      start_time,
+      end_time,
+      total_volume,
+      duration_seconds,
+      notes,
+      logged_exercises (
+        id,
+        exercise_id,
+        order_index,
+        logged_sets (
+          id,
+          set_number,
+          set_type,
+          actual_reps,
+          actual_weight,
+          is_completed
+        )
+      )
+    `)
+    .eq("squad_id", squadId)
+    .order("end_time", { ascending: false });
+
+  if (error) throw error;
+  return (data || []) as CloudWorkoutLog[];
 }
 
 async function ensureCurrentProfile(userId: string, email: string) {
@@ -351,6 +543,89 @@ async function requireSupabaseClient() {
 
 function normalizeExerciseName(name: string) {
   return name.trim().toLowerCase();
+}
+
+function mapCloudExercise(exercise: CloudExercise): Exercise {
+  return {
+    id: exercise.id,
+    name: exercise.name,
+    body_part: exercise.body_part,
+    category: exercise.category,
+    created_by: exercise.created_by || undefined,
+    is_custom: Boolean(exercise.is_custom),
+    image_url: exercise.image_url || undefined,
+  };
+}
+
+function mapCloudRoutine(routine: CloudRoutine, localUserIdForCloudUser: (cloudUserId: string) => string): Routine {
+  const exercises = [...(routine.routine_exercises || [])].sort((a, b) => a.order_index - b.order_index);
+
+  return {
+    id: routine.id,
+    user_id: localUserIdForCloudUser(routine.user_id),
+    title: routine.title,
+    notes: routine.notes || "",
+    created_at: routine.created_at,
+    exercises: exercises.map((exercise) => ({
+      exercise_id: exercise.exercise_id,
+      sets: [...(exercise.routine_sets || [])]
+        .sort((a, b) => a.set_number - b.set_number)
+        .map((set) => ({
+          set_number: set.set_number,
+          set_type: set.set_type,
+          target_reps: Number(set.target_reps || 0),
+          target_weight: Number(set.target_weight || 0),
+        })),
+    })),
+  };
+}
+
+function mapCloudWorkoutLog(workout: CloudWorkoutLog, localUserIdForCloudUser: (cloudUserId: string) => string): WorkoutLog {
+  const exercises = [...(workout.logged_exercises || [])].sort((a, b) => a.order_index - b.order_index);
+
+  return {
+    id: workout.id,
+    user_id: localUserIdForCloudUser(workout.user_id),
+    title: workout.title,
+    start_time: workout.start_time,
+    end_time: workout.end_time,
+    total_volume: Number(workout.total_volume || 0),
+    duration_seconds: Number(workout.duration_seconds || 0),
+    notes: workout.notes || "",
+    exercises: exercises.map((exercise) => ({
+      id: exercise.id,
+      exercise_id: exercise.exercise_id,
+      order_index: exercise.order_index,
+      sets: [...(exercise.logged_sets || [])]
+        .sort((a, b) => a.set_number - b.set_number)
+        .map((set) => ({
+          id: set.id,
+          set_number: set.set_number,
+          set_type: set.set_type,
+          actual_reps: Number(set.actual_reps || 0),
+          actual_weight: Number(set.actual_weight || 0),
+          is_completed: Boolean(set.is_completed),
+        })),
+    })),
+  };
+}
+
+function getLocalUserIdForEmail(email: string) {
+  const matchingSeedUser = SQUAD_USERS.find((user) => user.email.toLowerCase() === email.toLowerCase());
+  return matchingSeedUser?.id || "user-1";
+}
+
+function createCloudUserMapper(cloudProfiles: CloudProfile[], fallbackUserId: string) {
+  const localUserByCloudId = new Map<string, string>();
+
+  for (const profile of cloudProfiles) {
+    const localUser = SQUAD_USERS.find((user) => user.email.toLowerCase() === (profile.email || "").toLowerCase());
+    if (localUser) {
+      localUserByCloudId.set(profile.id, localUser.id);
+    }
+  }
+
+  return (cloudUserId: string) => localUserByCloudId.get(cloudUserId) || fallbackUserId;
 }
 
 async function localIdToUuid(entity: string, localId: string) {

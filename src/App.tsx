@@ -16,7 +16,12 @@ import {
   signOutOfSupabase,
   verifySupabaseConnection,
 } from "./services/supabaseClient";
-import { CloudPreview, previewSupabaseData, uploadLocalDataToSupabase } from "./services/supabaseSquadDataService";
+import {
+  CloudPreview,
+  previewSupabaseData,
+  restoreLocalDataFromSupabase,
+  uploadLocalDataToSupabase,
+} from "./services/supabaseSquadDataService";
 import HomeCombinedTab from "./components/HomeCombinedTab";
 import WorkoutTab from "./components/WorkoutTab";
 import ProfileTab from "./components/ProfileTab";
@@ -105,6 +110,8 @@ export default function App() {
   const [cloudPreview, setCloudPreview] = useState<CloudPreview | null>(null);
   const [cloudPreviewStatus, setCloudPreviewStatus] = useState<string>("Not previewed");
   const [isCloudPreviewing, setIsCloudPreviewing] = useState<boolean>(false);
+  const [cloudRestoreStatus, setCloudRestoreStatus] = useState<string>("Not restored");
+  const [isCloudRestoring, setIsCloudRestoring] = useState<boolean>(false);
 
   useEffect(() => {
     squadDataService.save({
@@ -328,6 +335,36 @@ export default function App() {
       triggerToast(message);
     } finally {
       setIsCloudPreviewing(false);
+    }
+  };
+
+  const handleRestoreLocalDataFromCloud = async () => {
+    if (!cloudSignedInEmail) {
+      triggerToast("Sign in before restoring cloud data.");
+      return;
+    }
+
+    const confirmed = window.confirm(
+      "Restore from Supabase? This replaces local exercises, routines, and workout history on this device. Export a local backup first if you want a rollback file."
+    );
+
+    if (!confirmed) return;
+
+    setIsCloudRestoring(true);
+    setCloudRestoreStatus("Restoring...");
+
+    try {
+      const restoredData = await restoreLocalDataFromSupabase(getCurrentLocalData());
+      applyLocalData(restoredData);
+      const message = `Restored ${restoredData.exerciseLibrary.length} exercises, ${restoredData.routines.length} routines, ${restoredData.workoutLogs.length} workouts.`;
+      setCloudRestoreStatus(message);
+      triggerToast("Cloud data restored locally.");
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Cloud restore failed.";
+      setCloudRestoreStatus(message);
+      triggerToast(message);
+    } finally {
+      setIsCloudRestoring(false);
     }
   };
 
@@ -1056,6 +1093,24 @@ export default function App() {
                     className="flex min-h-11 items-center justify-center rounded-xl border border-emerald-500/20 bg-black px-4 py-3 text-[10px] font-black uppercase tracking-widest text-emerald-200 transition hover:border-emerald-400/40 hover:text-white disabled:cursor-not-allowed disabled:opacity-60"
                   >
                     {isCloudPreviewing ? "Previewing" : "Preview Cloud"}
+                  </button>
+
+                  <div className="min-w-0 rounded-xl border border-white/5 bg-black px-3 py-3">
+                    <p className="text-[9px] font-black uppercase tracking-widest text-stone-500">
+                      Restore
+                    </p>
+                    <p className="mt-1 break-words text-xs font-bold text-stone-250">
+                      {cloudRestoreStatus}
+                    </p>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => void handleRestoreLocalDataFromCloud()}
+                    disabled={isCloudRestoring || !cloudSignedInEmail}
+                    className="flex min-h-11 items-center justify-center rounded-xl border border-amber-500/20 bg-black px-4 py-3 text-[10px] font-black uppercase tracking-widest text-amber-200 transition hover:border-amber-400/40 hover:text-white disabled:cursor-not-allowed disabled:opacity-60"
+                  >
+                    {isCloudRestoring ? "Restoring" : "Restore Cloud"}
                   </button>
                 </div>
               </section>

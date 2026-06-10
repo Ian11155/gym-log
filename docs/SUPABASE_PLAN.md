@@ -101,7 +101,8 @@ Small implementation order:
 6. Keep `squadDataService` as the app-facing adapter boundary.
 7. Completed: add a manual developer-tool cloud connection/RLS check before automatic sync.
 8. Completed: add a read-only cloud pull preview before replacing local data.
-9. After manual sync is reliable, add background pull-on-load and push-on-save.
+9. Completed: add explicit restore-from-cloud with confirmation.
+10. After manual sync is reliable, add background pull-on-load and push-on-save.
 
 ## Phase 5: Migration From Local Data
 
@@ -138,4 +139,4 @@ The first Supabase foundation commit added:
 - `scripts/verify-supabase-rls.ts`
 - Updated roadmap status
 
-Next implementation task: add an explicit restore-from-cloud action with confirmation. Keep local storage as the first load/write path.
+Next implementation task: add auto-push after local workout/routine/exercise saves. Keep local storage as the first load/write path.
