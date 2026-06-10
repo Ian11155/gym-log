@@ -23,16 +23,16 @@ export default function SupabaseCodeViewer() {
           <div className="text-left">
             <h3 className="font-bold text-stone-100 flex items-center gap-2">
               Future Supabase Backend
-              <span className="text-[10px] bg-emerald-500/10 text-emerald-400 font-bold px-2.5 py-0.5 rounded-full border border-emerald-500/20">
+              <span className="text-[11px] bg-emerald-500/10 text-emerald-400 font-bold px-2.5 py-0.5 rounded-full border border-emerald-500/20">
                 PostgreSQL
               </span>
             </h3>
-            <p className="text-xs text-stone-400">Planned database migration and TypeScript model reference</p>
+            <p className="text-[13px] text-stone-400">Planned database migration and TypeScript model reference</p>
           </div>
         </div>
         <button
           onClick={() => handleCopy(codeToShow)}
-          className="flex items-center gap-2 px-3.5 py-2 bg-[#1c1b1b] hover:bg-[#252424] active:scale-95 text-[10px] font-black uppercase tracking-widest text-stone-200 rounded-xl transition-all border border-white/5 cursor-pointer"
+          className="flex items-center gap-2 px-3.5 py-2 bg-[#1c1b1b] hover:bg-[#252424] active:scale-95 text-[11px] font-black uppercase tracking-widest text-stone-200 rounded-xl transition-all border border-white/5 cursor-pointer"
         >
           {copied ? (
             <>
@@ -52,7 +52,7 @@ export default function SupabaseCodeViewer() {
       <div className="bg-[#0c0c0d]/80 px-4 py-2 border-b border-white/5 flex gap-2">
         <button
           onClick={() => setActiveSubTab("sql")}
-          className={`px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest flex items-center gap-2 transition cursor-pointer ${
+          className={`px-3 py-1.5 rounded-lg text-[11px] font-black uppercase tracking-widest flex items-center gap-2 transition cursor-pointer ${
             activeSubTab === "sql"
               ? "bg-[#181819] text-emerald-400 border border-emerald-500/10"
               : "text-stone-400 hover:text-stone-200"
@@ -63,7 +63,7 @@ export default function SupabaseCodeViewer() {
         </button>
         <button
           onClick={() => setActiveSubTab("types")}
-          className={`px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest flex items-center gap-2 transition cursor-pointer ${
+          className={`px-3 py-1.5 rounded-lg text-[11px] font-black uppercase tracking-widest flex items-center gap-2 transition cursor-pointer ${
             activeSubTab === "types"
               ? "bg-[#181819] text-[#5063ff] border border-[#5063ff]/15"
               : "text-stone-400 hover:text-stone-200"
@@ -75,13 +75,13 @@ export default function SupabaseCodeViewer() {
       </div>
 
       {/* Code Container */}
-      <div className="p-4 bg-[#080809] overflow-x-auto max-h-[380px] text-xs font-mono text-stone-300 leading-relaxed scrollbar-thin text-left border-b border-white/5">
+      <div className="p-4 bg-[#080809] overflow-x-auto max-h-[380px] text-[13px] font-mono text-stone-300 leading-relaxed scrollbar-thin text-left border-b border-white/5">
         <pre className="whitespace-pre">{codeToShow}</pre>
       </div>
 
       {/* Helpful Instructions footer */}
-      <div className="bg-[#121111]/90 p-5 text-xs text-stone-400 text-left">
-        <h4 className="font-bold text-stone-300 mb-2.5 flex items-center gap-1.5 uppercase tracking-wide text-[11px]">
+      <div className="bg-[#121111]/90 p-5 text-[13px] text-stone-400 text-left">
+        <h4 className="font-bold text-stone-300 mb-2.5 flex items-center gap-1.5 uppercase tracking-wide text-[12px]">
           <CheckCircle className="w-4 h-4 text-emerald-500" />
           Future Synchronization Guide
         </h4>

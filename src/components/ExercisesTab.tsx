@@ -141,7 +141,7 @@ export default function ExercisesTab({
       
       {/* Toast Notification */}
       {toastMessage && (
-        <div className="fixed top-12 left-1/2 transform -translate-x-1/2 z-50 bg-[#1c181a] text-white border border-[#6f6d6c]/25 px-4 py-3 rounded-2xl font-black text-xs shadow-3d-sm flex items-center gap-2.5 font-sans">
+        <div className="fixed top-12 left-1/2 transform -translate-x-1/2 z-50 bg-[#1c181a] text-white border border-[#6f6d6c]/25 px-4 py-3 rounded-2xl font-black text-[13px] shadow-3d-sm flex items-center gap-2.5 font-sans">
           <Sparkles className="w-4 h-4 text-stone-400 fill-current" />
           <span>{toastMessage}</span>
         </div>
@@ -151,9 +151,9 @@ export default function ExercisesTab({
       <div className="bg-black p-4.5 rounded-2xl border border-[#6f6d6c]/15 shadow-3d-sm text-left font-sans">
         <div className="flex items-center gap-2">
           <Globe className="w-4 h-4 text-stone-400 font-sans" />
-          <h4 className="text-[10px] font-black text-[#f7f5f4] uppercase tracking-widest font-mono">Synchronized Squad Hub</h4>
+          <h4 className="text-[11px] font-black text-[#f7f5f4] uppercase tracking-widest font-mono">Synchronized Squad Hub</h4>
         </div>
-        <p className="text-[11px] text-stone-400 mt-2 leading-relaxed">
+        <p className="text-[12px] text-stone-400 mt-2 leading-relaxed">
           This exercise pool is fully collaborative. Press any movement to check detailed stats, primary/secondary muscles and personal best records.
         </p>
       </div>
@@ -168,7 +168,7 @@ export default function ExercisesTab({
           placeholder="Search global pool (Bench, Leg Press)..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full bg-black border border-[#6f6d6c]/15 rounded-xl pl-10 pr-4 py-3.5 text-xs text-stone-250 placeholder-stone-605 focus:outline-none focus:border-[#6f6d6c]/50 shadow-inner"
+          className="w-full bg-black border border-[#6f6d6c]/15 rounded-xl pl-10 pr-4 py-3.5 text-[13px] text-stone-250 placeholder-stone-605 focus:outline-none focus:border-[#6f6d6c]/50 shadow-inner"
         />
       </div>
 
@@ -178,7 +178,7 @@ export default function ExercisesTab({
           <button
             key={bp}
             onClick={() => setSelectedBodyPart(bp)}
-            className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest whitespace-nowrap transition-all duration-305 transform cursor-pointer ${
+            className={`px-4 py-2 rounded-xl text-[11px] font-black uppercase tracking-widest whitespace-nowrap transition-all duration-305 transform cursor-pointer ${
               selectedBodyPart === bp
                 ? "bg-[#6f6d6c] text-[#f7f5f4] font-black shadow-3d-emerald"
                 : "bg-black text-stone-400 hover:text-stone-200 border border-[#6f6d6c]/10 shadow-3d-sm"
@@ -203,12 +203,12 @@ export default function ExercisesTab({
             <div className="flex items-center gap-3 text-left">
               <ExerciseImage exercise={ex} className="w-10 h-10 flex-shrink-0 group-hover:scale-105 transition duration-200" />
               <div>
-                <h5 className="text-[11.5px] font-black text-[#f7f5f4] group-hover:text-white transition duration-200">{ex.name}</h5>
+                <h5 className="text-[12.5px] font-black text-[#f7f5f4] group-hover:text-white transition duration-200">{ex.name}</h5>
                 <div className="flex items-center gap-1.5 mt-1.5 font-sans">
-                  <span className="text-[8px] bg-black border border-[#6f6d6c]/10 text-stone-400 px-2 py-0.5 rounded uppercase font-bold tracking-wider">
+                  <span className="text-[9px] bg-black border border-[#6f6d6c]/10 text-stone-400 px-2 py-0.5 rounded uppercase font-bold tracking-wider">
                     {ex.body_part}
                   </span>
-                  <span className="text-[8px] bg-black text-stone-300 px-2 py-0.5 rounded uppercase font-black tracking-wider border border-[#6f6d6c]/20">
+                  <span className="text-[9px] bg-black text-stone-300 px-2 py-0.5 rounded uppercase font-black tracking-wider border border-[#6f6d6c]/20">
                     {ex.category}
                   </span>
                 </div>
@@ -218,11 +218,11 @@ export default function ExercisesTab({
             {/* Custom Exercise authorship badge */}
             <div className="text-right flex items-center gap-2">
               {ex.is_custom ? (
-                <span className="text-[9px] bg-[#6f6d6c]/15 text-[#f7f5f4] px-2.5 py-1 rounded-lg border border-[#6f6d6c]/20 font-bold font-mono">
+                <span className="text-[10px] bg-[#6f6d6c]/15 text-[#f7f5f4] px-2.5 py-1 rounded-lg border border-[#6f6d6c]/20 font-bold font-mono">
                   by {getCreatorName(ex.created_by)}
                 </span>
               ) : (
-                <span className="text-[9px] text-stone-600 font-mono tracking-wide uppercase font-bold">
+                <span className="text-[10px] text-stone-600 font-mono tracking-wide uppercase font-bold">
                   Global
                 </span>
               )}
@@ -232,7 +232,7 @@ export default function ExercisesTab({
         ))}
 
         {filteredExercises.length === 0 && (
-          <div className="p-8 text-center bg-stone-900/10 text-stone-500 text-xs rounded-xl border border-dashed border-[#6f6d6c]/20 font-sans">
+          <div className="p-8 text-center bg-stone-900/10 text-stone-500 text-[13px] rounded-xl border border-dashed border-[#6f6d6c]/20 font-sans">
             No matching exercises found. Write a new custom one below!
           </div>
         )}
@@ -245,7 +245,7 @@ export default function ExercisesTab({
           className="w-full bg-black hover:bg-stone-900 active:translate-y-0.5 text-[#f7f5f4] border border-[#6f6d6c]/25 font-black uppercase tracking-widest py-3.5 px-4 rounded-xl flex items-center justify-center gap-2.5 transition-all duration-200 shadow-3d-sm cursor-pointer"
         >
           <Plus className="w-4 h-4 text-stone-300 stroke-[3px]" />
-          <span className="text-[10px]">Add Custom Movement</span>
+          <span className="text-[11px]">Add Custom Movement</span>
         </button>
       </div>
 
@@ -317,8 +317,8 @@ export default function ExercisesTab({
               <div className="text-center space-y-2 pt-2">
                 <ExerciseImage exercise={selectedDetailExercise} className="w-16 h-16 mx-auto" />
                 <div>
-                  <h3 className="text-base font-black text-stone-100 uppercase tracking-tight">{selectedDetailExercise.name}</h3>
-                  <p className="text-[9px] text-[#6f6d6c] font-black tracking-widest uppercase mt-0.5 font-mono">
+                  <h3 className="text-[17px] font-black text-stone-100 uppercase tracking-tight">{selectedDetailExercise.name}</h3>
+                  <p className="text-[10px] text-[#6f6d6c] font-black tracking-widest uppercase mt-0.5 font-mono">
                     {selectedDetailExercise.category} MOVEMENT
                   </p>
                 </div>
@@ -328,7 +328,7 @@ export default function ExercisesTab({
               <div className="flex border-b border-[#6f6d6c]/15 font-sans">
                 <button
                   onClick={() => setDetailTab("summary")}
-                  className={`flex-1 pb-2.5 text-[10px] font-black uppercase tracking-wider text-center border-b-2 transition duration-200 cursor-pointer ${
+                  className={`flex-1 pb-2.5 text-[11px] font-black uppercase tracking-wider text-center border-b-2 transition duration-200 cursor-pointer ${
                     detailTab === "summary"
                       ? "border-[#6f6d6c] text-[#f7f5f4]"
                       : "border-transparent text-stone-500 hover:text-stone-300"
@@ -338,7 +338,7 @@ export default function ExercisesTab({
                 </button>
                 <button
                   onClick={() => setDetailTab("history")}
-                  className={`flex-1 pb-2.5 text-[10px] font-black uppercase tracking-wider text-center border-b-2 transition duration-200 cursor-pointer ${
+                  className={`flex-1 pb-2.5 text-[11px] font-black uppercase tracking-wider text-center border-b-2 transition duration-200 cursor-pointer ${
                     detailTab === "history"
                       ? "border-[#6f6d6c] text-[#f7f5f4]"
                       : "border-transparent text-stone-500 hover:text-stone-300"
@@ -357,8 +357,8 @@ export default function ExercisesTab({
                         <Info className="w-3 h-3 text-stone-400" />
                       </div>
                       <div>
-                        <span className="text-[8px] uppercase font-bold text-stone-500 tracking-wider block">Primary Muscle</span>
-                        <span className="text-[11px] font-bold text-stone-200">{muscles.primary}</span>
+                        <span className="text-[9px] uppercase font-bold text-stone-500 tracking-wider block">Primary Muscle</span>
+                        <span className="text-[12px] font-bold text-stone-200">{muscles.primary}</span>
                       </div>
                     </div>
 
@@ -367,8 +367,8 @@ export default function ExercisesTab({
                         <Dumbbell className="w-3 h-3 text-stone-400" />
                       </div>
                       <div>
-                        <span className="text-[8px] uppercase font-bold text-stone-500 tracking-wider block">Secondary Muscles</span>
-                        <span className="text-[11px] text-stone-400 font-semibold">{muscles.secondary}</span>
+                        <span className="text-[9px] uppercase font-bold text-stone-500 tracking-wider block">Secondary Muscles</span>
+                        <span className="text-[12px] text-stone-400 font-semibold">{muscles.secondary}</span>
                       </div>
                     </div>
                   </div>
@@ -376,7 +376,7 @@ export default function ExercisesTab({
                   {/* Personal Records panel */}
                   <div className="space-y-2.5">
                     <div className="flex items-center justify-between">
-                      <span className="text-[9px] uppercase font-black text-stone-450 tracking-widest font-mono">
+                      <span className="text-[10px] uppercase font-black text-stone-450 tracking-widest font-mono">
                         🏅 {athleteName}'s Personal Best Records
                       </span>
                     </div>
@@ -387,36 +387,36 @@ export default function ExercisesTab({
                         <div className="absolute top-1.5 right-2 opacity-5">
                           <TrendingUp className="w-10 h-10 text-[#6f6d6c]" />
                         </div>
-                        <span className="text-[7.5px] uppercase font-bold text-stone-500 tracking-widest block font-sans">
+                        <span className="text-[8.5px] uppercase font-bold text-stone-500 tracking-widest block font-sans">
                           Heaviest Lift
                         </span>
-                        <span className="font-mono text-xs font-black text-[#f7f5f4] block mt-1">
+                        <span className="font-mono text-[13px] font-black text-[#f7f5f4] block mt-1">
                           {records.heaviestWeight > 0 ? (
                             <>
-                              {records.heaviestWeight} <span className="text-[8px] font-sans font-bold text-stone-450 uppercase">kg</span>
+                              {records.heaviestWeight} <span className="text-[9px] font-sans font-bold text-stone-450 uppercase">kg</span>
                             </>
                           ) : (
                             "None yet"
                           )}
                         </span>
-                        <span className="text-[7px] text-[#6f6d6c] font-mono font-bold block mt-1 truncate">
+                        <span className="text-[8px] text-[#6f6d6c] font-mono font-bold block mt-1 truncate">
                           {records.heaviestWeight > 0 ? "Highest weight single set" : "Log to track"}
                         </span>
                       </div>
 
                       {/* Best Set Volume Record */}
                       <div className="bg-black p-3 rounded-2xl border border-white/5 text-left relative overflow-hidden">
-                        <span className="text-[7.5px] uppercase font-bold text-stone-500 tracking-widest block font-sans">
+                        <span className="text-[8.5px] uppercase font-bold text-stone-500 tracking-widest block font-sans">
                           Best Set Volume
                         </span>
-                        <span className="font-mono text-xs font-black text-[#f7f5f4] block mt-1 truncate">
+                        <span className="font-mono text-[13px] font-black text-[#f7f5f4] block mt-1 truncate">
                           {records.bestSetVolume > 0 ? (
                             `${records.bestVolumeSetDetails.weight} kg x ${records.bestVolumeSetDetails.reps}`
                           ) : (
                             "None yet"
                           )}
                         </span>
-                        <span className="text-[7px] text-[#6f6d6c] font-mono font-bold block mt-1 truncate">
+                        <span className="text-[8px] text-[#6f6d6c] font-mono font-bold block mt-1 truncate">
                           {records.bestSetVolume > 0 ? (
                             `Total: ${records.bestSetVolume.toLocaleString()} kg`
                           ) : (
@@ -428,7 +428,7 @@ export default function ExercisesTab({
 
                     {/* Additional mini stats */}
                     {records.totalSetsPerformed > 0 && (
-                      <div className="flex items-center justify-between px-2 text-[9px] text-stone-400 font-mono">
+                      <div className="flex items-center justify-between px-2 text-[10px] text-stone-400 font-mono">
                         <span>Total logged reps:</span>
                         <span className="text-stone-300 font-bold">{records.totalSetsPerformed} sets performed</span>
                       </div>
@@ -439,7 +439,7 @@ export default function ExercisesTab({
                 /* ----------------- CUSTOM HISTORY VIEW ----------------- */
                 <div className="space-y-3 max-h-[280px] overflow-y-auto pr-1 scrollbar-thin animate-fade-in">
                   {historyLogs.length === 0 ? (
-                    <div className="py-12 text-center text-stone-500 text-xs font-sans">
+                    <div className="py-12 text-center text-stone-500 text-[13px] font-sans">
                       No workout history recorded for this exercise yet.
                     </div>
                   ) : (
@@ -447,10 +447,10 @@ export default function ExercisesTab({
                       <div key={idx} className="border-b border-stone-800/80 pb-3 last:border-b-0">
                         {/* Workout header block */}
                         <div className="mb-2">
-                          <h4 className="text-xs font-black text-[#f7f5f4] hover:text-[#6f6d6c] transition duration-150 flex items-center justify-between">
+                          <h4 className="text-[13px] font-black text-[#f7f5f4] hover:text-[#6f6d6c] transition duration-150 flex items-center justify-between">
                             <span>{item.workout_title}</span>
                           </h4>
-                          <span className="text-[8.5px] text-stone-500 font-bold block mt-0.5">
+                          <span className="text-[9.5px] text-stone-500 font-bold block mt-0.5">
                             {formatLogDate(item.start_time)}
                           </span>
                         </div>
@@ -459,11 +459,11 @@ export default function ExercisesTab({
                         <div className="bg-black p-3 rounded-2xl border border-[#6f6d6c]/10 space-y-2.5">
                           <div className="flex items-center gap-2.5 pb-2 border-b border-stone-900/60 font-sans">
                             <ExerciseImage exercise={selectedDetailExercise} className="w-5 h-5 flex-shrink-0" />
-                            <span className="text-xs font-bold text-stone-205">{selectedDetailExercise.name}</span>
+                            <span className="text-[13px] font-bold text-stone-205">{selectedDetailExercise.name}</span>
                           </div>
 
                           {/* Set & Weights Column Headers */}
-                          <div className="flex justify-between text-[8px] font-black tracking-widest text-[#6f6d6c] uppercase font-mono pb-1">
+                          <div className="flex justify-between text-[9px] font-black tracking-widest text-[#6f6d6c] uppercase font-mono pb-1">
                             <span>SET</span>
                             <span>WEIGHT & REPS</span>
                           </div>
@@ -473,7 +473,7 @@ export default function ExercisesTab({
                             {item.sets.map((set, setIdx) => (
                               <div
                                 key={setIdx}
-                                className={`flex justify-between items-center px-3 py-2 rounded-xl text-xs font-sans font-semibold ${
+                                className={`flex justify-between items-center px-3 py-2 rounded-xl text-[13px] font-sans font-semibold ${
                                   setIdx % 2 === 0 ? "bg-[#1c1c1c]/40" : "bg-transparent"
                                 }`}
                               >
@@ -496,7 +496,7 @@ export default function ExercisesTab({
                 <button
                   type="button"
                   onClick={() => setSelectedDetailExercise(null)}
-                  className="w-full bg-[#6f6d6c] hover:bg-[#868382] text-white font-black text-[10px] uppercase tracking-widest py-3 px-4 rounded-xl transition duration-200 shadow-3d-emerald text-center cursor-pointer"
+                  className="w-full bg-[#6f6d6c] hover:bg-[#868382] text-white font-black text-[11px] uppercase tracking-widest py-3 px-4 rounded-xl transition duration-200 shadow-3d-emerald text-center cursor-pointer"
                 >
                   Close Stats View
                 </button>
@@ -511,17 +511,17 @@ export default function ExercisesTab({
       {isAddModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 animate-fade-in text-left font-sans">
           <div className="w-full max-w-sm bg-black border border-[#2d2729] rounded-3xl shadow-3d-md p-6 space-y-4 text-stone-100 animate-slide-up">
-            <h3 className="text-base font-bold text-[#f7f5f4] flex items-center gap-2">
+            <h3 className="text-[17px] font-bold text-[#f7f5f4] flex items-center gap-2">
               <Dumbbell className="w-4.5 h-4.5 text-[#6f6d6c]" />
               <span>Create Team Movement</span>
             </h3>
-            <p className="text-xs text-stone-400 leading-relaxed">
+            <p className="text-[13px] text-stone-400 leading-relaxed">
               Define a custom exercise. In this local demo, it is saved to this browser's shared exercise library.
             </p>
 
             <div className="space-y-4">
               <div>
-                <label className="block text-[8px] uppercase font-black text-stone-400 tracking-widest mb-1.5 font-sans">
+                <label className="block text-[9px] uppercase font-black text-stone-400 tracking-widest mb-1.5 font-sans">
                   Exercise Name
                 </label>
                 <input
@@ -529,20 +529,20 @@ export default function ExercisesTab({
                   placeholder="e.g. Hex Press (Dumbbell)"
                   value={newName}
                   onChange={(e) => setNewName(e.target.value)}
-                  className="w-full bg-black border border-[#6f6d6c]/15 rounded-xl px-3 py-2.5 text-xs text-stone-200 placeholder-stone-605 focus:outline-none focus:border-[#6f6d6c]/50 shadow-inner font-sans"
+                  className="w-full bg-black border border-[#6f6d6c]/15 rounded-xl px-3 py-2.5 text-[13px] text-stone-200 placeholder-stone-605 focus:outline-none focus:border-[#6f6d6c]/50 shadow-inner font-sans"
                   autoFocus
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-[8px] uppercase font-black text-stone-400 tracking-widest mb-1.5 font-sans">
+                  <label className="block text-[9px] uppercase font-black text-stone-400 tracking-widest mb-1.5 font-sans">
                     Target Body Part
                   </label>
                   <select
                     value={newBodyPart}
                     onChange={(e) => setNewBodyPart(e.target.value)}
-                    className="w-full bg-black border border-[#6f6d6c]/15 rounded-xl px-2 py-2.5 text-xs text-stone-300 focus:outline-none focus:border-[#6f6d6c]/50 shadow-3d-sm font-sans"
+                    className="w-full bg-black border border-[#6f6d6c]/15 rounded-xl px-2 py-2.5 text-[13px] text-stone-300 focus:outline-none focus:border-[#6f6d6c]/50 shadow-3d-sm font-sans"
                   >
                     <option value="Chest">Chest</option>
                     <option value="Legs">Legs</option>
@@ -554,13 +554,13 @@ export default function ExercisesTab({
                 </div>
 
                 <div>
-                  <label className="block text-[8px] uppercase font-black text-stone-400 tracking-widest mb-1.5 font-sans">
+                  <label className="block text-[9px] uppercase font-black text-stone-400 tracking-widest mb-1.5 font-sans">
                     Equipment Category
                   </label>
                   <select
                     value={newCategory}
                     onChange={(e) => setNewCategory(e.target.value)}
-                    className="w-full bg-black border border-[#6f6d6c]/15 rounded-xl px-2 py-2.5 text-xs text-stone-300 focus:outline-none focus:border-[#6f6d6c]/50 shadow-3d-sm font-sans"
+                    className="w-full bg-black border border-[#6f6d6c]/15 rounded-xl px-2 py-2.5 text-[13px] text-stone-300 focus:outline-none focus:border-[#6f6d6c]/50 shadow-3d-sm font-sans"
                   >
                     <option value="Barbell">Barbell</option>
                     <option value="Dumbbell">Dumbbell</option>
@@ -572,7 +572,7 @@ export default function ExercisesTab({
               </div>
 
               <div>
-                <label className="block text-[8px] uppercase font-black text-stone-400 tracking-widest mb-1.5 font-sans">
+                <label className="block text-[9px] uppercase font-black text-stone-400 tracking-widest mb-1.5 font-sans">
                   Exercise Image URL (Optional)
                 </label>
                 <input
@@ -580,7 +580,7 @@ export default function ExercisesTab({
                   placeholder="e.g. https://images.unsplash.com/... or keep blank"
                   value={newImageUrl}
                   onChange={(e) => setNewImageUrl(e.target.value)}
-                  className="w-full bg-black border border-[#6f6d6c]/15 rounded-xl px-3 py-2.5 text-xs text-stone-200 placeholder-stone-605 focus:outline-none focus:border-[#6f6d6c]/50 shadow-inner font-sans"
+                  className="w-full bg-black border border-[#6f6d6c]/15 rounded-xl px-3 py-2.5 text-[13px] text-stone-200 placeholder-stone-605 focus:outline-none focus:border-[#6f6d6c]/50 shadow-inner font-sans"
                 />
               </div>
 
@@ -589,7 +589,7 @@ export default function ExercisesTab({
                 <button
                   type="button"
                   onClick={() => setIsAddModalOpen(false)}
-                  className="flex-1 bg-black hover:bg-stone-900 text-[10px] font-black uppercase tracking-widest py-2.5 px-3 rounded-xl text-stone-400 transition cursor-pointer font-bold font-sans"
+                  className="flex-1 bg-black hover:bg-stone-900 text-[11px] font-black uppercase tracking-widest py-2.5 px-3 rounded-xl text-stone-400 transition cursor-pointer font-bold font-sans"
                 >
                   Cancel
                 </button>
@@ -597,7 +597,7 @@ export default function ExercisesTab({
                   type="button"
                   onClick={handleCreateExercise}
                   disabled={!newName.trim()}
-                  className="flex-1 bg-[#6f6d6c] hover:bg-[#868382] disabled:opacity-30 text-white font-black text-[10px] uppercase tracking-widest py-2.5 px-3 rounded-xl transition cursor-pointer shadow-3d-emerald font-sans"
+                  className="flex-1 bg-[#6f6d6c] hover:bg-[#868382] disabled:opacity-30 text-white font-black text-[11px] uppercase tracking-widest py-2.5 px-3 rounded-xl transition cursor-pointer shadow-3d-emerald font-sans"
                 >
                   Sync & Add
                 </button>

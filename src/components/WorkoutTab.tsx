@@ -173,9 +173,9 @@ export default function WorkoutTab({
       <div className="flex items-center justify-between pt-1 pb-1">
         <div className="flex items-center gap-1.5">
           <h2 className="text-xl font-bold font-sans tracking-tight text-white">Workout</h2>
-          <span className="text-[10px] bg-stone-900/40 p-1 text-stone-400 rounded-lg cursor-pointer">▼</span>
+          <span className="text-[11px] bg-stone-900/40 p-1 text-stone-400 rounded-lg cursor-pointer">▼</span>
         </div>
-        <span className="bg-yellow-500 text-black text-[9px] font-black uppercase px-2 py-1 rounded-md tracking-wider shadow-inner">
+        <span className="bg-yellow-500 text-black text-[10px] font-black uppercase px-2 py-1 rounded-md tracking-wider shadow-inner">
           PRO
         </span>
       </div>
@@ -183,7 +183,7 @@ export default function WorkoutTab({
       {/* Start Empty Workout Button */}
       <button
         onClick={onStartEmptyWorkout}
-        className="w-full bg-[#141414] hover:bg-[#1f1f1f] active:translate-y-0.5 text-white font-sans font-bold text-xs py-4 px-4 rounded-xl border border-[#6f6d6c]/25 flex items-center justify-center gap-2 transition shadow-3d-sm cursor-pointer hover:border-[#6f6d6c]/40"
+        className="w-full bg-[#141414] hover:bg-[#1f1f1f] active:translate-y-0.5 text-white font-sans font-bold text-[13px] py-4 px-4 rounded-xl border border-[#6f6d6c]/25 flex items-center justify-center gap-2 transition shadow-3d-sm cursor-pointer hover:border-[#6f6d6c]/40"
       >
         <span className="stroke-[3px] text-stone-300 font-black">+</span>
         <span>Start Empty Workout</span>
@@ -191,7 +191,7 @@ export default function WorkoutTab({
 
       {/* Routines Label header with '+' button next to it */}
       <div className="flex items-center justify-between pt-1 border-b border-[#2d2729] pb-2">
-        <h3 className="text-xs font-bold text-stone-300 tracking-wide uppercase font-mono">Routines</h3>
+        <h3 className="text-[13px] font-bold text-stone-300 tracking-wide uppercase font-mono">Routines</h3>
         <button
           onClick={() => {
             setIsCreatorOpen(true);
@@ -217,8 +217,8 @@ export default function WorkoutTab({
             <Clipboard className="w-4 h-4" />
           </div>
           <div className="text-left">
-            <span className="text-[10px] font-black uppercase text-stone-200 block">New Routine</span>
-            <span className="text-[7.5px] text-stone-550 uppercase font-mono mt-0.5 tracking-wider block">PREPARATION</span>
+            <span className="text-[11px] font-black uppercase text-stone-200 block">New Routine</span>
+            <span className="text-[8.5px] text-stone-550 uppercase font-mono mt-0.5 tracking-wider block">PREPARATION</span>
           </div>
         </button>
 
@@ -230,8 +230,8 @@ export default function WorkoutTab({
             <Compass className="w-4 h-4" />
           </div>
           <div className="text-left">
-            <span className="text-[10px] font-black uppercase text-stone-200 block">Explore</span>
-            <span className="text-[7.5px] text-stone-550 uppercase font-mono mt-0.5 tracking-wider block">GYM MOVEMENTS</span>
+            <span className="text-[11px] font-black uppercase text-stone-200 block">Explore</span>
+            <span className="text-[8.5px] text-stone-550 uppercase font-mono mt-0.5 tracking-wider block">GYM MOVEMENTS</span>
           </div>
         </button>
       </div>
@@ -241,7 +241,7 @@ export default function WorkoutTab({
         <div className="bg-[#fef8e2] border border-yellow-250/30 p-2.5 rounded-xl flex items-center justify-between text-left shadow-3d-sm relative">
           <div className="flex items-center gap-2 pr-4">
             <span className="text-lg">👇</span>
-            <p className="text-[10px] font-bold text-yellow-800 leading-tight">
+            <p className="text-[11px] font-bold text-yellow-800 leading-tight">
               Press and hold a routine template card to reorder list settings
             </p>
           </div>
@@ -256,7 +256,7 @@ export default function WorkoutTab({
 
       {/* Save Routines Accordion Menu */}
       <div className="space-y-3">
-        <div className="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest text-[#a3a3a6]">
+        <div className="flex items-center gap-1.5 text-[11px] font-black uppercase tracking-widest text-[#a3a3a6]">
           <span>▼ My Routines ({routines.length})</span>
         </div>
 
@@ -274,11 +274,11 @@ export default function WorkoutTab({
                 {/* Routine Card Header */}
                 <div className="flex justify-between items-start">
                   <div className="flex-1 pr-3">
-                    <h4 className="text-xs font-black text-[#f7f5f4]">
+                    <h4 className="text-[13px] font-black text-[#f7f5f4]">
                       {routine.title}
                     </h4>
                     {/* List of exercises comma-separated */}
-                    <p className="text-[10.5px] text-stone-450 mt-1 lines-clamp-3 leading-relaxed">
+                    <p className="text-[11.5px] text-stone-450 mt-1 lines-clamp-3 leading-relaxed">
                       {exNamesLine || "No exercises configured in template."}
                     </p>
 
@@ -292,7 +292,7 @@ export default function WorkoutTab({
                       </div>
                     )}
 
-                    <span className="inline-block mt-3 bg-[#1c181a] border border-[#2d2729] text-[9px] font-mono text-stone-400 px-2 py-0.5 rounded font-black tracking-wider uppercase">
+                    <span className="inline-block mt-3 bg-[#1c181a] border border-[#2d2729] text-[10px] font-mono text-stone-400 px-2 py-0.5 rounded font-black tracking-wider uppercase">
                       {routine.exercises.length} Exercises • {totalSets} Sets
                     </span>
                   </div>
@@ -310,7 +310,7 @@ export default function WorkoutTab({
                 {/* Big Blue Start Routine Button inside the card mirroring Hevy image! */}
                 <button
                   onClick={() => onLaunchRoutine(routine)}
-                  className="w-full bg-[#007aff] hover:bg-[#1a85fe] active:translate-y-0.5 text-white text-[10.5px] font-bold py-3 px-4 rounded-xl flex items-center justify-center gap-2 transition cursor-pointer shadow-[0_4px_12px_rgba(0,122,255,0.25)]"
+                  className="w-full bg-[#007aff] hover:bg-[#1a85fe] active:translate-y-0.5 text-white text-[11.5px] font-bold py-3 px-4 rounded-xl flex items-center justify-center gap-2 transition cursor-pointer shadow-[0_4px_12px_rgba(0,122,255,0.25)]"
                 >
                   <Play className="w-3.5 h-3.5 fill-current stroke-none" />
                   <span>Start Routine</span>
@@ -328,7 +328,7 @@ export default function WorkoutTab({
             className="border border-dashed border-[#6f6d6c]/25 rounded-2xl p-6 text-center text-stone-450 hover:text-white hover:border-[#6f6d6c]/45 bg-stone-900/10 cursor-pointer transition duration-300"
           >
             <span className="text-stone-400 stroke-[3px] font-black mr-1">+</span>
-            <span className="text-xs font-bold leading-normal">Add new routine</span>
+            <span className="text-[13px] font-bold leading-normal">Add new routine</span>
           </div>
         </div>
       </div>
@@ -342,7 +342,7 @@ export default function WorkoutTab({
             <div className="flex items-center justify-between border-b border-[#2d2729] pb-3">
               <div className="flex items-center gap-2">
                 <Sliders className="w-4.5 h-4.5 text-[#6f6d6c]" />
-                <h4 className="text-sm font-black uppercase tracking-widest text-[#f7f5f4]">New Routine Draft</h4>
+                <h4 className="text-[15px] font-black uppercase tracking-widest text-[#f7f5f4]">New Routine Draft</h4>
               </div>
               <button
                 onClick={() => setIsCreatorOpen(false)}
@@ -355,7 +355,7 @@ export default function WorkoutTab({
             {/* Inputs Block */}
             <div className="space-y-3.5 text-left">
               <div>
-                <label className="block text-[8px] uppercase font-black text-stone-400 tracking-widest mb-1.5">
+                <label className="block text-[9px] uppercase font-black text-stone-400 tracking-widest mb-1.5">
                   Routine Title
                 </label>
                 <input
@@ -363,13 +363,13 @@ export default function WorkoutTab({
                   placeholder="e.g. Chest Day B (Smith Focus)"
                   value={newTitle}
                   onChange={(e) => setNewTitle(e.target.value)}
-                  className="w-full bg-[#6f6d6c] border border-white/10 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-stone-250 font-bold focus:outline-none focus:border-white/30 shadow-inner"
+                  className="w-full bg-[#6f6d6c] border border-white/10 rounded-xl px-3.5 py-2.5 text-[13px] text-white placeholder-stone-250 font-bold focus:outline-none focus:border-white/30 shadow-inner"
                   autoFocus
                 />
               </div>
 
               <div>
-                <label className="block text-[8px] uppercase font-black text-stone-400 tracking-widest mb-1.5">
+                <label className="block text-[9px] uppercase font-black text-stone-400 tracking-widest mb-1.5">
                   Routine Focus Memo
                 </label>
                 <textarea
@@ -377,14 +377,14 @@ export default function WorkoutTab({
                   value={newNotes}
                   onChange={(e) => setNewNotes(e.target.value)}
                   rows={2}
-                  className="w-full bg-[#6f6d6c] border border-white/10 rounded-xl px-3.5 py-2 text-xs text-white placeholder-stone-250 focus:outline-none focus:border-white/30 shadow-inner"
+                  className="w-full bg-[#6f6d6c] border border-white/10 rounded-xl px-3.5 py-2 text-[13px] text-white placeholder-stone-250 focus:outline-none focus:border-white/30 shadow-inner"
                 />
               </div>
             </div>
 
             {/* Added exercises templates list */}
             <div className="space-y-4">
-              <span className="block text-[8px] uppercase font-black text-stone-400 tracking-widest border-b border-[#2d2729] pb-1.5">
+              <span className="block text-[9px] uppercase font-black text-stone-400 tracking-widest border-b border-[#2d2729] pb-1.5">
                 Target Exercises ({newRoutineExs.length})
               </span>
 
@@ -395,20 +395,20 @@ export default function WorkoutTab({
                     <div className="flex items-center justify-between border-b border-white/5 pb-2 mb-2">
                        <div className="flex items-center gap-2 min-w-0 pr-4">
                         <ExerciseImage exercise={exerciseLibrary.find(e => e.id === rte.exercise_id)} className="w-7 h-7 flex-shrink-0" />
-                        <span className="text-[10px] font-black text-[#f7f5f4] truncate">
+                        <span className="text-[11px] font-black text-[#f7f5f4] truncate">
                           {idx + 1}. {getFullExerciseName(rte.exercise_id)}
                         </span>
                       </div>
                       <button
                         onClick={() => handleRemoveExFromTemplate(idx)}
-                        className="text-stone-500 hover:text-red-405 text-xs font-black p-0.5"
+                        className="text-stone-500 hover:text-red-405 text-[13px] font-black p-0.5"
                       >
                         ✕
                       </button>
                     </div>
 
                     {/* Sets Editor Table */}
-                    <table className="w-full text-left text-[9px]">
+                    <table className="w-full text-left text-[10px]">
                       <thead>
                         <tr className="text-[#8e8d8d] uppercase tracking-wider font-extrabold pb-1">
                           <th className="w-8">Set</th>
@@ -426,7 +426,7 @@ export default function WorkoutTab({
                               <select
                                 value={set.set_type}
                                 onChange={(e) => handleUpdateTemplateSetField(idx, sIdx, "set_type", e.target.value)}
-                                className="bg-[#1c181a] text-[9px] text-stone-300 font-bold border border-white/5 rounded py-0.5 px-1 focus:outline-none"
+                                className="bg-[#1c181a] text-[10px] text-stone-300 font-bold border border-white/5 rounded py-0.5 px-1 focus:outline-none"
                               >
                                 <option value="Normal">N</option>
                                 <option value="Warmup">W</option>
@@ -439,7 +439,7 @@ export default function WorkoutTab({
                                 type="number"
                                 value={set.target_weight}
                                 onChange={(e) => handleUpdateTemplateSetField(idx, sIdx, "target_weight", e.target.value)}
-                                className="w-12 bg-[#1c181a] text-center font-bold text-stone-200 border border-white/5 rounded py-0.5 text-[9px]"
+                                className="w-12 bg-[#1c181a] text-center font-bold text-stone-200 border border-white/5 rounded py-0.5 text-[10px]"
                               />
                             </td>
                             <td className="py-1 text-center font-mono">
@@ -447,7 +447,7 @@ export default function WorkoutTab({
                                 type="number"
                                 value={set.target_reps}
                                 onChange={(e) => handleUpdateTemplateSetField(idx, sIdx, "target_reps", e.target.value)}
-                                className="w-10 bg-[#1c181a] text-center font-bold text-stone-200 border border-white/5 rounded py-0.5 text-[9px]"
+                                className="w-10 bg-[#1c181a] text-center font-bold text-stone-200 border border-white/5 rounded py-0.5 text-[10px]"
                               />
                             </td>
                             <td className="py-1 text-right">
@@ -465,7 +465,7 @@ export default function WorkoutTab({
 
                     <button
                       onClick={() => handleAddSetToEx(idx)}
-                      className="w-full text-center text-[8px] uppercase tracking-widest text-stone-400 hover:text-stone-200 py-1 border border-dashed border-[#6f6d6c]/15 rounded-lg mt-2 font-black cursor-pointer bg-stone-900/5 hover:bg-stone-900/15"
+                      className="w-full text-center text-[9px] uppercase tracking-widest text-stone-400 hover:text-stone-200 py-1 border border-dashed border-[#6f6d6c]/15 rounded-lg mt-2 font-black cursor-pointer bg-stone-900/5 hover:bg-stone-900/15"
                     >
                       + Add Set Row
                     </button>
@@ -473,7 +473,7 @@ export default function WorkoutTab({
                 ))}
 
                 {newRoutineExs.length === 0 && (
-                  <div className="p-6 text-center text-stone-500 text-[10px] bg-stone-900/10 border border-dashed border-[#6f6d6c]/10 rounded-xl leading-normal">
+                  <div className="p-6 text-center text-stone-500 text-[11px] bg-stone-900/10 border border-dashed border-[#6f6d6c]/10 rounded-xl leading-normal">
                     No movements added. Tap "+ Add Movement to Template" below to customize your exercises!
                   </div>
                 )}
@@ -486,14 +486,14 @@ export default function WorkoutTab({
                 <button
                   type="button"
                   onClick={() => setShowExPicker(true)}
-                  className="w-full bg-[#6f6d6c] hover:bg-[#868382] text-white text-[10px] font-black uppercase tracking-widest py-3 px-4 rounded-xl border border-white/10 flex items-center justify-center gap-2 cursor-pointer shadow-inner hover:scale-[1.01] transition-all"
+                  className="w-full bg-[#6f6d6c] hover:bg-[#868382] text-white text-[11px] font-black uppercase tracking-widest py-3 px-4 rounded-xl border border-white/10 flex items-center justify-center gap-2 cursor-pointer shadow-inner hover:scale-[1.01] transition-all"
                 >
                   <Plus className="w-4 h-4 text-white stroke-[2px]" />
                   <span>Add Movement to Template</span>
                 </button>
               ) : (
                 <div className="bg-black p-4 rounded-xl border border-[#6f6d6c]/25 space-y-3">
-                  <div className="flex justify-between items-center text-[8px] uppercase font-black text-stone-400 tracking-wider">
+                  <div className="flex justify-between items-center text-[9px] uppercase font-black text-stone-400 tracking-wider">
                     <span>Select Movement to Append</span>
                     <button onClick={() => { setShowExPicker(false); setExSearch(""); setSelectedBodyPart("All"); }} className="text-stone-500 hover:text-white">✕</button>
                   </div>
@@ -502,7 +502,7 @@ export default function WorkoutTab({
                     placeholder="Search: Bench, squat, pull..."
                     value={exSearch}
                     onChange={(e) => setExSearch(e.target.value)}
-                    className="w-full bg-[#1c181a] border border-[#6f6d6c]/15 rounded-lg px-2 py-1.5 text-[10px] text-stone-100 focus:outline-none focus:border-[#6f6d6c]/45 font-sans"
+                    className="w-full bg-[#1c181a] border border-[#6f6d6c]/15 rounded-lg px-2 py-1.5 text-[11px] text-stone-100 focus:outline-none focus:border-[#6f6d6c]/45 font-sans"
                   />
 
                   {/* Muscle group pills */}
@@ -512,7 +512,7 @@ export default function WorkoutTab({
                         key={bp}
                         type="button"
                         onClick={() => setSelectedBodyPart(bp)}
-                        className={`text-[8px] font-bold px-2.5 py-1 rounded-full transition-all cursor-pointer flex-shrink-0 ${
+                        className={`text-[9px] font-bold px-2.5 py-1 rounded-full transition-all cursor-pointer flex-shrink-0 ${
                           selectedBodyPart === bp
                             ? "bg-[#6f6d6c] text-white border border-[#868382]/30"
                             : "bg-[#1c181a] text-stone-400 hover:text-stone-200 border border-[#6f6d6c]/15"
@@ -533,20 +533,20 @@ export default function WorkoutTab({
                         type="button"
                         disabled={isAlreadyAdded}
                         onClick={() => handleAddExToTemplate(ex.id)}
-                        className="w-full text-left bg-[#1c181a] hover:bg-[#2d2729] px-2.5 py-2 rounded-lg text-[10px] border border-white/5 flex items-center justify-between gap-2.5 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+                        className="w-full text-left bg-[#1c181a] hover:bg-[#2d2729] px-2.5 py-2 rounded-lg text-[11px] border border-white/5 flex items-center justify-between gap-2.5 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
                       >
                         <div className="flex items-center gap-2 min-w-0">
                           <ExerciseImage exercise={ex} className="w-6 h-6 flex-shrink-0" />
                           <span className="font-extrabold text-stone-250 leading-tight truncate">{ex.name}</span>
                         </div>
-                        <span className="text-[7.5px] bg-stone-900/60 p-0.5 px-1 rounded font-mono text-stone-500 uppercase">
+                        <span className="text-[8.5px] bg-stone-900/60 p-0.5 px-1 rounded font-mono text-stone-500 uppercase">
                           {isAlreadyAdded ? "Added" : ex.body_part}
                         </span>
                       </button>
                       );
                     })}
                     {filteredExercises.length === 0 && (
-                      <div className="p-4 text-center text-stone-500 text-[10px]">
+                      <div className="p-4 text-center text-stone-500 text-[11px]">
                         No exercises found
                       </div>
                     )}
@@ -560,7 +560,7 @@ export default function WorkoutTab({
               <button
                 type="button"
                 onClick={() => setIsCreatorOpen(false)}
-                className="flex-1 bg-[#6f6d6c] hover:bg-[#868382] text-[10px] font-black uppercase tracking-widest py-3 px-3 rounded-xl text-white transition cursor-pointer border border-white/10"
+                className="flex-1 bg-[#6f6d6c] hover:bg-[#868382] text-[11px] font-black uppercase tracking-widest py-3 px-3 rounded-xl text-white transition cursor-pointer border border-white/10"
               >
                 Cancel
               </button>
@@ -568,7 +568,7 @@ export default function WorkoutTab({
                 type="button"
                 onClick={handleSaveRoutineClick}
                 disabled={!newTitle.trim() || newRoutineExs.length === 0}
-                className="flex-1 bg-[#007aff] hover:bg-[#1a85fe] disabled:opacity-20 text-white font-black text-[10px] uppercase tracking-widest py-3 px-3 rounded-xl transition cursor-pointer shadow-3d-emerald"
+                className="flex-1 bg-[#007aff] hover:bg-[#1a85fe] disabled:opacity-20 text-white font-black text-[11px] uppercase tracking-widest py-3 px-3 rounded-xl transition cursor-pointer shadow-3d-emerald"
               >
                 Create Routine
               </button>

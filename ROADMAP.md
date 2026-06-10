@@ -17,7 +17,6 @@ SquadLift is a private Hevy-style workout tracker for a small friend squad. The 
   - Workout/routine launcher
   - New routine builder
   - Active workout overlay
-  - Rest timer
   - Profile/stats view
   - Exercise library with custom exercise creation
   - Workout detail modal
@@ -52,6 +51,7 @@ SquadLift is a private Hevy-style workout tracker for a small friend squad. The 
   - hidden scrollbars
   - fixed bottom navigation
   - compact 51px bottom nav height
+  - phone typography has been bumped slightly for readability while keeping the compact app feel
 - Developer tools include visible build/source info, local JSON export/import/reset controls, and manual Supabase cloud checks.
 - Normal UI updates redeployed on the same Vercel domain should not sign users out; Supabase sessions persist in each phone's browser/PWA storage.
 - Core squad avatars are local generated SVG assets instead of remote image URLs.
@@ -65,6 +65,8 @@ SquadLift is a private Hevy-style workout tracker for a small friend squad. The 
   - routine and active-exercise deletes have confirmations
   - completed workout saves ignore invalid/incomplete sets
   - set completion targets the exact logged exercise row
+  - active workout set rows turn translucent green when completed
+  - between-set rest timer has been removed from the active workout flow
 - Workout history/detail and profile stats have been upgraded:
   - history cards show completed set counts
   - workout detail shows completed sets and per-exercise volume
@@ -174,6 +176,9 @@ SquadLift is a private Hevy-style workout tracker for a small friend squad. The 
     - Test on desktop and mobile viewport sizes.
     - Check touch target sizes.
     - Verify no text overlap or clipped controls.
+    - Completed: slightly larger phone typography for readability.
+    - Completed: completed active-workout set rows show a translucent green state.
+    - Completed: active-workout rest timer was removed.
     - Run `npm run lint` and `npm run build`.
     - Use the in-app browser for visual QA after UI changes.
     - Repeat installed-PWA testing after any meta, manifest, service-worker, or shell layout change.
