@@ -107,7 +107,8 @@ Small implementation order:
 12. Completed: add automatic retry on app open/reconnect.
 13. Completed: add automatic cloud pull on app open/sign-in/reconnect when there is no pending local sync retry.
 14. Completed: add first-run cloud sign-in screen and header cloud status.
-15. Test the full cloud loop on iPhone and laptop browser, then refine conflict behavior if needed.
+15. Completed: verify second test account browser QA from sign-in through workout auto-push and Ian auto-pull.
+16. Test the full cloud loop on a real friend iPhone, then refine conflict behavior if needed.
 
 ## Phase 5: Migration From Local Data
 
@@ -144,4 +145,4 @@ The first Supabase foundation commit added:
 - `scripts/verify-supabase-rls.ts`
 - Updated roadmap status
 
-Next implementation task: test the full cloud loop on iPhone and laptop browser. Keep local storage as the first load/write path.
+Next implementation task: test the full cloud loop on a real friend iPhone. Keep local storage as the first load/write path.
