@@ -5,7 +5,7 @@ This folder contains the planned Supabase backend for SquadLift. The production 
 ## Current Status
 
 - Initial migration drafted: `supabase/migrations/0001_initial_schema.sql`
-- App code has manual developer-tool cloud connection, email sign-in, local upload, read-only cloud preview, restore-from-cloud checks, best-effort auto-push after supported local saves, and a local retry queue for failed auto-pushes.
+- App code has manual developer-tool cloud connection, email sign-in, local upload, read-only cloud preview, restore-from-cloud checks, best-effort auto-push after supported local saves, and automatic retry for queued failed auto-pushes on app open/reconnect.
 - Supabase environment variables are optional; without them, the PWA stays local-only.
 - Comments, reactions, fist-bumps, and social feed behavior are intentionally out of scope.
 
@@ -89,4 +89,4 @@ npm run test:supabase
 
 ## Next App Step
 
-Next, add automatic retry on app open/reconnect. Keep local storage as the first load path and first write path until cloud sync is boringly reliable.
+Next, decide whether background cloud pull should remain manual or become automatic. Keep local storage as the first load path and first write path until cloud sync is boringly reliable.

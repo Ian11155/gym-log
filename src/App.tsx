@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   Exercise,
   Routine,
@@ -124,6 +124,7 @@ export default function App() {
     return pendingCount > 0 ? `${pendingCount} pending` : "No pending sync";
   });
   const [isCloudRetrying, setIsCloudRetrying] = useState<boolean>(false);
+  const startupRetryItemIdRef = useRef<string>("");
 
   useEffect(() => {
     squadDataService.save({
@@ -429,9 +430,12 @@ export default function App() {
     }
   };
 
-  const handleRetryPendingCloudSync = async () => {
+  const handleRetryPendingCloudSync = async (options: { isAutomatic?: boolean } = {}) => {
+    if (isCloudRetrying) return;
+
     const queue = loadCloudSyncRetryQueue();
     const latestItem = queue.at(-1);
+    const isAutomatic = Boolean(options.isAutomatic);
 
     if (!latestItem) {
       refreshPendingCloudSyncStatus("No pending sync");
@@ -439,7 +443,18 @@ export default function App() {
     }
 
     if (!cloudSignedInEmail) {
-      triggerToast("Sign in before retrying cloud sync.");
+      if (!isAutomatic) {
+        triggerToast("Sign in before retrying cloud sync.");
+      }
+      refreshPendingCloudSyncStatus("Waiting for cloud sign-in");
+      return;
+    }
+
+    if (typeof navigator !== "undefined" && !navigator.onLine) {
+      refreshPendingCloudSyncStatus("Waiting for connection");
+      if (!isAutomatic) {
+        triggerToast("Device is offline. Retry when internet is back.");
+      }
       return;
     }
 
@@ -450,25 +465,75 @@ export default function App() {
     }
 
     setIsCloudRetrying(true);
-    setCloudRetryStatus(`Retrying ${queue.length} pending item${queue.length === 1 ? "" : "s"}...`);
+    setCloudRetryStatus(
+      `${isAutomatic ? "Auto-retrying" : "Retrying"} ${queue.length} pending item${queue.length === 1 ? "" : "s"}...`
+    );
 
     try {
       const result = await uploadLocalDataToSupabase(latestItem.data);
       clearCloudSyncRetryQueue();
-      refreshPendingCloudSyncStatus("Retry complete");
+      refreshPendingCloudSyncStatus(isAutomatic ? "Auto retry complete" : "Retry complete");
       setCloudUploadStatus(
         `Retry pushed ${result.exerciseCount} exercises, ${result.routineCount} routines, ${result.workoutCount} workouts.`
       );
-      triggerToast("Pending cloud sync retried.");
+      triggerToast(isAutomatic ? "Pending cloud sync auto-retried." : "Pending cloud sync retried.");
     } catch (error) {
       const message = error instanceof Error ? error.message : "Cloud retry failed.";
       markLatestCloudSyncRetryAttempt(message);
-      refreshPendingCloudSyncStatus(`Retry failed: ${message}`);
-      triggerToast("Cloud retry failed.");
+      refreshPendingCloudSyncStatus(`${isAutomatic ? "Auto retry failed" : "Retry failed"}: ${message}`);
+      if (!isAutomatic) {
+        triggerToast("Cloud retry failed.");
+      }
     } finally {
       setIsCloudRetrying(false);
     }
   };
+
+  useEffect(() => {
+    const latestItem = loadCloudSyncRetryQueue().at(-1);
+    if (!cloudSignedInEmail || !latestItem || isCloudRetrying || startupRetryItemIdRef.current === latestItem.id) {
+      return;
+    }
+
+    if (typeof navigator !== "undefined" && !navigator.onLine) {
+      refreshPendingCloudSyncStatus("Waiting for connection");
+      return;
+    }
+
+    startupRetryItemIdRef.current = latestItem.id;
+    const retryDelay = window.setTimeout(() => {
+      void handleRetryPendingCloudSync({ isAutomatic: true });
+    }, 600);
+
+    return () => window.clearTimeout(retryDelay);
+  }, [cloudSignedInEmail, isCloudRetrying, pendingCloudSyncCount]);
+
+  useEffect(() => {
+    const handleOnline = () => {
+      const pendingCount = loadCloudSyncRetryQueue().length;
+      if (pendingCount === 0) {
+        refreshPendingCloudSyncStatus("No pending sync");
+        return;
+      }
+
+      refreshPendingCloudSyncStatus(`${pendingCount} pending`);
+      void handleRetryPendingCloudSync({ isAutomatic: true });
+    };
+
+    const handleOffline = () => {
+      if (loadCloudSyncRetryQueue().length > 0) {
+        refreshPendingCloudSyncStatus("Waiting for connection");
+      }
+    };
+
+    window.addEventListener("online", handleOnline);
+    window.addEventListener("offline", handleOffline);
+
+    return () => {
+      window.removeEventListener("online", handleOnline);
+      window.removeEventListener("offline", handleOffline);
+    };
+  }, [cloudSignedInEmail, isCloudRetrying]);
 
   // ----------------------------------------------------
   // WORKOUT METHODS

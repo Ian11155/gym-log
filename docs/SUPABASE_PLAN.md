@@ -1,6 +1,6 @@
 # Supabase Plan
 
-Last updated: 2026-06-09
+Last updated: 2026-06-10
 
 ## Goal
 
@@ -104,7 +104,7 @@ Small implementation order:
 9. Completed: add explicit restore-from-cloud with confirmation.
 10. Completed: add best-effort auto-push after supported local saves.
 11. Completed: add a retry queue for failed auto-push attempts.
-12. Add automatic retry on app open/reconnect.
+12. Completed: add automatic retry on app open/reconnect.
 13. After push/retry is reliable, decide whether to add background pull-on-load.
 
 ## Phase 5: Migration From Local Data
@@ -142,4 +142,4 @@ The first Supabase foundation commit added:
 - `scripts/verify-supabase-rls.ts`
 - Updated roadmap status
 
-Next implementation task: add automatic retry on app open/reconnect. Keep local storage as the first load/write path.
+Next implementation task: decide whether background cloud pull should remain manual or become automatic. Keep local storage as the first load/write path.
