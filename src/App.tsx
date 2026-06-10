@@ -107,6 +107,7 @@ export default function App() {
   const [cloudAuthEmail, setCloudAuthEmail] = useState<string>("");
   const [cloudAuthPassword, setCloudAuthPassword] = useState<string>("");
   const [cloudSignedInEmail, setCloudSignedInEmail] = useState<string>("");
+  const [cloudMappedLocalUserId, setCloudMappedLocalUserId] = useState<string>("");
   const [isCloudSessionChecked, setIsCloudSessionChecked] = useState<boolean>(() => !isSupabaseConfigured());
   const [isCloudSignInDismissed, setIsCloudSignInDismissed] = useState<boolean>(false);
   const [cloudAuthStatus, setCloudAuthStatus] = useState<string>(
@@ -221,9 +222,10 @@ export default function App() {
   const isCloudSignedInAsActiveUser = () => {
     const activeUser = SQUAD_USERS.find((user) => user.id === activeUserId);
     return Boolean(
-      cloudSignedInEmail &&
-      activeUser?.email &&
-      activeUser.email.toLowerCase() === cloudSignedInEmail.toLowerCase()
+      cloudSignedInEmail && (
+        (activeUser?.email && activeUser.email.toLowerCase() === cloudSignedInEmail.toLowerCase())
+        || (cloudMappedLocalUserId && cloudMappedLocalUserId === activeUserId)
+      )
     );
   };
 
@@ -347,6 +349,7 @@ export default function App() {
       await signOutOfSupabase();
       startupPullEmailRef.current = "";
       setCloudSignedInEmail("");
+      setCloudMappedLocalUserId("");
       setIsCloudSignInDismissed(false);
       setCloudAuthEmail("");
       setCloudAuthPassword("");
@@ -447,6 +450,7 @@ export default function App() {
     try {
       const restoredData = await restoreLocalDataFromSupabase(getCurrentLocalData());
       applyLocalData(restoredData);
+      setCloudMappedLocalUserId(restoredData.activeUserId);
       const message = `${isAutomatic ? "Auto pulled" : "Restored"} ${restoredData.exerciseLibrary.length} exercises, ${restoredData.routines.length} routines, ${restoredData.workoutLogs.length} workouts.`;
       setCloudRestoreStatus(message);
       triggerToast(isAutomatic ? "Cloud data auto-pulled." : "Cloud data restored locally.");

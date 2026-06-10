@@ -85,6 +85,7 @@ interface CloudWorkoutLog {
 
 interface CloudProfile {
   id: string;
+  username: string;
   email: string | null;
 }
 
@@ -136,8 +137,8 @@ export async function restoreLocalDataFromSupabase(currentData: SquadLocalData):
     fetchCloudRoutines(squadId),
     fetchCloudWorkoutLogs(squadId),
   ]);
-  const activeUserId = getLocalUserIdForEmail(session.user.email || currentData.activeUserId);
-  const localUserIdForCloudUser = createCloudUserMapper(cloudProfiles, activeUserId);
+  const localUserIdForCloudUser = createCloudUserMapper(cloudProfiles);
+  const activeUserId = localUserIdForCloudUser(session.user.id);
 
   return {
     ...currentData,
@@ -257,6 +258,7 @@ async function fetchCloudProfiles(squadId: string): Promise<CloudProfile[]> {
     .from("profiles")
     .select(`
       id,
+      username,
       email,
       squad_members!inner (
         squad_id
@@ -617,20 +619,47 @@ function mapCloudWorkoutLog(workout: CloudWorkoutLog, localUserIdForCloudUser: (
 
 function getLocalUserIdForEmail(email: string) {
   const matchingSeedUser = SQUAD_USERS.find((user) => user.email.toLowerCase() === email.toLowerCase());
-  return matchingSeedUser?.id || "user-1";
+  return matchingSeedUser?.id;
 }
 
-function createCloudUserMapper(cloudProfiles: CloudProfile[], fallbackUserId: string) {
+function createCloudUserMapper(cloudProfiles: CloudProfile[]) {
   const localUserByCloudId = new Map<string, string>();
+  const usedLocalUserIds = new Set<string>();
 
   for (const profile of cloudProfiles) {
-    const localUser = SQUAD_USERS.find((user) => user.email.toLowerCase() === (profile.email || "").toLowerCase());
-    if (localUser) {
-      localUserByCloudId.set(profile.id, localUser.id);
-    }
+    const localUserId = getLocalUserIdForEmail(profile.email || "");
+    if (!localUserId) continue;
+
+    localUserByCloudId.set(profile.id, localUserId);
+    usedLocalUserIds.add(localUserId);
   }
 
-  return (cloudUserId: string) => localUserByCloudId.get(cloudUserId) || fallbackUserId;
+  for (const profile of cloudProfiles) {
+    if (localUserByCloudId.has(profile.id)) continue;
+
+    const localUserId = getLocalUserIdForUsername(profile.username, usedLocalUserIds)
+      || getNextAvailableLocalUserId(usedLocalUserIds);
+
+    localUserByCloudId.set(profile.id, localUserId);
+    usedLocalUserIds.add(localUserId);
+  }
+
+  return (cloudUserId: string) => localUserByCloudId.get(cloudUserId) || "user-1";
+}
+
+function getLocalUserIdForUsername(username: string, usedLocalUserIds: Set<string>) {
+  const normalizedUsername = username.trim().toLowerCase();
+  const preferredUserId = normalizedUsername === "ian" || normalizedUsername.includes("alex")
+    ? "user-1"
+    : normalizedUsername === "friend" || normalizedUsername.includes("jack") || normalizedUsername.includes("marcus")
+      ? "user-2"
+      : undefined;
+
+  return preferredUserId && !usedLocalUserIds.has(preferredUserId) ? preferredUserId : undefined;
+}
+
+function getNextAvailableLocalUserId(usedLocalUserIds: Set<string>) {
+  return SQUAD_USERS.find((user) => !usedLocalUserIds.has(user.id))?.id || "user-1";
 }
 
 async function localIdToUuid(entity: string, localId: string) {
