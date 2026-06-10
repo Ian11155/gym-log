@@ -22,6 +22,12 @@ import {
   restoreLocalDataFromSupabase,
   uploadLocalDataToSupabase,
 } from "./services/supabaseSquadDataService";
+import {
+  clearCloudSyncRetryQueue,
+  enqueueCloudSyncRetry,
+  loadCloudSyncRetryQueue,
+  markLatestCloudSyncRetryAttempt,
+} from "./services/cloudSyncRetryQueue";
 import HomeCombinedTab from "./components/HomeCombinedTab";
 import WorkoutTab from "./components/WorkoutTab";
 import ProfileTab from "./components/ProfileTab";
@@ -112,6 +118,12 @@ export default function App() {
   const [isCloudPreviewing, setIsCloudPreviewing] = useState<boolean>(false);
   const [cloudRestoreStatus, setCloudRestoreStatus] = useState<string>("Not restored");
   const [isCloudRestoring, setIsCloudRestoring] = useState<boolean>(false);
+  const [pendingCloudSyncCount, setPendingCloudSyncCount] = useState<number>(() => loadCloudSyncRetryQueue().length);
+  const [cloudRetryStatus, setCloudRetryStatus] = useState<string>(() => {
+    const pendingCount = loadCloudSyncRetryQueue().length;
+    return pendingCount > 0 ? `${pendingCount} pending` : "No pending sync";
+  });
+  const [isCloudRetrying, setIsCloudRetrying] = useState<boolean>(false);
 
   useEffect(() => {
     squadDataService.save({
@@ -205,6 +217,12 @@ export default function App() {
     );
   };
 
+  const refreshPendingCloudSyncStatus = (status?: string) => {
+    const pendingCount = loadCloudSyncRetryQueue().length;
+    setPendingCloudSyncCount(pendingCount);
+    setCloudRetryStatus(status || (pendingCount > 0 ? `${pendingCount} pending` : "No pending sync"));
+  };
+
   const autoPushLocalDataToCloud = (data: ReturnType<typeof getCurrentLocalData>, reason: string) => {
     if (!cloudSignedInEmail) return;
 
@@ -217,12 +235,16 @@ export default function App() {
 
     void uploadLocalDataToSupabase(data)
       .then((result) => {
+        clearCloudSyncRetryQueue();
+        refreshPendingCloudSyncStatus("No pending sync");
         setCloudUploadStatus(
           `Auto-pushed ${result.exerciseCount} exercises, ${result.routineCount} routines, ${result.workoutCount} workouts.`
         );
       })
       .catch((error) => {
         const message = error instanceof Error ? error.message : "Cloud auto-push failed.";
+        enqueueCloudSyncRetry(data, reason, message);
+        refreshPendingCloudSyncStatus("Queued for retry");
         setCloudUploadStatus(`Saved locally. Cloud auto-push failed: ${message}`);
         triggerToast("Saved locally. Cloud sync failed.");
       });
@@ -338,6 +360,8 @@ export default function App() {
     try {
       const result = await uploadLocalDataToSupabase(getCurrentLocalData());
       const message = `Uploaded ${result.exerciseCount} exercises, ${result.routineCount} routines, ${result.workoutCount} workouts, ${result.setCount} sets.`;
+      clearCloudSyncRetryQueue();
+      refreshPendingCloudSyncStatus("No pending sync");
       setCloudUploadStatus(message);
       triggerToast("Local data uploaded to cloud.");
     } catch (error) {
@@ -402,6 +426,47 @@ export default function App() {
       triggerToast(message);
     } finally {
       setIsCloudRestoring(false);
+    }
+  };
+
+  const handleRetryPendingCloudSync = async () => {
+    const queue = loadCloudSyncRetryQueue();
+    const latestItem = queue.at(-1);
+
+    if (!latestItem) {
+      refreshPendingCloudSyncStatus("No pending sync");
+      return;
+    }
+
+    if (!cloudSignedInEmail) {
+      triggerToast("Sign in before retrying cloud sync.");
+      return;
+    }
+
+    const queuedUser = SQUAD_USERS.find((user) => user.id === latestItem.data.activeUserId);
+    if (queuedUser?.email.toLowerCase() !== cloudSignedInEmail.toLowerCase()) {
+      setCloudRetryStatus("Retry blocked: signed-in cloud user does not match queued local user.");
+      return;
+    }
+
+    setIsCloudRetrying(true);
+    setCloudRetryStatus(`Retrying ${queue.length} pending item${queue.length === 1 ? "" : "s"}...`);
+
+    try {
+      const result = await uploadLocalDataToSupabase(latestItem.data);
+      clearCloudSyncRetryQueue();
+      refreshPendingCloudSyncStatus("Retry complete");
+      setCloudUploadStatus(
+        `Retry pushed ${result.exerciseCount} exercises, ${result.routineCount} routines, ${result.workoutCount} workouts.`
+      );
+      triggerToast("Pending cloud sync retried.");
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Cloud retry failed.";
+      markLatestCloudSyncRetryAttempt(message);
+      refreshPendingCloudSyncStatus(`Retry failed: ${message}`);
+      triggerToast("Cloud retry failed.");
+    } finally {
+      setIsCloudRetrying(false);
     }
   };
 
@@ -1117,6 +1182,24 @@ export default function App() {
                     className="flex min-h-11 items-center justify-center rounded-xl border border-emerald-500/20 bg-black px-4 py-3 text-[10px] font-black uppercase tracking-widest text-emerald-200 transition hover:border-emerald-400/40 hover:text-white disabled:cursor-not-allowed disabled:opacity-60"
                   >
                     {isCloudUploading ? "Uploading" : "Upload Local"}
+                  </button>
+
+                  <div className="min-w-0 rounded-xl border border-white/5 bg-black px-3 py-3">
+                    <p className="text-[9px] font-black uppercase tracking-widest text-stone-500">
+                      Retry Queue
+                    </p>
+                    <p className="mt-1 break-words text-xs font-bold text-stone-250">
+                      {pendingCloudSyncCount} pending | {cloudRetryStatus}
+                    </p>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => void handleRetryPendingCloudSync()}
+                    disabled={isCloudRetrying || !cloudSignedInEmail || pendingCloudSyncCount === 0}
+                    className="flex min-h-11 items-center justify-center rounded-xl border border-amber-500/20 bg-black px-4 py-3 text-[10px] font-black uppercase tracking-widest text-amber-200 transition hover:border-amber-400/40 hover:text-white disabled:cursor-not-allowed disabled:opacity-60"
+                  >
+                    {isCloudRetrying ? "Retrying" : "Retry Pending"}
                   </button>
 
                   <div className="min-w-0 rounded-xl border border-white/5 bg-black px-3 py-3">

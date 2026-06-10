@@ -37,7 +37,8 @@ SquadLift is a private Hevy-style workout tracker for a small friend squad. The 
   - read-only cloud preview works
   - explicit restore-from-cloud with confirmation works
   - auto-push after supported local saves is enabled for the signed-in active user
-  - automatic cloud pull and retry queue are not enabled yet
+  - failed auto-push attempts are queued locally and can be retried manually
+  - automatic cloud pull is not enabled yet
 - The app uses a mobile-first shell with developer tools moved into a separate drawer.
 - PWA install support is implemented with Vite PWA, app manifest, service worker, and generated icons.
 - iOS/PWA shell polish has been applied:
@@ -68,7 +69,7 @@ SquadLift is a private Hevy-style workout tracker for a small friend squad. The 
 - Cross-device/shared data is partially implemented through manual Supabase upload and read-only preview.
 - The app still loads and writes local storage first; auto-push is best-effort after supported local saves.
 - Supabase-backed restore/pull into local app state is implemented only as a manual developer-tool action with confirmation.
-- There is no retry queue for failed background sync yet.
+- Failed auto-push attempts have a local retry queue, but automatic retry on reconnect/app open is not implemented yet.
 - Local data has basic versioning, corrupted-data fallback, legacy migration, and a lightweight `npm run test:storage` verification script.
 - A shared domain layer exists only as a thin local service; more workout validation/business logic still lives in UI state handlers.
 - The Machoke badge assets may need to be replaced if the app should avoid copyrighted or joke-brand visuals.
@@ -149,11 +150,12 @@ SquadLift is a private Hevy-style workout tracker for a small friend squad. The 
     - Completed: add read-only cloud pull preview in developer tools.
     - Completed: add explicit restore-from-cloud with confirmation.
     - Completed: add best-effort auto-push after workout/routine/exercise saves.
+    - Completed: add local retry queue for failed auto-push attempts.
     - Use membership-based RLS instead of broad public policies.
     - Start with auth, squad membership, exercises, routines, workout logs, logged exercises, and logged sets.
     - Keep comments, reactions, fist-bumps, and feed behavior out of scope.
     - Add cross-device sync after local-first behavior remains stable.
-    - Current status: add a retry queue for failed auto-push attempts.
+    - Current status: decide when to add background pull/retry automation.
 
 11. Polish and test:
     - Test on desktop and mobile viewport sizes.
@@ -165,4 +167,4 @@ SquadLift is a private Hevy-style workout tracker for a small friend squad. The 
 
 ## Immediate Next Task
 
-Next recommended task: add a retry queue for failed auto-push attempts, while keeping local save as the source of truth.
+Next recommended task: add automatic retry on app open/reconnect, then decide whether background cloud pull should remain manual or become automatic.
