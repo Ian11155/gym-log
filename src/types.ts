@@ -101,7 +101,7 @@ const createAvatarDataUri = (initials: string, bg: string, fg = "#f7f5f4") =>
 export const SQUAD_USERS: User[] = [
   {
     id: "user-1",
-    username: "Alex 'Apex' Chen",
+    username: "Tay 'Apex' Yang",
     email: "killzone1099@gmail.com",
     avatar_url: createAvatarDataUri("AC", "#3f3a34"),
     created_at: "2026-01-15T08:00:00Z",
