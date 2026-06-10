@@ -118,6 +118,7 @@ export default function App() {
   const [isCloudPreviewing, setIsCloudPreviewing] = useState<boolean>(false);
   const [cloudRestoreStatus, setCloudRestoreStatus] = useState<string>("Not restored");
   const [isCloudRestoring, setIsCloudRestoring] = useState<boolean>(false);
+  const [isCloudAutoPulling, setIsCloudAutoPulling] = useState<boolean>(false);
   const [pendingCloudSyncCount, setPendingCloudSyncCount] = useState<number>(() => loadCloudSyncRetryQueue().length);
   const [cloudRetryStatus, setCloudRetryStatus] = useState<string>(() => {
     const pendingCount = loadCloudSyncRetryQueue().length;
@@ -125,6 +126,7 @@ export default function App() {
   });
   const [isCloudRetrying, setIsCloudRetrying] = useState<boolean>(false);
   const startupRetryItemIdRef = useRef<string>("");
+  const startupPullEmailRef = useRef<string>("");
 
   useEffect(() => {
     squadDataService.save({
@@ -335,6 +337,7 @@ export default function App() {
 
     try {
       await signOutOfSupabase();
+      startupPullEmailRef.current = "";
       setCloudSignedInEmail("");
       setCloudAuthEmail("");
       setCloudAuthPassword("");
@@ -400,34 +403,67 @@ export default function App() {
     }
   };
 
-  const handleRestoreLocalDataFromCloud = async () => {
+  const pullCloudDataIntoLocalState = async (options: { isAutomatic?: boolean } = {}) => {
+    const isAutomatic = Boolean(options.isAutomatic);
+
     if (!cloudSignedInEmail) {
-      triggerToast("Sign in before restoring cloud data.");
+      if (!isAutomatic) {
+        triggerToast("Sign in before restoring cloud data.");
+      }
       return;
     }
 
+    if (typeof navigator !== "undefined" && !navigator.onLine) {
+      setCloudRestoreStatus(isAutomatic ? "Auto pull waiting for connection" : "Waiting for connection");
+      if (!isAutomatic) {
+        triggerToast("Device is offline. Restore when internet is back.");
+      }
+      return;
+    }
+
+    const pendingCount = loadCloudSyncRetryQueue().length;
+    if (pendingCount > 0) {
+      setCloudRestoreStatus(`Auto pull paused: ${pendingCount} pending local sync`);
+      return;
+    }
+
+    if (isAutomatic) {
+      setIsCloudAutoPulling(true);
+      setCloudRestoreStatus("Auto pulling cloud data...");
+    } else {
+      setIsCloudRestoring(true);
+      setCloudRestoreStatus("Restoring...");
+    }
+
+    try {
+      const restoredData = await restoreLocalDataFromSupabase(getCurrentLocalData());
+      applyLocalData(restoredData);
+      const message = `${isAutomatic ? "Auto pulled" : "Restored"} ${restoredData.exerciseLibrary.length} exercises, ${restoredData.routines.length} routines, ${restoredData.workoutLogs.length} workouts.`;
+      setCloudRestoreStatus(message);
+      triggerToast(isAutomatic ? "Cloud data auto-pulled." : "Cloud data restored locally.");
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Cloud restore failed.";
+      setCloudRestoreStatus(isAutomatic ? `Auto pull failed: ${message}` : message);
+      if (!isAutomatic) {
+        triggerToast(message);
+      }
+    } finally {
+      if (isAutomatic) {
+        setIsCloudAutoPulling(false);
+      } else {
+        setIsCloudRestoring(false);
+      }
+    }
+  };
+
+  const handleRestoreLocalDataFromCloud = async () => {
     const confirmed = window.confirm(
       "Restore from Supabase? This replaces local exercises, routines, and workout history on this device. Export a local backup first if you want a rollback file."
     );
 
     if (!confirmed) return;
 
-    setIsCloudRestoring(true);
-    setCloudRestoreStatus("Restoring...");
-
-    try {
-      const restoredData = await restoreLocalDataFromSupabase(getCurrentLocalData());
-      applyLocalData(restoredData);
-      const message = `Restored ${restoredData.exerciseLibrary.length} exercises, ${restoredData.routines.length} routines, ${restoredData.workoutLogs.length} workouts.`;
-      setCloudRestoreStatus(message);
-      triggerToast("Cloud data restored locally.");
-    } catch (error) {
-      const message = error instanceof Error ? error.message : "Cloud restore failed.";
-      setCloudRestoreStatus(message);
-      triggerToast(message);
-    } finally {
-      setIsCloudRestoring(false);
-    }
+    await pullCloudDataIntoLocalState();
   };
 
   const handleRetryPendingCloudSync = async (options: { isAutomatic?: boolean } = {}) => {
@@ -509,10 +545,43 @@ export default function App() {
   }, [cloudSignedInEmail, isCloudRetrying, pendingCloudSyncCount]);
 
   useEffect(() => {
+    const pendingCount = loadCloudSyncRetryQueue().length;
+    if (
+      !cloudSignedInEmail ||
+      isCloudAutoPulling ||
+      isCloudRestoring ||
+      activeWorkout ||
+      startupPullEmailRef.current === cloudSignedInEmail
+    ) {
+      return;
+    }
+
+    if (pendingCount > 0) {
+      setCloudRestoreStatus(`Auto pull paused: ${pendingCount} pending local sync`);
+      return;
+    }
+
+    if (typeof navigator !== "undefined" && !navigator.onLine) {
+      setCloudRestoreStatus("Auto pull waiting for connection");
+      return;
+    }
+
+    startupPullEmailRef.current = cloudSignedInEmail;
+    const pullDelay = window.setTimeout(() => {
+      void pullCloudDataIntoLocalState({ isAutomatic: true });
+    }, 900);
+
+    return () => window.clearTimeout(pullDelay);
+  }, [activeWorkout, cloudSignedInEmail, isCloudAutoPulling, isCloudRestoring, pendingCloudSyncCount]);
+
+  useEffect(() => {
     const handleOnline = () => {
       const pendingCount = loadCloudSyncRetryQueue().length;
       if (pendingCount === 0) {
         refreshPendingCloudSyncStatus("No pending sync");
+        if (cloudSignedInEmail && !activeWorkout) {
+          void pullCloudDataIntoLocalState({ isAutomatic: true });
+        }
         return;
       }
 
@@ -533,7 +602,7 @@ export default function App() {
       window.removeEventListener("online", handleOnline);
       window.removeEventListener("offline", handleOffline);
     };
-  }, [cloudSignedInEmail, isCloudRetrying]);
+  }, [activeWorkout, cloudSignedInEmail, isCloudRetrying]);
 
   // ----------------------------------------------------
   // WORKOUT METHODS
@@ -1157,12 +1226,12 @@ export default function App() {
                     <span>Cloud Sync</span>
                   </h3>
                   <span className="rounded-full border border-emerald-500/10 bg-emerald-500/10 px-3 py-1 text-[9px] font-black tracking-widest text-emerald-300">
-                    MANUAL
+                    AUTO
                   </span>
                 </div>
 
                 <p className="mt-2 text-xs leading-relaxed text-stone-400">
-                  Sign-in persists on this device. Local saves stay primary; cloud upload runs after supported saves.
+                  Sign-in persists on this device. Local saves stay primary; cloud upload and pull run automatically when safe.
                 </p>
 
                 <div className="mt-4 grid gap-3">
@@ -1303,10 +1372,10 @@ export default function App() {
                   <button
                     type="button"
                     onClick={() => void handleRestoreLocalDataFromCloud()}
-                    disabled={isCloudRestoring || !cloudSignedInEmail}
+                    disabled={isCloudRestoring || isCloudAutoPulling || !cloudSignedInEmail}
                     className="flex min-h-11 items-center justify-center rounded-xl border border-amber-500/20 bg-black px-4 py-3 text-[10px] font-black uppercase tracking-widest text-amber-200 transition hover:border-amber-400/40 hover:text-white disabled:cursor-not-allowed disabled:opacity-60"
                   >
-                    {isCloudRestoring ? "Restoring" : "Restore Cloud"}
+                    {isCloudRestoring || isCloudAutoPulling ? "Pulling" : "Restore Cloud"}
                   </button>
                 </div>
               </section>

@@ -38,7 +38,7 @@ SquadLift is a private Hevy-style workout tracker for a small friend squad. The 
   - explicit restore-from-cloud with confirmation works
   - auto-push after supported local saves is enabled for the signed-in active user
   - failed auto-push attempts are queued locally and retry on app open/reconnect
-  - automatic cloud pull is not enabled yet
+  - automatic cloud pull runs on app open/sign-in/reconnect when there are no pending local sync retries
 - The app uses a mobile-first shell with developer tools moved into a separate drawer.
 - PWA install support is implemented with Vite PWA, app manifest, service worker, and generated icons.
 - iOS/PWA shell polish has been applied:
@@ -68,8 +68,9 @@ SquadLift is a private Hevy-style workout tracker for a small friend squad. The 
 - Email/password authentication is implemented only inside developer tools; it is not yet part of the normal app entry flow.
 - Cross-device/shared data is partially implemented through manual Supabase upload and read-only preview.
 - The app still loads and writes local storage first; auto-push is best-effort after supported local saves.
-- Supabase-backed restore/pull into local app state is implemented only as a manual developer-tool action with confirmation.
+- Supabase-backed restore/pull into local app state now runs automatically when safe, with the manual restore button still available.
 - Failed auto-push attempts have a local retry queue with automatic retry on app open/reconnect.
+- Conflict handling is still simple: pending local sync retries pause automatic cloud pull until local changes push successfully.
 - Local data has basic versioning, corrupted-data fallback, legacy migration, and a lightweight `npm run test:storage` verification script.
 - A shared domain layer exists only as a thin local service; more workout validation/business logic still lives in UI state handlers.
 - The Machoke badge assets may need to be replaced if the app should avoid copyrighted or joke-brand visuals.
@@ -152,11 +153,12 @@ SquadLift is a private Hevy-style workout tracker for a small friend squad. The 
     - Completed: add best-effort auto-push after workout/routine/exercise saves.
     - Completed: add local retry queue for failed auto-push attempts.
     - Completed: add automatic retry on app open/reconnect.
+    - Completed: add automatic cloud pull on app open/sign-in/reconnect when there is no pending local sync retry.
     - Use membership-based RLS instead of broad public policies.
     - Start with auth, squad membership, exercises, routines, workout logs, logged exercises, and logged sets.
     - Keep comments, reactions, fist-bumps, and feed behavior out of scope.
     - Add cross-device sync after local-first behavior remains stable.
-    - Current status: decide whether background cloud pull should remain manual or become automatic.
+    - Current status: test the full cloud loop on both iPhones and refine conflict behavior if needed.
 
 11. Polish and test:
     - Test on desktop and mobile viewport sizes.
@@ -168,4 +170,4 @@ SquadLift is a private Hevy-style workout tracker for a small friend squad. The 
 
 ## Immediate Next Task
 
-Next recommended task: decide whether background cloud pull should remain manual or become automatic, then test the full cloud loop on both iPhones.
+Next recommended task: test the full cloud loop on both iPhones: sign in, pull, finish workout, auto-push, open the other phone, auto-pull.

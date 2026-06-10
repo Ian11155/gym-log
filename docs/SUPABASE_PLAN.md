@@ -105,7 +105,8 @@ Small implementation order:
 10. Completed: add best-effort auto-push after supported local saves.
 11. Completed: add a retry queue for failed auto-push attempts.
 12. Completed: add automatic retry on app open/reconnect.
-13. After push/retry is reliable, decide whether to add background pull-on-load.
+13. Completed: add automatic cloud pull on app open/sign-in/reconnect when there is no pending local sync retry.
+14. Test the full cloud loop on both iPhones, then refine conflict behavior if needed.
 
 ## Phase 5: Migration From Local Data
 
@@ -142,4 +143,4 @@ The first Supabase foundation commit added:
 - `scripts/verify-supabase-rls.ts`
 - Updated roadmap status
 
-Next implementation task: decide whether background cloud pull should remain manual or become automatic. Keep local storage as the first load/write path.
+Next implementation task: test the full cloud loop on both iPhones. Keep local storage as the first load/write path.
