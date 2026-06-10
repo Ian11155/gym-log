@@ -107,6 +107,8 @@ export default function App() {
   const [cloudAuthEmail, setCloudAuthEmail] = useState<string>("");
   const [cloudAuthPassword, setCloudAuthPassword] = useState<string>("");
   const [cloudSignedInEmail, setCloudSignedInEmail] = useState<string>("");
+  const [isCloudSessionChecked, setIsCloudSessionChecked] = useState<boolean>(() => !isSupabaseConfigured());
+  const [isCloudSignInDismissed, setIsCloudSignInDismissed] = useState<boolean>(false);
   const [cloudAuthStatus, setCloudAuthStatus] = useState<string>(
     isSupabaseConfigured() ? "Checking session..." : "Not configured"
   );
@@ -171,7 +173,10 @@ export default function App() {
   }, [initialDataLoad.warning]);
 
   useEffect(() => {
-    if (!isSupabaseConfigured()) return;
+    if (!isSupabaseConfigured()) {
+      setIsCloudSessionChecked(true);
+      return;
+    }
 
     let isMounted = true;
 
@@ -181,10 +186,12 @@ export default function App() {
         const email = session?.user.email || "";
         setCloudSignedInEmail(email);
         setCloudAuthStatus(email ? `Signed in as ${email}` : "Not signed in");
+        setIsCloudSessionChecked(true);
       })
       .catch((error) => {
         if (!isMounted) return;
         setCloudAuthStatus(error instanceof Error ? error.message : "Could not read cloud session.");
+        setIsCloudSessionChecked(true);
       });
 
     return () => {
@@ -319,6 +326,7 @@ export default function App() {
       const session = await signInToSupabase(cloudAuthEmail.trim(), cloudAuthPassword);
       const email = session.user.email || cloudAuthEmail.trim();
       setCloudSignedInEmail(email);
+      setIsCloudSignInDismissed(false);
       setCloudAuthPassword("");
       setCloudAuthStatus(`Signed in as ${email}`);
       triggerToast("Cloud sign-in active.");
@@ -339,6 +347,7 @@ export default function App() {
       await signOutOfSupabase();
       startupPullEmailRef.current = "";
       setCloudSignedInEmail("");
+      setIsCloudSignInDismissed(false);
       setCloudAuthEmail("");
       setCloudAuthPassword("");
       setCloudAuthStatus("Not signed in");
@@ -946,6 +955,21 @@ export default function App() {
     setCurrentTab(2);
   };
 
+  const cloudStatusLabel = !isSupabaseConfigured()
+    ? "Local"
+    : cloudSignedInEmail
+      ? "Cloud"
+      : isCloudSessionChecked
+        ? "Sign In"
+        : "Checking";
+  const cloudStatusClass = cloudSignedInEmail
+    ? "border-emerald-500/20 bg-emerald-500/10 text-emerald-200"
+    : isSupabaseConfigured()
+      ? "border-amber-500/20 bg-amber-500/10 text-amber-200"
+      : "border-[#6f6d6c]/15 bg-[#6f6d6c]/10 text-stone-350";
+  const shouldShowCloudSignIn =
+    isSupabaseConfigured() && isCloudSessionChecked && !cloudSignedInEmail && !isCloudSignInDismissed;
+
   return (
     <div className="h-dvh overflow-hidden bg-black text-[#e0dfd5] font-sans select-none antialiased">
       <div className="pointer-events-none fixed inset-x-0 top-0 z-[70] h-[calc(env(safe-area-inset-top)+1px)] bg-black" />
@@ -954,9 +978,9 @@ export default function App() {
           <div className="flex items-center justify-between gap-4">
             <div className="min-w-0">
               <div className="flex items-center gap-2">
-                <span className="h-2 w-2 rounded-full bg-[#6f6d6c]" />
+                <span className={`h-2 w-2 rounded-full ${cloudSignedInEmail ? "bg-emerald-400" : "bg-[#6f6d6c]"}`} />
                 <span className="text-[9px] font-black uppercase tracking-widest text-stone-400">
-                  Local Demo Mode
+                  {cloudSignedInEmail ? "Cloud Sync Active" : "Local First"}
                 </span>
               </div>
               <h1 className="mt-1 truncate text-lg font-black tracking-tight text-white">
@@ -964,14 +988,31 @@ export default function App() {
               </h1>
             </div>
 
-            <button
-              type="button"
-              onClick={() => setIsDevPanelOpen(true)}
-              className="flex h-11 w-11 items-center justify-center rounded-xl border border-[#6f6d6c]/20 bg-black text-stone-300 shadow-3d-sm transition hover:border-[#6f6d6c]/45 hover:text-white"
-              title="Open developer tools"
-            >
-              <Menu className="h-5 w-5" />
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => {
+                  if (!cloudSignedInEmail && isSupabaseConfigured()) {
+                    setIsCloudSignInDismissed(false);
+                  } else {
+                    setIsDevPanelOpen(true);
+                  }
+                }}
+                className={`flex h-9 items-center justify-center rounded-xl border px-3 text-[9px] font-black uppercase tracking-widest shadow-3d-sm transition ${cloudStatusClass}`}
+                title={cloudSignedInEmail ? cloudSignedInEmail : "Cloud sign-in status"}
+              >
+                {cloudStatusLabel}
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setIsDevPanelOpen(true)}
+                className="flex h-11 w-11 items-center justify-center rounded-xl border border-[#6f6d6c]/20 bg-black text-stone-300 shadow-3d-sm transition hover:border-[#6f6d6c]/45 hover:text-white"
+                title="Open developer tools"
+              >
+                <Menu className="h-5 w-5" />
+              </button>
+            </div>
           </div>
         </header>
 
@@ -1439,6 +1480,76 @@ export default function App() {
               </section>
             </div>
           </aside>
+        </div>
+      )}
+
+      {shouldShowCloudSignIn && (
+        <div className="fixed inset-0 z-[75] flex items-center justify-center bg-black/88 px-5 pb-[calc(env(safe-area-inset-bottom)+1.25rem)] pt-[calc(env(safe-area-inset-top)+1.25rem)] animate-fade-in">
+          <section className="w-full max-w-[430px] rounded-2xl border border-[#2d2729] bg-[#121011] p-5 shadow-3d-md">
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <div className="flex items-center gap-2">
+                  <Database className="h-4 w-4 text-emerald-400" />
+                  <span className="text-[10px] font-black uppercase tracking-widest text-emerald-300">
+                    Cloud Sync
+                  </span>
+                </div>
+                <h2 className="mt-2 text-2xl font-black tracking-tight text-white">
+                  Sign in to SquadLift
+                </h2>
+              </div>
+              <span className="rounded-full border border-emerald-500/10 bg-emerald-500/10 px-3 py-1 text-[9px] font-black uppercase tracking-widest text-emerald-300">
+                Auto
+              </span>
+            </div>
+
+            <p className="mt-3 text-sm leading-relaxed text-stone-350">
+              Your workouts save on this device first, then sync with Supabase when your account is signed in.
+            </p>
+
+            <div className="mt-5 grid gap-3">
+              <input
+                type="email"
+                value={cloudAuthEmail}
+                onChange={(event) => setCloudAuthEmail(event.target.value)}
+                autoComplete="email"
+                placeholder="Email"
+                className="min-h-12 rounded-xl border border-white/5 bg-black px-4 text-base font-bold text-stone-100 outline-none transition placeholder:text-stone-600 focus:border-emerald-500/40"
+              />
+              <input
+                type="password"
+                value={cloudAuthPassword}
+                onChange={(event) => setCloudAuthPassword(event.target.value)}
+                autoComplete="current-password"
+                placeholder="Password"
+                className="min-h-12 rounded-xl border border-white/5 bg-black px-4 text-base font-bold text-stone-100 outline-none transition placeholder:text-stone-600 focus:border-emerald-500/40"
+              />
+
+              <button
+                type="button"
+                onClick={() => void handleCloudSignIn()}
+                disabled={isCloudAuthBusy || !cloudAuthEmail.trim() || !cloudAuthPassword}
+                className="flex min-h-12 items-center justify-center rounded-xl border border-emerald-500/25 bg-emerald-500/10 px-4 py-3 text-[11px] font-black uppercase tracking-widest text-emerald-100 transition hover:border-emerald-400/50 hover:bg-emerald-500/15 disabled:cursor-not-allowed disabled:opacity-55"
+              >
+                {isCloudAuthBusy ? "Signing In" : "Sign In"}
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setIsCloudSignInDismissed(true);
+                  triggerToast("Continuing in local mode.");
+                }}
+                className="flex min-h-11 items-center justify-center rounded-xl border border-white/5 bg-black px-4 py-3 text-[10px] font-black uppercase tracking-widest text-stone-400 transition hover:border-white/10 hover:text-white"
+              >
+                Continue Local
+              </button>
+            </div>
+
+            <p className="mt-4 break-words text-xs font-bold leading-relaxed text-stone-500">
+              {cloudAuthStatus}
+            </p>
+          </section>
         </div>
       )}
 

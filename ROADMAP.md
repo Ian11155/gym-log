@@ -9,8 +9,8 @@ SquadLift is a private Hevy-style workout tracker for a small friend squad. The 
 ## Current State
 
 - React + Vite + TypeScript PWA restored as the active product direction.
-- Vercel hosting is live at `https://squadlift-beta.vercel.app`.
-- GitHub `main` is connected to Vercel project `squadlift`.
+- Vercel hosting is live at `https://gym-log-six-zeta.vercel.app`.
+- GitHub `main` is connected to Vercel project `gym-log`.
 - Tailwind CSS dark gym UI is already heavily implemented.
 - Core prototype screens exist:
   - Home/history
@@ -29,9 +29,10 @@ SquadLift is a private Hevy-style workout tracker for a small friend squad. The 
   - anonymous workout access is blocked
   - two authenticated squad users can read shared workout data
   - local RLS smoke test exists at `npm run test:supabase`
-- Supabase app integration has started, but remains manual and developer-tool gated:
+- Supabase app integration is active:
   - Supabase client is configured with persistent sessions
-  - email/password sign-in and sign-out work
+  - email/password sign-in now appears as a first-run app entry screen, with developer-tool sign-in retained as a fallback
+  - the app header shows cloud/local sign-in status
   - cloud connection/RLS check works
   - manual local-to-cloud upload works
   - read-only cloud preview works
@@ -65,7 +66,7 @@ SquadLift is a private Hevy-style workout tracker for a small friend squad. The 
 
 ## Known Gaps
 
-- Email/password authentication is implemented only inside developer tools; it is not yet part of the normal app entry flow.
+- Email/password authentication is now part of the normal app entry flow, but account creation is still managed manually in Supabase.
 - Cross-device/shared data is partially implemented through manual Supabase upload and read-only preview.
 - The app still loads and writes local storage first; auto-push is best-effort after supported local saves.
 - Supabase-backed restore/pull into local app state now runs automatically when safe, with the manual restore button still available.
@@ -151,14 +152,15 @@ SquadLift is a private Hevy-style workout tracker for a small friend squad. The 
     - Completed: add read-only cloud pull preview in developer tools.
     - Completed: add explicit restore-from-cloud with confirmation.
     - Completed: add best-effort auto-push after workout/routine/exercise saves.
-    - Completed: add local retry queue for failed auto-push attempts.
-    - Completed: add automatic retry on app open/reconnect.
-    - Completed: add automatic cloud pull on app open/sign-in/reconnect when there is no pending local sync retry.
+   - Completed: add local retry queue for failed auto-push attempts.
+   - Completed: add automatic retry on app open/reconnect.
+   - Completed: add automatic cloud pull on app open/sign-in/reconnect when there is no pending local sync retry.
+    - Completed: add first-run cloud sign-in screen and header cloud status.
     - Use membership-based RLS instead of broad public policies.
     - Start with auth, squad membership, exercises, routines, workout logs, logged exercises, and logged sets.
     - Keep comments, reactions, fist-bumps, and feed behavior out of scope.
     - Add cross-device sync after local-first behavior remains stable.
-    - Current status: test the full cloud loop on both iPhones and refine conflict behavior if needed.
+    - Current status: test the full cloud loop on iPhone and laptop browser, then refine conflict behavior if needed.
 
 11. Polish and test:
     - Test on desktop and mobile viewport sizes.
@@ -170,4 +172,4 @@ SquadLift is a private Hevy-style workout tracker for a small friend squad. The 
 
 ## Immediate Next Task
 
-Next recommended task: test the full cloud loop on both iPhones: sign in, pull, finish workout, auto-push, open the other phone, auto-pull.
+Next recommended task: test the full cloud loop on iPhone and laptop browser: sign in, pull, finish workout, auto-push, open the other device, auto-pull.
