@@ -210,13 +210,14 @@ async function getSquadSummary(squadId: string) {
 
 async function getTableCount(table: "exercises" | "routines" | "workout_logs", column: "squad_id", value: string) {
   const supabase = await requireSupabaseClient();
-  const { data, error } = await supabase
+  const { count, error } = await supabase
     .from(table)
-    .select("id")
-    .eq(column, value);
+    .select("id", { count: "exact" })
+    .eq(column, value)
+    .limit(0);
 
   if (error) throw error;
-  return data?.length || 0;
+  return count || 0;
 }
 
 async function getLatestTitle(
@@ -290,7 +291,9 @@ async function fetchCloudRoutines(squadId: string): Promise<CloudRoutine[]> {
       )
     `)
     .eq("squad_id", squadId)
-    .order("created_at", { ascending: false });
+    .order("created_at", { ascending: false })
+    .order("order_index", { ascending: true, referencedTable: "routine_exercises" })
+    .order("set_number", { ascending: true, referencedTable: "routine_exercises.routine_sets" });
 
   if (error) throw error;
   return (data || []) as CloudRoutine[];
@@ -324,7 +327,9 @@ async function fetchCloudWorkoutLogs(squadId: string): Promise<CloudWorkoutLog[]
       )
     `)
     .eq("squad_id", squadId)
-    .order("end_time", { ascending: false });
+    .order("end_time", { ascending: false })
+    .order("order_index", { ascending: true, referencedTable: "logged_exercises" })
+    .order("set_number", { ascending: true, referencedTable: "logged_exercises.logged_sets" });
 
   if (error) throw error;
   return (data || []) as CloudWorkoutLog[];
