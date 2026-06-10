@@ -413,7 +413,7 @@ async function upsertRoutines(
   const supabase = await requireSupabaseClient();
   const routineRows = await Promise.all(
     routines.map(async (routine) => ({
-      id: await localIdToUuid("routine", `${squadId}:${routine.id}`),
+      id: await getCloudId("routine", routine.id, `${squadId}:${routine.id}`),
       squad_id: squadId,
       user_id: userId,
       title: routine.title,
@@ -433,7 +433,7 @@ async function upsertRoutines(
   const routineSetRows = [];
 
   for (const routine of routines) {
-    const routineId = await localIdToUuid("routine", `${squadId}:${routine.id}`);
+    const routineId = await getCloudId("routine", routine.id, `${squadId}:${routine.id}`);
 
     for (const [exerciseIndex, exercise] of routine.exercises.entries()) {
       const routineExerciseId = await localIdToUuid("routine-exercise", `${routineId}:${exercise.exercise_id}:${exerciseIndex}`);
@@ -479,7 +479,7 @@ async function upsertWorkoutLogs(
   const supabase = await requireSupabaseClient();
   const workoutRows = await Promise.all(
     workouts.map(async (workout) => ({
-      id: await localIdToUuid("workout", `${squadId}:${workout.id}`),
+      id: await getCloudId("workout", workout.id, `${squadId}:${workout.id}`),
       squad_id: squadId,
       user_id: userId,
       title: workout.title,
@@ -502,10 +502,10 @@ async function upsertWorkoutLogs(
   const loggedSetRows = [];
 
   for (const workout of workouts) {
-    const workoutId = await localIdToUuid("workout", `${squadId}:${workout.id}`);
+    const workoutId = await getCloudId("workout", workout.id, `${squadId}:${workout.id}`);
 
     for (const [exerciseIndex, exercise] of workout.exercises.entries()) {
-      const loggedExerciseId = await localIdToUuid("logged-exercise", `${workoutId}:${exercise.id}:${exerciseIndex}`);
+      const loggedExerciseId = await getCloudId("logged-exercise", exercise.id, `${workoutId}:${exercise.id}:${exerciseIndex}`);
       loggedExerciseRows.push({
         id: loggedExerciseId,
         workout_log_id: workoutId,
@@ -515,7 +515,7 @@ async function upsertWorkoutLogs(
 
       for (const set of exercise.sets) {
         loggedSetRows.push({
-          id: await localIdToUuid("logged-set", `${loggedExerciseId}:${set.id}`),
+          id: await getCloudId("logged-set", set.id, `${loggedExerciseId}:${set.id}`),
           logged_exercise_id: loggedExerciseId,
           set_number: set.set_number,
           set_type: set.set_type,
@@ -660,6 +660,14 @@ function getLocalUserIdForUsername(username: string, usedLocalUserIds: Set<strin
 
 function getNextAvailableLocalUserId(usedLocalUserIds: Set<string>) {
   return SQUAD_USERS.find((user) => !usedLocalUserIds.has(user.id))?.id || "user-1";
+}
+
+async function getCloudId(entity: string, currentId: string, fallbackSeed: string) {
+  return isUuid(currentId) ? currentId : localIdToUuid(entity, fallbackSeed);
+}
+
+function isUuid(value: string) {
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value);
 }
 
 async function localIdToUuid(entity: string, localId: string) {

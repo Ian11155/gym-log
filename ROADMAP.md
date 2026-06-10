@@ -43,6 +43,7 @@ SquadLift is a private Hevy-style workout tracker for a small friend squad. The 
   - one-iPhone cloud loop has been manually verified: sign in, auto-pull, finish workout, auto-push, and zero pending retries
   - deployed two-session browser QA has been verified: one session created a workout, auto-pushed it, and a fresh second session auto-pulled it
   - second test account QA has been verified: the account maps to Marcus, writes workouts under its own Supabase auth user, auto-pushes with zero pending retries, and Ian can auto-pull the shared workout
+  - pulled cloud rows re-upload with their original Supabase UUIDs, preventing repeated browser sessions from creating duplicate rows for the same cloud workout
 - The app uses a mobile-first shell with developer tools moved into a separate drawer.
 - PWA install support is implemented with Vite PWA, app manifest, service worker, and generated icons.
 - iOS/PWA shell polish has been applied:
@@ -162,6 +163,7 @@ SquadLift is a private Hevy-style workout tracker for a small friend squad. The 
     - Completed: add automatic cloud pull on app open/sign-in/reconnect when there is no pending local sync retry.
     - Completed: add first-run cloud sign-in screen and header cloud status.
     - Completed: verify second test account maps to the Marcus local profile, writes under its own Supabase auth user, auto-pushes with zero pending retries, and can be pulled by Ian.
+    - Completed: keep restored cloud UUIDs stable on upload so pulled workouts upsert instead of duplicating.
     - Use membership-based RLS instead of broad public policies.
     - Start with auth, squad membership, exercises, routines, workout logs, logged exercises, and logged sets.
     - Keep comments, reactions, fist-bumps, and feed behavior out of scope.
