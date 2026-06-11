@@ -56,6 +56,23 @@ import {
   RotateCcw
 } from "lucide-react";
 
+const TOP_NAV_CLOUD_BUTTON_BASE_CLASS =
+  "flex h-9 items-center justify-center rounded-xl border px-3 text-[12px] font-black uppercase tracking-widest shadow-3d-sm transition";
+
+const TOP_NAV_CLOUD_BUTTON_SIGNED_IN_CLASS =
+  "bg-[#ffffff] text-black";
+
+const TOP_NAV_CLOUD_BUTTON_SIGN_IN_CLASS =
+  "bg-[#ffffff] text-black";
+
+const TOP_NAV_CLOUD_BUTTON_LOCAL_CLASS =
+  "border-[#6f6d6c]/15 bg-[#6f6d6c]/10 text-stone-350";
+
+const TOAST_CONTAINER_CLASS =
+  "absolute left-4 right-4 top-4 z-45 flex items-center justify-center gap-2 rounded-2xl border border-[#6f6d6c]/20 bg-[#ffffff] p-3 text-center text-[14px] font-bold text-black shadow-3d-sm animate-fade-in";
+
+const TOAST_DOT_CLASS = "h-1.5 w-1.5 rounded-full bg-[#6f6d6c]";
+
 export default function App() {
   // ----------------------------------------------------
   // PERSISTED LOCAL STATES (Local-first data service)
@@ -942,10 +959,10 @@ export default function App() {
         ? "Sign In"
         : "Checking";
   const cloudStatusClass = cloudSignedInEmail
-    ? "border-emerald-500/20 bg-emerald-500/10 text-emerald-200"
+    ? TOP_NAV_CLOUD_BUTTON_SIGNED_IN_CLASS
     : isSupabaseConfigured()
-      ? "border-amber-500/20 bg-[#eff4f5]/90 text-black"
-      : "border-[#6f6d6c]/15 bg-[#6f6d6c]/10 text-stone-350";
+      ? TOP_NAV_CLOUD_BUTTON_SIGN_IN_CLASS
+      : TOP_NAV_CLOUD_BUTTON_LOCAL_CLASS;
   const shouldShowCloudSignIn =
     isSupabaseConfigured() && isCloudSessionChecked && !cloudSignedInEmail && !isCloudSignInDismissed;
 
@@ -977,7 +994,7 @@ export default function App() {
                     setIsDevPanelOpen(true);
                   }
                 }}
-                className={`flex h-9 items-center justify-center rounded-xl border px-3 text-[12px] font-black uppercase tracking-widest shadow-3d-sm transition ${cloudStatusClass}`}
+                className={`${TOP_NAV_CLOUD_BUTTON_BASE_CLASS} ${cloudStatusClass}`}
                 title={cloudSignedInEmail ? cloudSignedInEmail : "Cloud sign-in status"}
               >
                 {cloudStatusLabel}
@@ -997,8 +1014,8 @@ export default function App() {
 
         <main className="relative min-h-0 flex-1 overflow-hidden selection:bg-[#6f6d6c] selection:text-white">
           {toastNotification && (
-            <div className="absolute left-4 right-4 top-4 z-45 flex items-center justify-center gap-2 rounded-2xl border border-[#6f6d6c]/20 bg-[#e6e6e6] p-3 text-center text-[14px] font-bold text-black shadow-3d-sm animate-fade-in">
-              <span className="h-1.5 w-1.5 rounded-full bg-[#6f6d6c]" />
+            <div className={TOAST_CONTAINER_CLASS}>
+              <span className={TOAST_DOT_CLASS} />
               <span className="tracking-wide text-stone-250">{toastNotification}</span>
             </div>
           )}
