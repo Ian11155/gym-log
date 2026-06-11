@@ -19,11 +19,11 @@ html,
 body,
 #root {
   min-height: 100%;
-  background-color: #000000;
+  background-color: #131313;
 }
 
 body {
-  background-color: #000000;
+  background-color: #131313;
   color: #e0dfd5;
   font-family: var(--font-sans);
   overflow-x: hidden;

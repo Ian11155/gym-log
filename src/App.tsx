@@ -944,26 +944,26 @@ export default function App() {
   const cloudStatusClass = cloudSignedInEmail
     ? "border-emerald-500/20 bg-emerald-500/10 text-emerald-200"
     : isSupabaseConfigured()
-      ? "border-amber-500/20 bg-amber-500/10 text-amber-200"
+      ? "border-amber-500/20 bg-[#eff4f5]/90 text-black"
       : "border-[#6f6d6c]/15 bg-[#6f6d6c]/10 text-stone-350";
   const shouldShowCloudSignIn =
     isSupabaseConfigured() && isCloudSessionChecked && !cloudSignedInEmail && !isCloudSignInDismissed;
 
   return (
-    <div className="h-dvh overflow-hidden bg-black text-[#e0dfd5] font-sans select-none antialiased">
-      <div className="pointer-events-none fixed inset-x-0 top-0 z-[70] h-[calc(env(safe-area-inset-top)+1px)] bg-black" />
-      <div className="mx-auto flex h-dvh w-full max-w-[480px] flex-col overflow-hidden bg-[#131313] shadow-[0_0_24px_rgba(0,0,0,0.5)] md:border-x md:border-[#2d2729]">
-        <header className="sticky top-0 z-50 border-b border-[#2d2729] bg-black px-5 pb-4 pt-[calc(1rem+env(safe-area-inset-top))]">
+    <div className="h-dvh overflow-hidden bg-[#131313] text-[#e0dfd5] font-sans select-none antialiased">
+      <div className="pointer-events-none fixed inset-x-0 top-0 z-[70] h-[calc(env(safe-area-inset-top)+1px)] bg-[#131313]" />
+      <div className="mx-auto flex h-dvh w-full max-w-[480px] flex-col overflow-hidden bg-[#0D0D0D] shadow-[0_0_24px_rgba(0,0,0,0.5)] md:border-x md:border-[#2d2729]">
+        <header className="sticky top-0 z-50 border-b border-[#f2f3f5] bg-[#030303] px-5 pb-4 pt-[calc(1rem+env(safe-area-inset-top))]">
           <div className="flex items-center justify-between gap-4">
             <div className="min-w-0">
               <div className="flex items-center gap-2">
                 <span className={`h-2 w-2 rounded-full ${cloudSignedInEmail ? "bg-emerald-400" : "bg-[#6f6d6c]"}`} />
-                <span className="text-[10px] font-black uppercase tracking-widest text-stone-400">
+                <span className="text-[12px] font-black uppercase tracking-widest text-stone-400">
                   {cloudSignedInEmail ? "Cloud Sync Active" : "Local First"}
                 </span>
               </div>
-              <h1 className="mt-1 truncate text-lg font-black tracking-tight text-white">
-                SquadLift
+              <h1 className="mt-1 truncate text-[20px] font-black tracking-tight text-[#f5f3ef]">
+                SQUADLIFT
               </h1>
             </div>
 
@@ -977,7 +977,7 @@ export default function App() {
                     setIsDevPanelOpen(true);
                   }
                 }}
-                className={`flex h-9 items-center justify-center rounded-xl border px-3 text-[10px] font-black uppercase tracking-widest shadow-3d-sm transition ${cloudStatusClass}`}
+                className={`flex h-9 items-center justify-center rounded-xl border px-3 text-[12px] font-black uppercase tracking-widest shadow-3d-sm transition ${cloudStatusClass}`}
                 title={cloudSignedInEmail ? cloudSignedInEmail : "Cloud sign-in status"}
               >
                 {cloudStatusLabel}
@@ -986,7 +986,7 @@ export default function App() {
               <button
                 type="button"
                 onClick={() => setIsDevPanelOpen(true)}
-                className="flex h-11 w-11 items-center justify-center rounded-xl border border-[#6f6d6c]/20 bg-black text-stone-300 shadow-3d-sm transition hover:border-[#6f6d6c]/45 hover:text-white"
+                className="flex h-11 w-11 items-center justify-center rounded-xl border border-[#6f6d6c]/20 bg-[#131313] text-stone-300 shadow-3d-sm transition hover:border-[#6f6d6c]/45 hover:text-white"
                 title="Open developer tools"
               >
                 <Menu className="h-5 w-5" />
@@ -996,11 +996,8 @@ export default function App() {
         </header>
 
         <main className="relative min-h-0 flex-1 overflow-hidden selection:bg-[#6f6d6c] selection:text-white">
-          <div className="absolute inset-x-0 top-0 h-72 bg-radial-[circle_at_20%_20%] from-[#6f6d6c]/10 via-transparent to-transparent pointer-events-none" />
-          <div className="absolute left-8 top-16 h-96 w-[1px] bg-gradient-to-b from-[#6f6d6c]/15 via-transparent to-transparent pointer-events-none" />
-
           {toastNotification && (
-            <div className="absolute left-4 right-4 top-4 z-45 flex items-center justify-center gap-2 rounded-2xl border border-[#6f6d6c]/20 bg-[#1c181a] p-3 text-center text-[12px] font-bold text-white shadow-3d-sm animate-fade-in">
+            <div className="absolute left-4 right-4 top-4 z-45 flex items-center justify-center gap-2 rounded-2xl border border-[#6f6d6c]/20 bg-[#e6e6e6] p-3 text-center text-[14px] font-bold text-black shadow-3d-sm animate-fade-in">
               <span className="h-1.5 w-1.5 rounded-full bg-[#6f6d6c]" />
               <span className="tracking-wide text-stone-250">{toastNotification}</span>
             </div>
@@ -1077,7 +1074,7 @@ export default function App() {
             />
           )}
 
-          <nav className="fixed bottom-0 left-1/2 z-[60] flex h-[51px] w-full max-w-[480px] -translate-x-1/2 items-center justify-around border-t border-[#6f6d6c]/15 bg-black px-2 shadow-[0_-6px_18px_rgba(0,0,0,0.45)]">
+          <nav className="fixed bottom-0 left-1/2 z-[60] flex h-[65px] w-full max-w-[480px] -translate-x-1/2 items-center justify-around border-t-[1.6px] border-[#f2f3f5] bg-[#030303] pt-2 pb-2 px-2 shadow-[0_-6px_18px_rgba(0,0,0,0.45)]">
             <button
               type="button"
               onClick={() => {
@@ -1091,7 +1088,7 @@ export default function App() {
               }`}
             >
               <Home className="h-[19px] w-[19px] pointer-events-none" />
-              <span className="mt-1 text-[9px] font-black uppercase tracking-widest">Home</span>
+              <span className="mt-1 text-[11px] font-black uppercase tracking-widest">Home</span>
             </button>
 
             <button
@@ -1107,7 +1104,7 @@ export default function App() {
               }`}
             >
               <Dumbbell className="h-[19px] w-[19px] pointer-events-none" />
-              <span className="mt-1 text-[9px] font-black uppercase tracking-widest">Workout</span>
+              <span className="mt-1 text-[11px] font-black uppercase tracking-widest">Workout</span>
             </button>
 
             <button
@@ -1124,7 +1121,7 @@ export default function App() {
               }`}
             >
               <ProfileIcon className="h-[19px] w-[19px] pointer-events-none" />
-              <span className="mt-1 text-[9px] font-black uppercase tracking-widest">Profile</span>
+              <span className="mt-1 text-[11px] font-black uppercase tracking-widest">Profile</span>
             </button>
           </nav>
         </main>
@@ -1135,14 +1132,14 @@ export default function App() {
           <aside className="ml-auto flex h-full w-full max-w-2xl flex-col overflow-y-auto border-l border-[#2d2729] bg-[#0f0f0f] p-5 shadow-3d-md">
             <div className="flex items-start justify-between gap-4 border-b border-[#2d2729] pb-4">
               <div>
-                <h2 className="flex items-center gap-2 text-lg font-serif text-[#f7f5f4]">
+                <h2 className="flex items-center gap-2 text-[20px] font-serif text-[#f7f5f4]">
                   <ShieldCheck className="h-5 w-5 text-[#6f6d6c]" />
                   <span>Developer Tools</span>
                 </h2>
-                <p className="mt-1 text-[13px] leading-relaxed text-stone-400">
+                <p className="mt-1 text-[15px] leading-relaxed text-stone-400">
                   Local controls for switching squad roles, backups, and checking the planned Supabase sync path.
                 </p>
-                <p className="mt-2 font-mono text-[11px] uppercase tracking-widest text-stone-500">
+                <p className="mt-2 font-mono text-[13px] uppercase tracking-widest text-stone-500">
                   {APP_BUILD_LABEL} | Data: {initialDataLoad.source}
                 </p>
               </div>
@@ -1159,11 +1156,11 @@ export default function App() {
             <div className="mt-5 space-y-6">
               <section className="rounded-2xl border border-[#2d2729] bg-[#121011] p-4 shadow-3d-sm">
                 <div className="flex items-center justify-between gap-3">
-                  <span className="flex items-center gap-1.5 text-[11px] font-black uppercase tracking-widest text-stone-300">
+                  <span className="flex items-center gap-1.5 text-[13px] font-black uppercase tracking-widest text-stone-300">
                     <Sparkles className="h-3.5 w-3.5 text-stone-400" />
                     Switch Active Friend
                   </span>
-                  <span className="rounded-full border border-[#6f6d6c]/10 bg-[#6f6d6c]/10 px-3 py-1 text-[10px] font-black tracking-widest text-stone-350">
+                  <span className="rounded-full border border-[#6f6d6c]/10 bg-[#6f6d6c]/10 px-3 py-1 text-[12px] font-black tracking-widest text-stone-350">
                     LOCAL ROLEPLAY
                   </span>
                 </div>
@@ -1195,14 +1192,14 @@ export default function App() {
                             referrerPolicy="no-referrer"
                           />
                           <div>
-                            <div className="text-[13px] font-bold text-stone-200">{user.username}</div>
-                            <p className="mt-1 text-[10px] font-mono uppercase tracking-wide text-stone-400">
+                            <div className="text-[15px] font-bold text-stone-200">{user.username}</div>
+                            <p className="mt-1 text-[12px] font-mono uppercase tracking-wide text-stone-400">
                               {personalWorkouts.length} Workouts | Streak: {userStreaks[user.id] || user.streak} Weeks
                             </p>
                           </div>
                         </div>
 
-                        <span className={`text-[10px] font-black tracking-wider ${
+                        <span className={`text-[12px] font-black tracking-wider ${
                           isActive ? "rounded bg-[#6f6d6c] px-2 py-1 text-[#e0dfd5]" : "text-stone-500"
                         }`}>
                           {isActive ? "YOU" : "SET"}
@@ -1214,7 +1211,7 @@ export default function App() {
               </section>
 
               <section className="rounded-2xl border border-[#2d2729] bg-[#121011] p-4 shadow-3d-sm">
-                <h3 className="flex items-center gap-2 text-[15px] font-bold text-[#f7f5f4]">
+                <h3 className="flex items-center gap-2 text-[17px] font-bold text-[#f7f5f4]">
                   <Users className="h-4 w-4 text-stone-400" />
                   <span>Simulate Friend Workout</span>
                 </h3>
@@ -1231,7 +1228,7 @@ export default function App() {
                         handleSimulateFriendWorkout(friend.index);
                         setIsDevPanelOpen(false);
                       }}
-                      className="rounded-xl border border-[#6f6d6c]/15 bg-black px-3 py-3 text-[11px] font-black uppercase tracking-widest text-stone-300 transition hover:border-[#6f6d6c]/40 hover:text-white"
+                      className="rounded-xl border border-[#6f6d6c]/15 bg-black px-3 py-3 text-[13px] font-black uppercase tracking-widest text-stone-300 transition hover:border-[#6f6d6c]/40 hover:text-white"
                     >
                       {friend.label}
                     </button>
@@ -1241,25 +1238,25 @@ export default function App() {
 
               <section className="rounded-2xl border border-[#2d2729] bg-[#121011] p-4 shadow-3d-sm">
                 <div className="flex items-center justify-between gap-3">
-                  <h3 className="flex items-center gap-2 text-[15px] font-bold text-[#f7f5f4]">
+                  <h3 className="flex items-center gap-2 text-[17px] font-bold text-[#f7f5f4]">
                     <Database className="h-4 w-4 text-emerald-400" />
                     <span>Cloud Sync</span>
                   </h3>
-                  <span className="rounded-full border border-emerald-500/10 bg-emerald-500/10 px-3 py-1 text-[10px] font-black tracking-widest text-emerald-300">
+                  <span className="rounded-full border border-emerald-500/10 bg-emerald-500/10 px-3 py-1 text-[12px] font-black tracking-widest text-emerald-300">
                     AUTO
                   </span>
                 </div>
 
-                <p className="mt-2 text-[13px] leading-relaxed text-stone-400">
+                <p className="mt-2 text-[15px] leading-relaxed text-stone-400">
                   Sign-in persists on this device. Local saves stay primary; cloud upload and pull run automatically when safe.
                 </p>
 
                 <div className="mt-4 grid gap-3">
                   <div className="min-w-0 rounded-xl border border-white/5 bg-black px-3 py-3">
-                    <p className="text-[10px] font-black uppercase tracking-widest text-stone-500">
+                    <p className="text-[12px] font-black uppercase tracking-widest text-stone-500">
                       Auth
                     </p>
-                    <p className="mt-1 break-words text-[13px] font-bold text-stone-250">
+                    <p className="mt-1 break-words text-[15px] font-bold text-stone-250">
                       {cloudAuthStatus}
                     </p>
                   </div>
@@ -1269,7 +1266,7 @@ export default function App() {
                       type="button"
                       onClick={() => void handleCloudSignOut()}
                       disabled={isCloudAuthBusy}
-                      className="flex min-h-11 items-center justify-center rounded-xl border border-red-500/20 bg-black px-4 py-3 text-[11px] font-black uppercase tracking-widest text-red-200 transition hover:border-red-400/40 hover:text-white disabled:cursor-not-allowed disabled:opacity-60"
+                      className="flex min-h-11 items-center justify-center rounded-xl border border-red-500/20 bg-black px-4 py-3 text-[13px] font-black uppercase tracking-widest text-red-200 transition hover:border-red-400/40 hover:text-white disabled:cursor-not-allowed disabled:opacity-60"
                     >
                       {isCloudAuthBusy ? "Signing Out" : "Sign Out"}
                     </button>
@@ -1281,7 +1278,7 @@ export default function App() {
                         onChange={(event) => setCloudAuthEmail(event.target.value)}
                         autoComplete="email"
                         placeholder="Email"
-                        className="min-h-11 rounded-xl border border-white/5 bg-black px-3 text-[15px] font-bold text-stone-100 outline-none transition placeholder:text-stone-600 focus:border-emerald-500/40"
+                        className="min-h-11 rounded-xl border border-white/5 bg-black px-3 text-[17px] font-bold text-stone-100 outline-none transition placeholder:text-stone-600 focus:border-emerald-500/40"
                       />
                       <input
                         type="password"
@@ -1289,13 +1286,13 @@ export default function App() {
                         onChange={(event) => setCloudAuthPassword(event.target.value)}
                         autoComplete="current-password"
                         placeholder="Password"
-                        className="min-h-11 rounded-xl border border-white/5 bg-black px-3 text-[15px] font-bold text-stone-100 outline-none transition placeholder:text-stone-600 focus:border-emerald-500/40"
+                        className="min-h-11 rounded-xl border border-white/5 bg-black px-3 text-[17px] font-bold text-stone-100 outline-none transition placeholder:text-stone-600 focus:border-emerald-500/40"
                       />
                       <button
                         type="button"
                         onClick={() => void handleCloudSignIn()}
                         disabled={isCloudAuthBusy || !isSupabaseConfigured()}
-                        className="flex min-h-11 items-center justify-center rounded-xl border border-emerald-500/20 bg-black px-4 py-3 text-[11px] font-black uppercase tracking-widest text-emerald-200 transition hover:border-emerald-400/40 hover:text-white disabled:cursor-not-allowed disabled:opacity-60"
+                        className="flex min-h-11 items-center justify-center rounded-xl border border-emerald-500/20 bg-black px-4 py-3 text-[13px] font-black uppercase tracking-widest text-emerald-200 transition hover:border-emerald-400/40 hover:text-white disabled:cursor-not-allowed disabled:opacity-60"
                       >
                         {isCloudAuthBusy ? "Signing In" : "Sign In"}
                       </button>
@@ -1303,10 +1300,10 @@ export default function App() {
                   )}
 
                   <div className="min-w-0 rounded-xl border border-white/5 bg-black px-3 py-3">
-                    <p className="text-[10px] font-black uppercase tracking-widest text-stone-500">
+                    <p className="text-[12px] font-black uppercase tracking-widest text-stone-500">
                       RLS Check
                     </p>
-                    <p className="mt-1 break-words text-[13px] font-bold text-stone-250">
+                    <p className="mt-1 break-words text-[15px] font-bold text-stone-250">
                       {cloudCheckStatus}
                     </p>
                   </div>
@@ -1315,16 +1312,16 @@ export default function App() {
                     type="button"
                     onClick={() => void handleVerifyCloudConnection()}
                     disabled={isCheckingCloud}
-                    className="flex min-h-11 items-center justify-center rounded-xl border border-emerald-500/20 bg-black px-4 py-3 text-[11px] font-black uppercase tracking-widest text-emerald-200 transition hover:border-emerald-400/40 hover:text-white disabled:cursor-not-allowed disabled:opacity-60"
+                    className="flex min-h-11 items-center justify-center rounded-xl border border-emerald-500/20 bg-black px-4 py-3 text-[13px] font-black uppercase tracking-widest text-emerald-200 transition hover:border-emerald-400/40 hover:text-white disabled:cursor-not-allowed disabled:opacity-60"
                   >
                     {isCheckingCloud ? "Checking" : "Test Cloud"}
                   </button>
 
                   <div className="min-w-0 rounded-xl border border-white/5 bg-black px-3 py-3">
-                    <p className="text-[10px] font-black uppercase tracking-widest text-stone-500">
+                    <p className="text-[12px] font-black uppercase tracking-widest text-stone-500">
                       Upload
                     </p>
-                    <p className="mt-1 break-words text-[13px] font-bold text-stone-250">
+                    <p className="mt-1 break-words text-[15px] font-bold text-stone-250">
                       {cloudUploadStatus}
                     </p>
                   </div>
@@ -1333,16 +1330,16 @@ export default function App() {
                     type="button"
                     onClick={() => void handleUploadLocalDataToCloud()}
                     disabled={isCloudUploading || !cloudSignedInEmail}
-                    className="flex min-h-11 items-center justify-center rounded-xl border border-emerald-500/20 bg-black px-4 py-3 text-[11px] font-black uppercase tracking-widest text-emerald-200 transition hover:border-emerald-400/40 hover:text-white disabled:cursor-not-allowed disabled:opacity-60"
+                    className="flex min-h-11 items-center justify-center rounded-xl border border-emerald-500/20 bg-black px-4 py-3 text-[13px] font-black uppercase tracking-widest text-emerald-200 transition hover:border-emerald-400/40 hover:text-white disabled:cursor-not-allowed disabled:opacity-60"
                   >
                     {isCloudUploading ? "Uploading" : "Upload Local"}
                   </button>
 
                   <div className="min-w-0 rounded-xl border border-white/5 bg-black px-3 py-3">
-                    <p className="text-[10px] font-black uppercase tracking-widest text-stone-500">
+                    <p className="text-[12px] font-black uppercase tracking-widest text-stone-500">
                       Retry Queue
                     </p>
-                    <p className="mt-1 break-words text-[13px] font-bold text-stone-250">
+                    <p className="mt-1 break-words text-[15px] font-bold text-stone-250">
                       {pendingCloudSyncCount} pending | {cloudRetryStatus}
                     </p>
                   </div>
@@ -1351,20 +1348,20 @@ export default function App() {
                     type="button"
                     onClick={() => void handleRetryPendingCloudSync()}
                     disabled={isCloudRetrying || !cloudSignedInEmail || pendingCloudSyncCount === 0}
-                    className="flex min-h-11 items-center justify-center rounded-xl border border-amber-500/20 bg-black px-4 py-3 text-[11px] font-black uppercase tracking-widest text-amber-200 transition hover:border-amber-400/40 hover:text-white disabled:cursor-not-allowed disabled:opacity-60"
+                    className="flex min-h-11 items-center justify-center rounded-xl border border-amber-500/20 bg-black px-4 py-3 text-[13px] font-black uppercase tracking-widest text-amber-200 transition hover:border-amber-400/40 hover:text-white disabled:cursor-not-allowed disabled:opacity-60"
                   >
                     {isCloudRetrying ? "Retrying" : "Retry Pending"}
                   </button>
 
                   <div className="min-w-0 rounded-xl border border-white/5 bg-black px-3 py-3">
-                    <p className="text-[10px] font-black uppercase tracking-widest text-stone-500">
+                    <p className="text-[12px] font-black uppercase tracking-widest text-stone-500">
                       Preview
                     </p>
-                    <p className="mt-1 break-words text-[13px] font-bold text-stone-250">
+                    <p className="mt-1 break-words text-[15px] font-bold text-stone-250">
                       {cloudPreviewStatus}
                     </p>
                     {cloudPreview && (
-                      <div className="mt-3 grid gap-1.5 text-[11px] font-bold text-stone-400">
+                      <div className="mt-3 grid gap-1.5 text-[13px] font-bold text-stone-400">
                         <span>Latest routine: {cloudPreview.latestRoutineTitle}</span>
                         <span>Latest workout: {cloudPreview.latestWorkoutTitle}</span>
                       </div>
@@ -1375,16 +1372,16 @@ export default function App() {
                     type="button"
                     onClick={() => void handlePreviewCloudData()}
                     disabled={isCloudPreviewing || !cloudSignedInEmail}
-                    className="flex min-h-11 items-center justify-center rounded-xl border border-emerald-500/20 bg-black px-4 py-3 text-[11px] font-black uppercase tracking-widest text-emerald-200 transition hover:border-emerald-400/40 hover:text-white disabled:cursor-not-allowed disabled:opacity-60"
+                    className="flex min-h-11 items-center justify-center rounded-xl border border-emerald-500/20 bg-black px-4 py-3 text-[13px] font-black uppercase tracking-widest text-emerald-200 transition hover:border-emerald-400/40 hover:text-white disabled:cursor-not-allowed disabled:opacity-60"
                   >
                     {isCloudPreviewing ? "Previewing" : "Preview Cloud"}
                   </button>
 
                   <div className="min-w-0 rounded-xl border border-white/5 bg-black px-3 py-3">
-                    <p className="text-[10px] font-black uppercase tracking-widest text-stone-500">
+                    <p className="text-[12px] font-black uppercase tracking-widest text-stone-500">
                       Restore
                     </p>
-                    <p className="mt-1 break-words text-[13px] font-bold text-stone-250">
+                    <p className="mt-1 break-words text-[15px] font-bold text-stone-250">
                       {cloudRestoreStatus}
                     </p>
                   </div>
@@ -1393,7 +1390,7 @@ export default function App() {
                     type="button"
                     onClick={() => void handleRestoreLocalDataFromCloud()}
                     disabled={isCloudRestoring || isCloudAutoPulling || !cloudSignedInEmail}
-                    className="flex min-h-11 items-center justify-center rounded-xl border border-amber-500/20 bg-black px-4 py-3 text-[11px] font-black uppercase tracking-widest text-amber-200 transition hover:border-amber-400/40 hover:text-white disabled:cursor-not-allowed disabled:opacity-60"
+                    className="flex min-h-11 items-center justify-center rounded-xl border border-amber-500/20 bg-black px-4 py-3 text-[13px] font-black uppercase tracking-widest text-amber-200 transition hover:border-amber-400/40 hover:text-white disabled:cursor-not-allowed disabled:opacity-60"
                   >
                     {isCloudRestoring || isCloudAutoPulling ? "Pulling" : "Restore Cloud"}
                   </button>
@@ -1402,16 +1399,16 @@ export default function App() {
 
               <section className="rounded-2xl border border-[#2d2729] bg-[#121011] p-4 shadow-3d-sm">
                 <div className="flex items-center justify-between gap-3">
-                  <h3 className="flex items-center gap-2 text-[15px] font-bold text-[#f7f5f4]">
+                  <h3 className="flex items-center gap-2 text-[17px] font-bold text-[#f7f5f4]">
                     <Database className="h-4 w-4 text-stone-400" />
                     <span>Local Data Backup</span>
                   </h3>
-                  <span className="rounded-full border border-[#6f6d6c]/10 bg-[#6f6d6c]/10 px-3 py-1 text-[10px] font-black tracking-widest text-stone-350">
+                  <span className="rounded-full border border-[#6f6d6c]/10 bg-[#6f6d6c]/10 px-3 py-1 text-[12px] font-black tracking-widest text-stone-350">
                     DEVICE ONLY
                   </span>
                 </div>
 
-                <p className="mt-2 text-[13px] leading-relaxed text-stone-400">
+                <p className="mt-2 text-[15px] leading-relaxed text-stone-400">
                   Export, import, or reset the local demo data stored on this device.
                 </p>
 
@@ -1419,13 +1416,13 @@ export default function App() {
                   <button
                     type="button"
                     onClick={handleExportLocalData}
-                    className="flex items-center justify-center gap-1.5 rounded-xl border border-[#6f6d6c]/15 bg-black px-3 py-3 text-[11px] font-black uppercase tracking-widest text-stone-300 transition hover:border-[#6f6d6c]/40 hover:text-white"
+                    className="flex items-center justify-center gap-1.5 rounded-xl border border-[#6f6d6c]/15 bg-black px-3 py-3 text-[13px] font-black uppercase tracking-widest text-stone-300 transition hover:border-[#6f6d6c]/40 hover:text-white"
                   >
                     <Download className="h-3.5 w-3.5" />
                     Export
                   </button>
 
-                  <label className="flex cursor-pointer items-center justify-center gap-1.5 rounded-xl border border-[#6f6d6c]/15 bg-black px-3 py-3 text-[11px] font-black uppercase tracking-widest text-stone-300 transition hover:border-[#6f6d6c]/40 hover:text-white">
+                  <label className="flex cursor-pointer items-center justify-center gap-1.5 rounded-xl border border-[#6f6d6c]/15 bg-black px-3 py-3 text-[13px] font-black uppercase tracking-widest text-stone-300 transition hover:border-[#6f6d6c]/40 hover:text-white">
                     <Upload className="h-3.5 w-3.5" />
                     Import
                     <input
@@ -1442,7 +1439,7 @@ export default function App() {
                   <button
                     type="button"
                     onClick={handleResetLocalData}
-                    className="flex items-center justify-center gap-1.5 rounded-xl border border-red-500/20 bg-black px-3 py-3 text-[11px] font-black uppercase tracking-widest text-red-200 transition hover:border-red-400/40 hover:text-white"
+                    className="flex items-center justify-center gap-1.5 rounded-xl border border-red-500/20 bg-black px-3 py-3 text-[13px] font-black uppercase tracking-widest text-red-200 transition hover:border-red-400/40 hover:text-white"
                   >
                     <RotateCcw className="h-3.5 w-3.5" />
                     Reset
@@ -1451,7 +1448,7 @@ export default function App() {
               </section>
 
               <section className="rounded-2xl border border-[#2d2729] bg-[#121011] p-4 shadow-3d-sm">
-                <h3 className="mb-3 flex items-center gap-2 text-[15px] font-bold text-[#f7f5f4]">
+                <h3 className="mb-3 flex items-center gap-2 text-[17px] font-bold text-[#f7f5f4]">
                   <Database className="h-4 w-4 text-stone-400" />
                   <span>Future Backend Reference</span>
                 </h3>
@@ -1469,20 +1466,20 @@ export default function App() {
               <div>
                 <div className="flex items-center gap-2">
                   <Database className="h-4 w-4 text-emerald-400" />
-                  <span className="text-[11px] font-black uppercase tracking-widest text-emerald-300">
+                  <span className="text-[13px] font-black uppercase tracking-widest text-emerald-300">
                     Cloud Sync
                   </span>
                 </div>
-                <h2 className="mt-2 text-2xl font-black tracking-tight text-white">
+                <h2 className="mt-2 text-[26px] font-black tracking-tight text-white">
                   Sign in to SquadLift
                 </h2>
               </div>
-              <span className="rounded-full border border-emerald-500/10 bg-emerald-500/10 px-3 py-1 text-[10px] font-black uppercase tracking-widest text-emerald-300">
+              <span className="rounded-full border border-emerald-500/10 bg-emerald-500/10 px-3 py-1 text-[12px] font-black uppercase tracking-widest text-emerald-300">
                 Auto
               </span>
             </div>
 
-            <p className="mt-3 text-[15px] leading-relaxed text-stone-350">
+            <p className="mt-3 text-[17px] leading-relaxed text-stone-350">
               Your workouts save on this device first, then sync with Supabase when your account is signed in.
             </p>
 
@@ -1493,7 +1490,7 @@ export default function App() {
                 onChange={(event) => setCloudAuthEmail(event.target.value)}
                 autoComplete="email"
                 placeholder="Email"
-                className="min-h-12 rounded-xl border border-white/5 bg-black px-4 text-[17px] font-bold text-stone-100 outline-none transition placeholder:text-stone-600 focus:border-emerald-500/40"
+                className="min-h-12 rounded-xl border border-white/5 bg-black px-4 text-[19px] font-bold text-stone-100 outline-none transition placeholder:text-stone-600 focus:border-emerald-500/40"
               />
               <input
                 type="password"
@@ -1501,14 +1498,14 @@ export default function App() {
                 onChange={(event) => setCloudAuthPassword(event.target.value)}
                 autoComplete="current-password"
                 placeholder="Password"
-                className="min-h-12 rounded-xl border border-white/5 bg-black px-4 text-[17px] font-bold text-stone-100 outline-none transition placeholder:text-stone-600 focus:border-emerald-500/40"
+                className="min-h-12 rounded-xl border border-white/5 bg-black px-4 text-[19px] font-bold text-stone-100 outline-none transition placeholder:text-stone-600 focus:border-emerald-500/40"
               />
 
               <button
                 type="button"
                 onClick={() => void handleCloudSignIn()}
                 disabled={isCloudAuthBusy || !cloudAuthEmail.trim() || !cloudAuthPassword}
-                className="flex min-h-12 items-center justify-center rounded-xl border border-emerald-500/25 bg-emerald-500/10 px-4 py-3 text-[12px] font-black uppercase tracking-widest text-emerald-100 transition hover:border-emerald-400/50 hover:bg-emerald-500/15 disabled:cursor-not-allowed disabled:opacity-55"
+                className="flex min-h-12 items-center justify-center rounded-xl border border-emerald-500/25 bg-emerald-500/10 px-4 py-3 text-[14px] font-black uppercase tracking-widest text-emerald-100 transition hover:border-emerald-400/50 hover:bg-emerald-500/15 disabled:cursor-not-allowed disabled:opacity-55"
               >
                 {isCloudAuthBusy ? "Signing In" : "Sign In"}
               </button>
@@ -1519,13 +1516,13 @@ export default function App() {
                   setIsCloudSignInDismissed(true);
                   triggerToast("Continuing in local mode.");
                 }}
-                className="flex min-h-11 items-center justify-center rounded-xl border border-white/5 bg-black px-4 py-3 text-[11px] font-black uppercase tracking-widest text-stone-400 transition hover:border-white/10 hover:text-white"
+                className="flex min-h-11 items-center justify-center rounded-xl border border-white/5 bg-black px-4 py-3 text-[13px] font-black uppercase tracking-widest text-stone-400 transition hover:border-white/10 hover:text-white"
               >
                 Continue Local
               </button>
             </div>
 
-            <p className="mt-4 break-words text-[13px] font-bold leading-relaxed text-stone-500">
+            <p className="mt-4 break-words text-[15px] font-bold leading-relaxed text-stone-500">
               {cloudAuthStatus}
             </p>
           </section>
